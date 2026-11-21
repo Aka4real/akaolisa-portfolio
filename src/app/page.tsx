@@ -1,13 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Flask,
-  Trophy,
-} from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { PROFILE } from "@/data/profile";
-import { PROJECTS } from "@/data/projects";
+import { PROJECTS, type ProjectDossier } from "@/data/projects";
 import { HACKATHONS_AND_PROGRAMS } from "@/data/experience";
 import { LiveClockBadge } from "@/components/ui/LiveClockBadge";
 import { Reveal } from "@/components/ui/MotionPrimitives";
@@ -18,141 +13,115 @@ import {
 import { CapabilityMatrix } from "@/components/home/CapabilityMatrix";
 import { ProjectSchematic } from "@/components/schematics/ProjectSchematic";
 
+function ProjectCardMetadata({ project }: { project: ProjectDossier }) {
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <span className="min-w-0 truncate font-mono text-[11px] font-medium tabular-nums text-[var(--ink-muted)]">
+        {project.indexCode} · {project.clientDomain}
+      </span>
+      <span
+        className={`shrink-0 whitespace-nowrap rounded-[var(--radius-xs)] px-2 py-0.5 font-mono text-[11px] font-medium ${
+          project.isNda
+            ? "bg-[var(--bg-subtle)] text-[var(--ink-secondary)]"
+            : "bg-[var(--accent-soft)] text-[var(--accent-deep)]"
+        }`}
+      >
+        {project.statusBadge}
+      </span>
+    </div>
+  );
+}
+
 export default function HomePage() {
-  const featuredProjects = PROJECTS.filter((p) => p.featured);
+  const leadProject =
+    PROJECTS.find((p) => p.slug === "koridor-engine-os") ?? PROJECTS[0];
+  const pairProjects = [
+    PROJECTS.find((p) => p.slug === "fortress-fleet-ai"),
+    PROJECTS.find((p) => p.slug === "institutional-crypto-wealth"),
+  ].filter((p): p is ProjectDossier => Boolean(p));
+  const quantProject =
+    PROJECTS.find((p) => p.slug === "quant-forex-crypto-hft") ?? PROJECTS[4];
 
   return (
     <div>
-      {/* HERO SECTION */}
-      <section className="border-b border-[#E5E2DC] bg-[#FAF9F6]">
-        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-22 lg:px-8 lg:py-26">
-          <div className="grid items-start gap-12 lg:grid-cols-12">
-            {/* Left Editorial Spine */}
-            <div className="lg:col-span-7">
+      {/* BAND 1: ASYMMETRIC 7/5 EDITORIAL HERO */}
+      <section className="bg-[var(--bg-canvas)] pt-10 pb-14 lg:pt-14 lg:pb-16">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,7.4fr)_minmax(0,4.6fr)] lg:gap-8">
+            {/* Left 7-Col Strict 4-Element Stack */}
+            <div className="min-w-0">
               <LiveClockBadge />
 
-              <p className="mt-6 font-mono text-xs uppercase tracking-[0.14em] text-[#0F3D91]">
-                {PROFILE.displayName} · Founder, {PROFILE.studio.name}
-              </p>
-
-              <h1 className="mt-3 text-4xl font-semibold tracking-[-0.03em] text-[#111214] sm:text-5xl lg:text-[56px] lg:leading-[1.06]">
-                Full-Stack SaaS, AI Agents &amp; Quantitative Systems{" "}
-                <span className="font-serif font-normal italic text-[#0F3D91]">
-                  built with clinical rigor.
+              <h1 className="mt-5 text-[clamp(2.15rem,3.2vw,2.625rem)] font-semibold leading-[1.08] tracking-[-0.035em] text-[var(--ink-primary)] text-balance">
+                Engineering SaaS, AI agents &amp;{" "}
+                <br className="hidden lg:inline" />
+                quant systems with{" "}
+                <span className="text-[var(--accent-deep)]">
+                  clinical rigor.
                 </span>
               </h1>
 
-              <p className="mt-6 max-w-xl text-base leading-relaxed text-[#4B4E54] sm:text-[17px]">
+              <p className="mt-5 max-w-[54ch] text-base leading-[1.6] text-[var(--ink-secondary)] sm:text-[17px]">
                 {PROFILE.bioShort}
-              </p>
-
-              <p className="mt-4 max-w-xl border-l-2 border-[#1D4ED8] pl-4 text-sm leading-relaxed text-[#4B4E54]">
-                {PROFILE.empiricalEdge}
               </p>
 
               <HeroActionButtons />
             </div>
 
-            {/* Right Clinical Swiss Engineering Dossier Panel */}
-            <div className="lg:col-span-5">
-              <div className="overflow-hidden rounded-lg border border-[#E5E2DC] bg-white">
-                <div className="flex items-center justify-between border-b border-[#E5E2DC] bg-[#F3F1EC]/70 px-4 py-2.5 font-mono text-[10.5px] uppercase tracking-wider text-[#4B4E54]">
-                  <span>SPECIMEN DOSSIER · AE-2026</span>
-                  <span className="text-[#1D4ED8]">VERIFIED</span>
-                </div>
-
-                {/* Optional Portrait Slot OR Architectural Identity Block */}
-                <div className="swiss-grid-bg border-b border-[#E5E2DC] p-5">
-                  {PROFILE.portraitUrl ? (
-                    <div className="relative aspect-[4/3] w-full overflow-hidden rounded border border-[#E5E2DC]">
-                      <Image
-                        src={PROFILE.portraitUrl}
-                        alt={PROFILE.displayName}
-                        fill
-                        className="object-cover"
-                        priority
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-between gap-4 rounded border border-[#E5E2DC] bg-white p-4">
-                      <div>
-                        <p className="font-mono text-[10px] uppercase tracking-widest text-[#6E727A]">
-                          Principal Engineer &amp; Scientist
-                        </p>
-                        <p className="mt-1 text-lg font-semibold tracking-tight text-[#111214]">
-                          {PROFILE.legalName}
-                        </p>
-                        <p className="mt-0.5 font-mono text-[11px] text-[#4B4E54]">
-                          B.MLS (Clinical Chemistry) · {PROFILE.studio.primaryDisplay}
-                        </p>
-                      </div>
-                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded border border-[#111214] bg-[#111214] font-mono text-lg font-semibold tracking-tight text-white">
-                        {PROFILE.monogram}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Verified Metrics 2x2 Grid */}
-                <div className="grid grid-cols-2 divide-x divide-y divide-[#E5E2DC]">
-                  {PROFILE.metrics.map((metric) => (
-                    <div key={metric.label} className="p-4">
-                      <div className="font-mono text-2xl font-semibold tracking-tight tabular-nums text-[#111214]">
-                        {metric.value}
-                      </div>
-                      <div className="mt-1 text-xs font-semibold text-[#111214]">
-                        {metric.label}
-                      </div>
-                      <div className="mt-0.5 text-[11px] leading-snug text-[#6E727A]">
-                        {metric.detail}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Direct Links Rail */}
-                <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#E5E2DC] bg-[#FAF9F6] px-4 py-3 font-mono text-[11px]">
-                  <a
-                    href={PROFILE.studio.primaryUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-[#111214] hover:text-[#1D4ED8]"
-                  >
-                    {PROFILE.studio.primaryDisplay}
-                    <ArrowUpRight size={12} weight="bold" />
-                  </a>
-                  <a
-                    href={PROFILE.githubUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-[#111214] hover:text-[#1D4ED8]"
-                  >
-                    {PROFILE.githubHandle}
-                    <ArrowUpRight size={12} weight="bold" />
-                  </a>
-                </div>
+            {/* Right 5-Col Art-Directed Visual Anchor + Borderless Metric Ledger */}
+            <div className="min-w-0">
+              <div className="overflow-hidden rounded-[var(--radius-lg)] bg-[var(--bg-surface)] shadow-[var(--shadow-surface)]">
+                <Image
+                  src="/images/hero-systems.jpg"
+                  alt="Minimalist frosted borosilicate glass, machined aluminum calibration blocks, and cobalt optical refraction"
+                  width={1200}
+                  height={896}
+                  priority
+                  sizes="(min-width: 1024px) 40vw, 100vw"
+                  className="block h-auto w-full object-cover"
+                />
               </div>
+
+              <dl className="mt-5 grid grid-cols-2 border-t border-[var(--border-hairline)] pt-4 sm:grid-cols-4">
+                {PROFILE.metrics.map((metric, idx) => (
+                  <div
+                    key={metric.label}
+                    className={`flex flex-col-reverse justify-end ${
+                      idx === 0
+                        ? "pr-3 pb-3 sm:py-0 sm:pr-3 sm:pl-0"
+                        : idx === 1
+                          ? "border-l border-[var(--border-hairline)] pb-3 pl-3.5 sm:px-3 sm:py-0"
+                          : idx === 2
+                            ? "border-t border-[var(--border-hairline)] pt-3 pr-3 sm:border-t-0 sm:border-l sm:px-3 sm:py-0"
+                            : "border-t border-l border-[var(--border-hairline)] pt-3 pl-3.5 sm:border-t-0 sm:py-0 sm:pr-0 sm:pl-3"
+                    }`}
+                  >
+                    <dt className="mt-0.5 text-[11px] leading-[1.35] text-[var(--ink-muted)]">
+                      {metric.label}
+                    </dt>
+                    <dd className="font-mono text-[17px] font-semibold tracking-tight tabular-nums text-[var(--ink-primary)] sm:text-lg">
+                      {metric.value}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
             </div>
           </div>
         </div>
       </section>
 
-      {/* INTERACTIVE 4-PILLAR CAPABILITY MATRIX */}
-      <section className="border-b border-[#E5E2DC] bg-[#FAF9F6] py-20 sm:py-24">
+      {/* BAND 2: FULL-WIDTH SEGMENTED CAPABILITY WORKBENCH */}
+      <section className="border-y border-[var(--border-hairline)] bg-[var(--bg-surface)] py-20 lg:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <Reveal>
-            <div className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-              <div>
-                <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#0F3D91]">
-                  01 / Client Service Pillars
-                </p>
-                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#111214] sm:text-3xl">
-                  Four integrated engineering &amp; scientific verticals.
-                </h2>
-              </div>
-              <p className="max-w-md text-sm text-[#4B4E54]">
+            <div className="mb-10 max-w-[60ch]">
+              <h2 className="text-[clamp(1.625rem,2.3vw,2.125rem)] font-semibold leading-[1.15] tracking-[-0.025em] text-[var(--ink-primary)]">
+                Four disciplines, one production standard
+              </h2>
+              <p className="mt-3 text-[15px] leading-[1.62] text-[var(--ink-secondary)] sm:text-base">
                 Switch tracks to inspect production frameworks, architectural
-                deliverables, and verified systems shipped across each discipline.
+                deliverables, and verified systems shipped across each
+                discipline.
               </p>
             </div>
 
@@ -161,190 +130,312 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* FEATURED SELECTED WORK */}
-      <section className="border-b border-[#E5E2DC] bg-white py-20 sm:py-24">
+      {/* BAND 3: ASYMMETRIC SELECTED SHIPPED SYSTEMS SHOWCASE */}
+      <section className="bg-[var(--bg-canvas)] py-20 lg:py-26">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <Reveal>
-            <div className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-              <div>
-                <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#0F3D91]">
-                  02 / Selected Shipped Systems
-                </p>
-                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#111214] sm:text-3xl">
-                  Production architecture &amp; client case studies.
-                </h2>
-              </div>
-
-              <Link
-                href="/work"
-                className="btn-press inline-flex items-center gap-1.5 rounded border border-[#E5E2DC] bg-[#FAF9F6] px-4 py-2 font-mono text-xs font-medium text-[#111214] hover:border-[#1D4ED8] hover:text-[#0F3D91]"
-              >
-                View All {PROJECTS.length} Systems
-                <ArrowRight size={13} weight="bold" />
-              </Link>
+            <div className="mb-12 max-w-[60ch]">
+              <h2 className="text-[clamp(1.625rem,2.3vw,2.125rem)] font-semibold leading-[1.15] tracking-[-0.025em] text-[var(--ink-primary)]">
+                Selected shipped systems
+              </h2>
+              <p className="mt-3 text-[15px] leading-[1.62] text-[var(--ink-secondary)] sm:text-base">
+                Production architectures spanning digital freight dispatch,
+                multi-agent governance, digital asset wealth, and quantitative
+                risk modeling.{" "}
+                <Link
+                  href="/work"
+                  className="group inline-flex items-center gap-1 whitespace-nowrap font-medium text-[var(--accent-deep)] underline decoration-[var(--accent-border)] transition-colors duration-150 hover:text-[var(--accent)] hover:decoration-[var(--accent)]"
+                >
+                  View all {PROJECTS.length} dossiers
+                  <ArrowRight
+                    size={14}
+                    weight="bold"
+                    className="hover-nudge-x shrink-0"
+                    aria-hidden="true"
+                  />
+                </Link>
+              </p>
             </div>
           </Reveal>
 
-          <div className="grid gap-6 md:grid-cols-2">
-            {featuredProjects.map((project, idx) => (
-              <Reveal key={project.slug} delay={idx * 0.05}>
-                <article className="card-hover flex h-full flex-col justify-between rounded-lg border border-[#E5E2DC] bg-[#FAF9F6] p-5 sm:p-6">
-                  <div>
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <span className="font-mono text-[11px] font-semibold text-[#6E727A]">
-                        {project.indexCode} · {project.clientDomain}
-                      </span>
-                      <span
-                        className={`rounded border px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider ${
-                          project.isNda
-                            ? "border-[#E5E2DC] bg-white text-[#4B4E54]"
-                            : "border-[#BFDBFE] bg-[#EFF4FF] text-[#0F3D91]"
-                        }`}
-                      >
-                        {project.statusBadge}
-                      </span>
+          <div className="space-y-6 lg:space-y-8">
+            {/* Row 1: Flagship Full-Width Lead Feature (5/7 Horizontal Split) */}
+            <Reveal>
+              <article className="surface-elevated card-hover rounded-[var(--radius-md)] p-6 sm:p-8">
+                <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-10">
+                  <div className="flex min-w-0 flex-col justify-between lg:col-span-5">
+                    <div>
+                      <ProjectCardMetadata project={leadProject} />
+
+                      <h3 className="mt-4 text-[22px] font-semibold leading-[1.22] tracking-[-0.02em] text-[var(--ink-primary)] sm:text-2xl">
+                        <Link
+                          href={`/work/${leadProject.slug}`}
+                          className="transition-colors duration-150 hover:text-[var(--accent-deep)]"
+                        >
+                          {leadProject.title}
+                        </Link>
+                      </h3>
+
+                      <p className="mt-2.5 text-[15px] leading-[1.6] text-[var(--ink-secondary)]">
+                        {leadProject.summary}
+                      </p>
+
+                      <div className="mt-5 flex flex-wrap gap-1.5">
+                        {leadProject.stack.slice(0, 4).map((tech) => (
+                          <span
+                            key={tech}
+                            className="rounded-[var(--radius-xs)] bg-[var(--bg-subtle)] px-2.5 py-1 font-mono text-[11px] text-[var(--ink-secondary)]"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
                     </div>
 
-                    <h3 className="mt-3 text-xl font-semibold tracking-tight text-[#111214]">
+                    <div className="mt-6 border-t border-[var(--border-hairline)] pt-5">
+                      <Link
+                        href={`/work/${leadProject.slug}`}
+                        className="btn-press group inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent-deep)] hover:text-[var(--accent)]"
+                      >
+                        Inspect Dossier
+                        <ArrowRight
+                          size={14}
+                          weight="bold"
+                          className="hover-nudge-x shrink-0"
+                          aria-hidden="true"
+                        />
+                      </Link>
+                    </div>
+                  </div>
+
+                  <div className="min-w-0 lg:col-span-7">
+                    <ProjectSchematic
+                      type={leadProject.schematicType}
+                      compact
+                    />
+                  </div>
+                </div>
+              </article>
+            </Reveal>
+
+            {/* Row 2: Mid Asymmetric 2-Col Pair (Fortress & Institutional Crypto Wealth) */}
+            <div className="grid gap-6 md:grid-cols-2 lg:gap-8">
+              {pairProjects.map((project, idx) => (
+                <Reveal key={project.slug} delay={idx * 0.05} className="h-full">
+                  <article className="surface-elevated card-hover flex h-full flex-col justify-between rounded-[var(--radius-md)] p-6 sm:p-7">
+                    <div className="min-w-0">
+                      <ProjectCardMetadata project={project} />
+
+                      <h3 className="mt-4 text-xl font-semibold leading-[1.25] tracking-[-0.015em] text-[var(--ink-primary)]">
+                        <Link
+                          href={`/work/${project.slug}`}
+                          className="transition-colors duration-150 hover:text-[var(--accent-deep)]"
+                        >
+                          {project.title}
+                        </Link>
+                      </h3>
+
+                      <p className="mt-2.5 text-[15px] leading-[1.6] text-[var(--ink-secondary)]">
+                        {project.summary}
+                      </p>
+
+                      <div className="mt-6">
+                        <ProjectSchematic
+                          type={project.schematicType}
+                          compact
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--border-hairline)] pt-5">
+                      <div className="flex flex-wrap gap-1.5">
+                        {project.stack.slice(0, 4).map((tech) => (
+                          <span
+                            key={tech}
+                            className="rounded-[var(--radius-xs)] bg-[var(--bg-subtle)] px-2.5 py-1 font-mono text-[11px] text-[var(--ink-secondary)]"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+
                       <Link
                         href={`/work/${project.slug}`}
-                        className="hover:text-[#1D4ED8]"
+                        className="btn-press group inline-flex items-center gap-1.5 whitespace-nowrap text-sm font-medium text-[var(--accent-deep)] hover:text-[var(--accent)]"
                       >
-                        {project.title}
+                        Inspect Dossier
+                        <ArrowRight
+                          size={14}
+                          weight="bold"
+                          className="hover-nudge-x shrink-0"
+                          aria-hidden="true"
+                        />
                       </Link>
-                    </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-[#4B4E54]">
-                      {project.summary}
-                    </p>
-
-                    <div className="mt-5">
-                      <ProjectSchematic type={project.schematicType} compact />
                     </div>
-                  </div>
+                  </article>
+                </Reveal>
+              ))}
+            </div>
 
-                  <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-[#E5E2DC] pt-4">
-                    <div className="flex flex-wrap gap-1.5">
-                      {project.stack.slice(0, 4).map((tech) => (
-                        <span
-                          key={tech}
-                          className="rounded border border-[#E5E2DC] bg-white px-2 py-0.5 font-mono text-[10.5px] text-[#4B4E54]"
+            {/* Row 3: Wide Horizontal Quant Feature (5/7 Split for Monte Carlo Breadth) */}
+            <Reveal>
+              <article className="surface-elevated card-hover rounded-[var(--radius-md)] p-6 sm:p-8">
+                <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-10">
+                  <div className="flex min-w-0 flex-col justify-between lg:col-span-5">
+                    <div>
+                      <ProjectCardMetadata project={quantProject} />
+
+                      <h3 className="mt-4 text-[22px] font-semibold leading-[1.22] tracking-[-0.02em] text-[var(--ink-primary)] sm:text-2xl">
+                        <Link
+                          href={`/work/${quantProject.slug}`}
+                          className="transition-colors duration-150 hover:text-[var(--accent-deep)]"
                         >
-                          {tech}
-                        </span>
-                      ))}
+                          {quantProject.title}
+                        </Link>
+                      </h3>
+
+                      <p className="mt-2.5 text-[15px] leading-[1.6] text-[var(--ink-secondary)]">
+                        {quantProject.summary}
+                      </p>
+
+                      <div className="mt-5 flex flex-wrap gap-1.5">
+                        {quantProject.stack.slice(0, 4).map((tech) => (
+                          <span
+                            key={tech}
+                            className="rounded-[var(--radius-xs)] bg-[var(--bg-subtle)] px-2.5 py-1 font-mono text-[11px] text-[var(--ink-secondary)]"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
                     </div>
 
-                    <Link
-                      href={`/work/${project.slug}`}
-                      className="inline-flex items-center gap-1 font-mono text-xs font-semibold text-[#0F3D91] hover:text-[#1D4ED8]"
-                    >
-                      Inspect Dossier
-                      <ArrowRight size={13} weight="bold" />
-                    </Link>
+                    <div className="mt-6 border-t border-[var(--border-hairline)] pt-5">
+                      <Link
+                        href={`/work/${quantProject.slug}`}
+                        className="btn-press group inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent-deep)] hover:text-[var(--accent)]"
+                      >
+                        Inspect Dossier
+                        <ArrowRight
+                          size={14}
+                          weight="bold"
+                          className="hover-nudge-x shrink-0"
+                          aria-hidden="true"
+                        />
+                      </Link>
+                    </div>
                   </div>
-                </article>
-              </Reveal>
-            ))}
+
+                  <div className="min-w-0 lg:col-span-7">
+                    <ProjectSchematic
+                      type={quantProject.schematicType}
+                      compact
+                    />
+                  </div>
+                </div>
+              </article>
+            </Reveal>
           </div>
         </div>
       </section>
 
-      {/* EMPIRICAL RIGOR, STUDIO & 2026 HACKATHONS */}
-      <section className="border-b border-[#E5E2DC] bg-[#FAF9F6] py-20 sm:py-24">
+      {/* BAND 4: OPEN EDITORIAL EMPIRICAL EDGE + HAIRLINE COHORT LEDGER */}
+      <section className="border-t border-[var(--border-hairline)] bg-[var(--bg-surface)] py-20 lg:py-26">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <Reveal>
-            <div className="grid gap-6 lg:grid-cols-12">
-              {/* Left: Clinical & Empirical Edge */}
-              <div className="rounded-lg border border-[#E5E2DC] bg-white p-6 sm:p-8 lg:col-span-6">
-                <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#0F3D91]">
-                  <Flask size={15} weight="bold" />
-                  03 / Empirical Edge &amp; Leadership
-                </div>
-
-                <h2 className="mt-3 text-2xl font-semibold tracking-tight text-[#111214]">
-                  Why a licensed Biomedical Scientist ships sharper production software.
+            <div className="grid gap-12 lg:grid-cols-12 lg:gap-14">
+              {/* Left 7 Cols: Open Empirical Edge Narrative + Studio Photography */}
+              <div className="min-w-0 lg:col-span-7">
+                <h2 className="text-[clamp(1.625rem,2.3vw,2.125rem)] font-semibold leading-[1.15] tracking-[-0.025em] text-[var(--ink-primary)]">
+                  Empirical rigor from the clinical bench to production
                 </h2>
 
-                <p className="mt-3 text-sm leading-relaxed text-[#4B4E54]">
-                  At Federal Medical Centre (FMC) Umuahia, I coordinate bench
-                  schedules, onboarding, and diagnostic workflows for{" "}
-                  <strong className="font-semibold text-[#111214]">
-                    100+ Medical Laboratory Science interns
-                  </strong>{" "}
-                  and supervise{" "}
-                  <strong className="font-semibold text-[#111214]">
-                    150+ university trainees
-                  </strong>{" "}
-                  while running IQC/EQA analyzer calibration. Alongside RLHF
-                  benchmarking at Outlier.ai and OneForma, this laboratory
-                  precision directly shapes how I design database invariants,
-                  agent guardrails, and quantitative risk models.
+                <p className="mt-4 max-w-[62ch] text-[15px] leading-[1.65] text-[var(--ink-secondary)] sm:text-base">
+                  {PROFILE.empiricalEdge}
                 </p>
 
-                <div className="mt-6 grid grid-cols-2 gap-3 border-t border-[#E5E2DC] pt-5">
-                  <div className="rounded border border-[#E5E2DC] bg-[#FAF9F6] p-3">
-                    <div className="font-mono text-[10px] uppercase tracking-wider text-[#6E727A]">
+                <div className="mt-8 overflow-hidden rounded-[var(--radius-md)] bg-[var(--bg-canvas)] shadow-[var(--shadow-surface)]">
+                  <Image
+                    src="/images/clinical-bench.jpg"
+                    alt="Borosilicate laboratory glassware and machined stainless calibration weights on cool alabaster"
+                    width={1376}
+                    height={768}
+                    sizes="(min-width: 1024px) 52vw, 100vw"
+                    className="block h-auto w-full object-cover"
+                  />
+                </div>
+
+                <div className="mt-8 grid gap-6 sm:grid-cols-2">
+                  <div className="border-t border-[var(--border-hairline)] pt-4">
+                    <p className="font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--ink-muted)]">
                       Studio Venture
-                    </div>
-                    <div className="mt-1 text-sm font-semibold text-[#111214]">
-                      {PROFILE.studio.name}
-                    </div>
-                    <div className="mt-0.5 font-mono text-[11px] text-[#4B4E54]">
-                      2022 — Present
-                    </div>
+                    </p>
+                    <p className="mt-1.5 text-[15px] font-semibold tabular-nums text-[var(--ink-primary)]">
+                      {PROFILE.studio.name} · {PROFILE.studio.period}
+                    </p>
+                    <p className="mt-1 text-xs leading-relaxed text-[var(--ink-secondary)]">
+                      Full-stack SaaS, autonomous multi-agent AI, and
+                      quantitative infrastructure delivery.
+                    </p>
                   </div>
-                  <div className="rounded border border-[#E5E2DC] bg-[#FAF9F6] p-3">
-                    <div className="font-mono text-[10px] uppercase tracking-wider text-[#6E727A]">
+
+                  <div className="border-t border-[var(--border-hairline)] pt-4">
+                    <p className="font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--ink-muted)]">
                       Frontier RLHF
-                    </div>
-                    <div className="mt-1 text-sm font-semibold text-[#111214]">
+                    </p>
+                    <p className="mt-1.5 text-[15px] font-semibold text-[var(--ink-primary)]">
                       Outlier.ai &amp; OneForma
-                    </div>
-                    <div className="mt-0.5 font-mono text-[11px] text-[#4B4E54]">
-                      Code, Quant &amp; Clinical
-                    </div>
+                    </p>
+                    <p className="mt-1 text-xs leading-relaxed text-[var(--ink-secondary)]">
+                      Evaluating frontier model reasoning across TypeScript,
+                      Python, quant math, and clinical diagnostics.
+                    </p>
                   </div>
                 </div>
 
-                <div className="mt-6">
+                <div className="mt-7">
                   <Link
                     href="/experience"
-                    className="btn-press inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-[#0F3D91] hover:text-[#1D4ED8]"
+                    className="btn-press group inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent-deep)] hover:text-[var(--accent)]"
                   >
-                    Read Full Experience, Thesis &amp; Clinical Credentials
-                    <ArrowRight size={13} weight="bold" />
+                    Read Full Experience &amp; Credentials
+                    <ArrowRight
+                      size={14}
+                      weight="bold"
+                      className="hover-nudge-x shrink-0"
+                      aria-hidden="true"
+                    />
                   </Link>
                 </div>
               </div>
 
-              {/* Right: 2026 Hackathons & Early Access Programs */}
-              <div className="rounded-lg border border-[#E5E2DC] bg-white p-6 sm:p-8 lg:col-span-6">
-                <div className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#0F3D91]">
-                  <Trophy size={15} weight="bold" />
-                  04 / 2026 Hackathons &amp; Cohorts
-                </div>
-
-                <h2 className="mt-3 text-2xl font-semibold tracking-tight text-[#111214]">
-                  Selected builder programs &amp; agentic competitions.
+              {/* Right 5 Cols: Unboxed Hairline Cohort Ledger */}
+              <div className="min-w-0 lg:col-span-5 lg:border-l lg:border-[var(--border-hairline)] lg:pl-10">
+                <h2 className="text-xl font-semibold leading-[1.25] tracking-[-0.015em] text-[var(--ink-primary)] sm:text-[22px]">
+                  2026 Hackathons &amp; Cohorts
                 </h2>
+                <p className="mt-2 text-sm leading-relaxed text-[var(--ink-secondary)]">
+                  Selected builder programs and agentic engineering
+                  competitions.
+                </p>
 
-                <ul className="mt-5 divide-y divide-[#E5E2DC] border-t border-[#E5E2DC]">
+                <ul className="mt-6 divide-y divide-[var(--border-hairline)] border-y border-[var(--border-hairline)]">
                   {HACKATHONS_AND_PROGRAMS.map((item) => (
-                    <li
-                      key={item.name}
-                      className="flex flex-col justify-between gap-1 py-3.5 sm:flex-row sm:items-center"
-                    >
-                      <div>
-                        <div className="text-sm font-semibold text-[#111214]">
+                    <li key={item.name} className="py-4">
+                      <div className="flex items-baseline justify-between gap-3">
+                        <span className="text-[15px] font-semibold leading-snug text-[var(--ink-primary)]">
                           {item.name}
-                        </div>
-                        <div className="text-xs text-[#4B4E54]">
-                          {item.focus}
-                        </div>
+                        </span>
+                        <span className="shrink-0 font-mono text-[11px] font-medium tabular-nums text-[var(--ink-muted)]">
+                          {item.year}
+                        </span>
                       </div>
-                      <span className="w-fit shrink-0 rounded border border-[#E5E2DC] bg-[#FAF9F6] px-2 py-0.5 font-mono text-[10px] text-[#6E727A]">
-                        {item.organizer} · {item.year}
-                      </span>
+                      <p className="mt-1 text-xs font-medium text-[var(--accent-deep)]">
+                        {item.organizer}
+                      </p>
+                      <p className="mt-1 text-[13px] leading-relaxed text-[var(--ink-secondary)]">
+                        {item.focus}
+                      </p>
                     </li>
                   ))}
                 </ul>
@@ -354,26 +445,26 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CLOSING CONVERSION BAND */}
-      <section className="bg-white py-18 sm:py-22">
+      {/* BAND 5: OPEN CLOSING CONVERSION BAND */}
+      <section className="border-t border-[var(--border-hairline)] bg-[var(--bg-subtle)] py-20 lg:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-start justify-between gap-8 rounded-lg border border-[#D1CDC4] bg-[#FAF9F6] p-8 sm:p-10 lg:flex-row lg:items-center">
-            <div className="max-w-xl">
-              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#0F3D91]">
-                Available Worldwide · {PROFILE.utcOffsetLabel}
-              </p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#111214] sm:text-3xl">
-                Need a principal engineer to architect and ship your next system?
-              </h2>
-              <p className="mt-2.5 text-sm leading-relaxed text-[#4B4E54]">
-                Available for remote freelance contracts, SaaS MVP builds,
-                multi-agent AI systems, quantitative trading utilities, and
-                HealthTech engineering advisory.
-              </p>
-            </div>
+          <Reveal>
+            <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-end">
+              <div className="max-w-[56ch]">
+                <h2 className="text-[clamp(1.625rem,2.3vw,2.125rem)] font-semibold leading-[1.15] tracking-[-0.025em] text-[var(--ink-primary)]">
+                  Have a production system to ship?
+                </h2>
+                <p className="mt-3 text-[15px] leading-[1.62] text-[var(--ink-secondary)] sm:text-base">
+                  Available worldwide ({PROFILE.utcOffsetLabel}) for remote
+                  freelance contracts, SaaS platforms, multi-agent AI
+                  architecture, quantitative tooling, and HealthTech engineering
+                  advisory.
+                </p>
+              </div>
 
-            <ClosingCtaButtons />
-          </div>
+              <ClosingCtaButtons />
+            </div>
+          </Reveal>
         </div>
       </section>
     </div>

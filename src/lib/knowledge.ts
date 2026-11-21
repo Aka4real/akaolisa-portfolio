@@ -59,7 +59,7 @@ export function buildGroundedSystemPrompt(): string {
 
   const projectsText = PROJECTS.map((p) =>
     [
-      `### ${p.indexCode}: ${p.title} — ${p.subtitle}`,
+      `### ${p.indexCode}: ${p.title} (${p.subtitle})`,
       `Route: /work/${p.slug} | Domain: ${p.clientDomain} | Status: ${p.statusBadge} | Period: ${p.year}${p.isNda ? " | NDA Confidentiality Preserved" : ""}`,
       `Summary: ${p.summary}`,
       `Problem / Challenge: ${p.challenge}`,
@@ -78,7 +78,7 @@ export function buildGroundedSystemPrompt(): string {
 
   const expText = EXPERIENCE_ITEMS.map((e) =>
     [
-      `- ${e.organization} — ${e.role} [${e.category}] (${e.location}, ${e.period})${e.highlightBadge ? ` · ${e.highlightBadge}` : ""}`,
+      `- ${e.organization}: ${e.role} [${e.category}] (${e.location}, ${e.period})${e.highlightBadge ? ` · ${e.highlightBadge}` : ""}`,
       ...e.bullets.map((b) => `  * ${b}`),
       ...(e.links && e.links.length > 0
         ? [`  * Links: ${e.links.map((l) => `${l.label} (${l.href})`).join(", ")}`]
@@ -91,7 +91,7 @@ export function buildGroundedSystemPrompt(): string {
   ).join("\n");
 
   const languagesText = LANGUAGES.map(
-    (l) => `${l.name} (${l.proficiency}${l.notes ? ` — ${l.notes}` : ""})`
+    (l) => `${l.name} (${l.proficiency}${l.notes ? `: ${l.notes}` : ""})`
   ).join("; ");
 
   return [
@@ -103,7 +103,7 @@ export function buildGroundedSystemPrompt(): string {
     `3. Never disclose any phone number other than the public primary WhatsApp listed below.`,
     `4. Match answer depth to the visitor's question: stay crisp and direct (2-4 sentences) for quick lookups, and provide clear structured technical detail when asked for architecture deep-dives, comparisons, or hiring/fit evaluations.`,
     `5. Use prior conversation turns to answer follow-up questions cohesively without repeating earlier introductions verbatim.`,
-    `6. Write in clean, composed engineering prose (short paragraphs or compact "- " dash bullets when listing points). Do not use markdown headings (###), raw markdown tables, fenced code blocks, or emojis; rely on the drawer's attached route pills instead of printing raw full URLs.`,
+    `6. Write in clean, composed engineering prose (short paragraphs or compact "- " dash bullets when listing points). Do not use markdown headings (###), raw markdown tables, fenced code blocks, em-dashes, or emojis; rely on the drawer's attached route pills instead of printing raw full URLs.`,
     `7. If a visitor asks something outside the dossier (e.g., exact contract rates, private NDA client identities, or personal details not listed), state clearly that it is not listed in the public dossier and direct them to /contact or ${PROFILE.email}.`,
     ``,
     `IDENTITY, STUDIO & CONTACT:`,
@@ -112,8 +112,8 @@ export function buildGroundedSystemPrompt(): string {
     `- Sub-Role: ${PROFILE.subRole}`,
     `- Executive Bio: ${PROFILE.bioShort}`,
     `- Empirical & Clinical Edge: ${PROFILE.empiricalEdge}`,
-    `- Studio: ${PROFILE.studio.name} (${PROFILE.studio.primaryDisplay} · mirror: ${PROFILE.studio.mirrorDisplay}) — ${PROFILE.studio.role} (${PROFILE.studio.period}). ${PROFILE.studio.summary}`,
-    `- Availability & Timezone: ${PROFILE.locationLabel} (${PROFILE.timeZone}, ${PROFILE.utcOffsetLabel}) — ${PROFILE.availabilityText}`,
+    `- Studio: ${PROFILE.studio.name} (${PROFILE.studio.primaryDisplay} · mirror: ${PROFILE.studio.mirrorDisplay}), ${PROFILE.studio.role} (${PROFILE.studio.period}). ${PROFILE.studio.summary}`,
+    `- Availability & Timezone: ${PROFILE.locationLabel} (${PROFILE.timeZone}, ${PROFILE.utcOffsetLabel}). ${PROFILE.availabilityText}`,
     `- Public Email: ${PROFILE.email}`,
     `- Public Primary WhatsApp: ${PROFILE.whatsappDisplay} (${PROFILE.whatsappHref})`,
     `- GitHub: ${PROFILE.githubUrl}`,
@@ -293,7 +293,7 @@ export function answerFromGroundedIndex(rawQuery: string): ChatResponsePayload {
     const p = PROJECTS.find((item) => item.slug === "production-ecommerce-builds")!;
     return {
       mode: "grounded-index",
-      answer: `Akaolisa ships fast, mobile-first e-commerce storefronts and brand ecosystems — including live builds at blaireaesthetics.shop and aifycycle.vercel.app — wired with Cloudflare DNS routing, automated checkout flows, and scalable cloud database backends.`,
+      answer: `Akaolisa ships fast, mobile-first e-commerce storefronts and brand ecosystems, including live builds at blaireaesthetics.shop and aifycycle.vercel.app, wired with Cloudflare DNS routing, automated checkout flows, and scalable cloud database backends.`,
       links: [
         { label: "Inspect E-Commerce Builds", href: `/work/${p.slug}` },
       ],
@@ -304,7 +304,7 @@ export function answerFromGroundedIndex(rawQuery: string): ChatResponsePayload {
   if (q.includes("ai") || q.includes("llm") || q.includes("agent") || q.includes("gemini") || q.includes("mcp") || q.includes("rag") || q.includes("rlhf") || q.includes("outlier")) {
     return {
       mode: "grounded-index",
-      answer: `Akaolisa's AI stack covers multi-agent orchestration, Google Gemini API (3.8 Flash / 4 Argon), Gemma 2/4, Qwen, RAG with Supabase pgvector, Model Context Protocol (MCP), local LLM runtimes (Ollama, LM Studio), and QLoRA/Unsloth fine-tuning. Beyond shipping Fortress Fleet AI and Koridor Engine OS, he benchmarks frontier LLM code, quantitative math, and clinical reasoning for Outlier.ai and OneForma (2026–Present).`,
+      answer: `Akaolisa's AI stack covers multi-agent orchestration, Google Gemini API (3.8 Flash / 4 Argon), Gemma 2/4, Qwen, RAG with Supabase pgvector, Model Context Protocol (MCP), local LLM runtimes (Ollama, LM Studio), and QLoRA/Unsloth fine-tuning. Beyond shipping Fortress Fleet AI and Koridor Engine OS, he benchmarks frontier LLM code, quantitative math, and clinical reasoning for Outlier.ai and OneForma (2026-Present).`,
       links: [
         { label: "Inspect Fortress Fleet AI", href: "/work/fortress-fleet-ai" },
         { label: "Experience & RLHF Track", href: "/experience" },
@@ -328,7 +328,7 @@ export function answerFromGroundedIndex(rawQuery: string): ChatResponsePayload {
   ) {
     return {
       mode: "grounded-index",
-      answer: `Akaolisa holds a B.MLS (Clinical Chemistry Specialization) from Nnamdi Azikiwe University, Awka (2024 thesis on Plasma/Serum ATP & AMP levels; Gaucher's Disease seminar). At Federal Medical Centre (FMC) Umuahia (Feb 2026–Present), he serves as Medical Lab Scientist Intern & Lead Intern Coordinator — directing bench schedules and onboarding for 100+ MLS interns and supervising 150+ university students (250+ trainees total) alongside IQC/EQA calibration and seminars on PSA Screening & Clinical Toxicology. For software teams, this translates into rigorous validation, calm operational leadership, and deep HealthTech/LIS domain fluency.`,
+      answer: `Akaolisa holds a B.MLS (Clinical Chemistry Specialization) from Nnamdi Azikiwe University, Awka (2024 thesis on Plasma/Serum ATP & AMP levels; Gaucher's Disease seminar). At Federal Medical Centre (FMC) Umuahia (Feb 2026-Present), he serves as Medical Lab Scientist Intern & Lead Intern Coordinator, directing bench schedules and onboarding for 100+ MLS interns and supervising 150+ university students (250+ trainees total) alongside IQC/EQA calibration and seminars on PSA Screening & Clinical Toxicology. For software teams, this translates into rigorous validation, calm operational leadership, and deep HealthTech/LIS domain fluency.`,
       links: [
         { label: "Explore Clinical & Lab Experience", href: "/experience" },
         { label: "HealthTech Inquiry", href: "/contact?track=healthtech-biomedical" },
@@ -340,7 +340,7 @@ export function answerFromGroundedIndex(rawQuery: string): ChatResponsePayload {
   if (q.includes("oxaka") || q.includes("studio") || q.includes("agency") || q.includes("founder")) {
     return {
       mode: "grounded-index",
-      answer: `OXAKALABS (${PROFILE.studio.primaryDisplay} · ${PROFILE.studio.mirrorDisplay}) is Akaolisa's independent product engineering studio (2022–Present). Through OXAKALABS he leads end-to-end architecture, UI/UX engineering, PostgreSQL modeling, and cloud deployment across SaaS, AI automation, FinTech, and retail clients.`,
+      answer: `OXAKALABS (${PROFILE.studio.primaryDisplay} · ${PROFILE.studio.mirrorDisplay}) is Akaolisa's independent product engineering studio (2022-Present). Through OXAKALABS he leads end-to-end architecture, UI/UX engineering, PostgreSQL modeling, and cloud deployment across SaaS, AI automation, FinTech, and retail clients.`,
       links: [
         { label: "Browse Shipped Systems", href: "/work" },
         { label: "Start a Project", href: "/contact" },
@@ -363,7 +363,7 @@ export function answerFromGroundedIndex(rawQuery: string): ChatResponsePayload {
   if (q.includes("language") || q.includes("sign") || q.includes("asl") || q.includes("igbo")) {
     return {
       mode: "grounded-index",
-      answer: `Akaolisa speaks English (Native/Bilingual), Igbo (Native), and conversational Sign Language — both American Sign Language (ASL) and Nigerian Sign Language (NSL).`,
+      answer: `Akaolisa speaks English (Native/Bilingual), Igbo (Native), and conversational Sign Language: American Sign Language (ASL) and Nigerian Sign Language (NSL).`,
       links: [{ label: "View Full Background", href: "/experience" }],
     };
   }
@@ -395,7 +395,7 @@ export function answerFromGroundedIndex(rawQuery: string): ChatResponsePayload {
   if (q.includes("stack") || q.includes("next") || q.includes("supabase") || q.includes("docker") || q.includes("coolify") || q.includes("tech")) {
     return {
       mode: "grounded-index",
-      answer: `Core full-stack & infrastructure tooling: Next.js (App Router), React, TypeScript, Node.js, Tailwind CSS, Framer Motion, Supabase (PostgreSQL, RLS, Auth), REST & WebSockets, Docker, Coolify, Linux VPS self-hosting, Vercel, Cloudflare DNS, and Resend SMTP — complemented by Gemini/Gemma/MCP AI pipelines and Python/R quantitative engines.`,
+      answer: `Core full-stack & infrastructure tooling: Next.js (App Router), React, TypeScript, Node.js, Tailwind CSS, Framer Motion, Supabase (PostgreSQL, RLS, Auth), REST & WebSockets, Docker, Coolify, Linux VPS self-hosting, Vercel, Cloudflare DNS, and Resend SMTP. This is complemented by Gemini/Gemma/MCP AI pipelines and Python/R quantitative engines.`,
       links: [
         { label: "Inspect All 6 Shipped Systems", href: "/work" },
         { label: "Start a SaaS Build", href: "/contact?track=full-stack-saas" },
@@ -406,7 +406,7 @@ export function answerFromGroundedIndex(rawQuery: string): ChatResponsePayload {
   // Default executive overview
   return {
     mode: "grounded-index",
-    answer: `${PROFILE.displayName} is the Founder & Principal Engineer at OXAKALABS (2022–Present), shipping Full-Stack Next.js SaaS systems, autonomous multi-agent AI platforms (Fortress Fleet AI, Koridor Engine OS), and Quantitative Forex/Crypto/HFT suites. He combines software execution with empirical discipline as a licensed Medical Laboratory Scientist (B.MLS) directing 250+ clinical trainees. Ask me about any specific project, his AI/Quant stack, clinical leadership, or remote availability.`,
+    answer: `${PROFILE.displayName} is the Founder & Principal Engineer at OXAKALABS (2022-Present), shipping Full-Stack Next.js SaaS systems, autonomous multi-agent AI platforms (Fortress Fleet AI, Koridor Engine OS), and Quantitative Forex/Crypto/HFT suites. He combines software execution with empirical discipline as a licensed Medical Laboratory Scientist (B.MLS) directing 250+ clinical trainees. Ask me about any specific project, his AI/Quant stack, clinical leadership, or remote availability.`,
     links: [
       { label: "Explore Selected Work", href: "/work" },
       { label: "Experience & Clinical Lab", href: "/experience" },

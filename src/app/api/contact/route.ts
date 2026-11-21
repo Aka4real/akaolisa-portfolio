@@ -46,7 +46,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const subject = `[Portfolio Inquiry · ${track}] ${name} — ${scope}`;
+    const subject = `[Portfolio Inquiry · ${track}] ${name}: ${scope}`;
     const plainBrief = [
       `Name: ${name}`,
       `Email: ${email}`,
@@ -107,7 +107,7 @@ export async function POST(request: Request) {
       status: "fallback",
       mode: "fallback",
       message:
-        "Brief validated and formatted. Direct SMTP relay (RESEND_API_KEY) is not active in this environment — open your email client below or copy the formatted brief.",
+        "Brief validated and formatted. Direct SMTP relay (RESEND_API_KEY) is not active in this environment. Open your email client below or copy the formatted brief.",
       mailtoUrl,
       plainBrief,
     });

@@ -1,37 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, FilePdf, Sparkle } from "@phosphor-icons/react";
+import { ArrowRight, Sparkle } from "@phosphor-icons/react";
 import { usePortfolioActions } from "@/components/layout/PortfolioShell";
 
 export function HeroActionButtons() {
-  const { openResume } = usePortfolioActions();
-
   return (
-    <div className="mt-8 flex flex-wrap items-center gap-3">
+    <div className="mt-7 flex flex-wrap items-center gap-3">
       <Link
         href="/work"
-        className="btn-press inline-flex items-center gap-2 rounded bg-[#111214] px-5 py-3 text-sm font-medium text-white hover:bg-[#26282C]"
+        className="btn-press group inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-sm)] bg-[var(--bg-inverse)] px-5 py-3 text-sm font-medium text-[var(--ink-inverse)] hover:bg-[var(--bg-inverse-hover)]"
       >
-        Explore Selected Work
-        <ArrowRight size={15} weight="bold" />
+        View Selected Work
+        <ArrowRight
+          size={15}
+          weight="bold"
+          className="hover-nudge-x shrink-0"
+          aria-hidden="true"
+        />
       </Link>
 
       <Link
         href="/contact"
-        className="btn-press inline-flex items-center gap-2 rounded border border-[#1D4ED8] bg-[#EFF4FF] px-5 py-3 text-sm font-medium text-[#0F3D91] hover:bg-[#1D4ED8] hover:text-white"
+        className="btn-press inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-sm)] border border-[var(--accent-border)] bg-[var(--bg-surface)] px-5 py-3 text-sm font-medium text-[var(--accent-deep)] hover:border-[var(--accent)] hover:bg-[var(--accent-soft)]"
       >
         Start a Project
       </Link>
-
-      <button
-        type="button"
-        onClick={openResume}
-        className="btn-press inline-flex items-center gap-2 rounded border border-[#E5E2DC] bg-white px-4 py-3 text-sm font-medium text-[#111214] hover:border-[#D1CDC4] hover:bg-[#F3F1EC]"
-      >
-        <FilePdf size={16} weight="bold" className="text-[#4B4E54]" />
-        Resume PDF
-      </button>
     </div>
   );
 }
@@ -43,18 +37,29 @@ export function ClosingCtaButtons() {
     <div className="flex flex-wrap items-center gap-3">
       <Link
         href="/contact"
-        className="btn-press inline-flex items-center gap-2 rounded bg-[#111214] px-5 py-3 text-sm font-medium text-white hover:bg-[#1D4ED8]"
+        className="btn-press group inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-sm)] bg-[var(--bg-inverse)] px-5 py-3 text-sm font-medium text-[var(--ink-inverse)] hover:bg-[var(--bg-inverse-hover)]"
       >
-        Start a Project Inquiry
-        <ArrowRight size={15} weight="bold" />
+        Start a Project
+        <ArrowRight
+          size={15}
+          weight="bold"
+          className="hover-nudge-x shrink-0"
+          aria-hidden="true"
+        />
       </Link>
+
       <button
         type="button"
         onClick={openAssistant}
-        className="btn-press inline-flex items-center gap-2 rounded border border-[#BFDBFE] bg-[#EFF4FF] px-4 py-3 text-sm font-medium text-[#0F3D91] hover:border-[#1D4ED8] hover:bg-[#1D4ED8] hover:text-white"
+        className="btn-press inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-5 py-3 text-sm font-medium text-[var(--ink-primary)] hover:border-[var(--accent-border)] hover:text-[var(--accent-deep)]"
       >
-        <Sparkle size={15} weight="bold" />
-        Ask AI About My Stack
+        <Sparkle
+          size={15}
+          weight="bold"
+          className="shrink-0 text-[var(--accent)]"
+          aria-hidden="true"
+        />
+        Ask AI
       </button>
     </div>
   );

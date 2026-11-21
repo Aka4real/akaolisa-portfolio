@@ -32,7 +32,7 @@ export interface ProjectDossier {
   businessImpact: string[];
   stack: string[];
   schematicType: SchematicType;
-  /** Optional public URLs — populate anytime in this single data file. */
+  /** Optional public URLs: populate anytime in this single data file. */
   links: ProjectLink[];
 }
 
@@ -44,7 +44,7 @@ export const PROJECTS: ProjectDossier[] = [
     subtitle: "Industrial Digital Freight Network & Haulage Operating System",
     clientDomain: "Logistics & Haulage SaaS",
     statusBadge: "Production SaaS",
-    year: "2025 — 2026",
+    year: "2025-2026",
     tracks: ["full-stack-saas", "ai-agents"],
     primaryTrack: "full-stack-saas",
     featured: true,
@@ -89,7 +89,7 @@ export const PROJECTS: ProjectDossier[] = [
     indexCode: "SYS-02",
     title: "Fortress Fleet AI",
     subtitle: "Institutional Multi-Agent Governance & Guardrail Platform",
-    clientDomain: "Live Deployment · Google Cloud & Devpost All Things Agentic",
+    clientDomain: "Multi-Agent AI · Google Cloud",
     statusBadge: "Live Deployment",
     year: "2026",
     tracks: ["ai-agents", "full-stack-saas"],
@@ -139,7 +139,7 @@ export const PROJECTS: ProjectDossier[] = [
     clientDomain: "NDA FinTech Client",
     statusBadge: "NDA Client",
     isNda: true,
-    year: "2024 — 2025",
+    year: "2024-2025",
     tracks: ["quant-fintech", "full-stack-saas"],
     primaryTrack: "quant-fintech",
     featured: true,
@@ -191,7 +191,7 @@ export const PROJECTS: ProjectDossier[] = [
     summary:
       "Developed an end-to-end retail operations management system handling multi-store inventory, POS reconciliation, supplier workflows, and sales analytics; selected into Google's Stitch Loop Early Access program.",
     challenge:
-      "Multi-branch retail teams struggle with stock drift between point-of-sale registers, warehouse replenishment orders, and supplier invoices — causing stockouts on fast-moving SKUs and delayed margin visibility.",
+      "Multi-branch retail teams struggle with stock drift between point-of-sale registers, warehouse replenishment orders, and supplier invoices, causing stockouts on fast-moving SKUs and delayed margin visibility.",
     architectureDecisions: [
       "Designed a unified multi-store inventory ledger tying every SKU adjustment to an explicit POS sale, supplier shipment, or branch transfer event.",
       "Built automated end-of-day POS reconciliation views highlighting register variances and stock discrepancies immediately.",
@@ -232,7 +232,7 @@ export const PROJECTS: ProjectDossier[] = [
     clientDomain: "Trading Clients & Independent Funds",
     statusBadge: "Client Suites",
     isNda: true,
-    year: "2023 — Present",
+    year: "2023-Present",
     tracks: ["quant-fintech"],
     primaryTrack: "quant-fintech",
     featured: true,
@@ -278,7 +278,7 @@ export const PROJECTS: ProjectDossier[] = [
     subtitle: "Mobile-First Brand Ecosystems, Edge DNS & Automated Checkout Flows",
     clientDomain: "blaireaesthetics.shop · aifycycle.vercel.app",
     statusBadge: "Live Deployments",
-    year: "2023 — Present",
+    year: "2023-Present",
     tracks: ["full-stack-saas"],
     primaryTrack: "full-stack-saas",
     featured: false,
@@ -290,7 +290,7 @@ export const PROJECTS: ProjectDossier[] = [
       "Built mobile-first Next.js storefronts tuned for low-latency page transitions and high mobile conversion readability.",
       "Configured custom domain routing, SSL hardening, and edge caching through Cloudflare DNS and Vercel deployments.",
       "Implemented automated checkout pipelines paired with scalable cloud database backends for order state and catalog management.",
-      "Delivered complete brand ecosystems — including blaireaesthetics.shop and aifycycle.vercel.app — under rapid studio timelines.",
+      "Delivered complete brand ecosystems, including blaireaesthetics.shop and aifycycle.vercel.app, under rapid studio timelines.",
     ],
     executionHighlights: [
       "Live commercial deployments at blaireaesthetics.shop and aifycycle.vercel.app.",

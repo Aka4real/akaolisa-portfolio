@@ -56,7 +56,7 @@ export interface ProfileConfig {
    */
   portraitUrl?: string;
   /**
-   * Optional external profiles — populate any URL here and it automatically appears across Header/Footer/Contact.
+   * Optional external profiles: populate any URL here and it automatically appears across Header/Footer/Contact.
    */
   socials: {
     linkedin?: string;
@@ -87,7 +87,7 @@ export const PROFILE: ProfileConfig = {
   studio: {
     name: "OXAKALABS",
     role: "Founder & Principal Engineer",
-    period: "2022 — Present",
+    period: "2022-Present",
     primaryUrl: "https://oxakalabs.xyz",
     primaryDisplay: "oxakalabs.xyz",
     mirrorUrl: "https://oxakalabs.vercel.app",
@@ -105,9 +105,9 @@ export const PROFILE: ProfileConfig = {
     upwork: undefined,
   },
   bioShort:
-    "Founder and Lead Engineer at OXAKALABS (2022–Present) architecting production Next.js SaaS applications, autonomous LLM/multi-agent pipelines, and algorithmic Forex, Crypto, and HFT trading tooling.",
+    "Founder at OXAKALABS and licensed Biomedical Scientist (B.MLS) shipping Next.js SaaS platforms, multi-agent systems, and quantitative trading engines.",
   empiricalEdge:
-    "Trained as a licensed Medical Laboratory Scientist (B.MLS, Clinical Chemistry) and Lead Intern Coordinator directing 250+ clinical trainees — bringing laboratory calibration discipline, strict data validation, and empirical rigor to every production software release.",
+    "Trained as a licensed Medical Laboratory Scientist (B.MLS, Clinical Chemistry) and Lead Intern Coordinator directing 250+ clinical trainees, bringing laboratory calibration discipline, strict data validation, and empirical rigor to every production software release.",
   metrics: [
     {
       value: "4+ Yrs",

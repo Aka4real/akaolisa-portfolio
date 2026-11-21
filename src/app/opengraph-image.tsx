@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Akaolisa Enwedo — Full-Stack, AI Agent & Quantitative Engineer";
+export const alt =
+  "Akaolisa Enwedo - Full-Stack, AI Agent & Quantitative Engineer";
 export const size = {
   width: 1200,
   height: 630,
@@ -17,10 +18,10 @@ export default function OpenGraphImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          backgroundColor: "#FAF9F6",
-          color: "#111214",
+          backgroundColor: "#F8F9FB",
+          color: "#0F141E",
           padding: "64px 72px",
-          border: "1px solid #E5E2DC",
+          border: "1px solid rgba(15, 20, 30, 0.08)",
           fontFamily: "sans-serif",
         }}
       >
@@ -29,7 +30,7 @@ export default function OpenGraphImage() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            borderBottom: "2px solid #E5E2DC",
+            borderBottom: "2px solid rgba(15, 20, 30, 0.08)",
             paddingBottom: "24px",
           }}
         >
@@ -38,23 +39,36 @@ export default function OpenGraphImage() {
               style={{
                 width: "44px",
                 height: "44px",
-                backgroundColor: "#111214",
-                color: "#FFFFFF",
+                backgroundColor: "#0F141E",
+                color: "#F8F9FB",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 fontWeight: 700,
                 fontSize: "18px",
-                borderRadius: "6px",
+                borderRadius: "10px",
               }}
             >
               AE
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: "20px", fontWeight: 700, letterSpacing: "0.08em" }}>
+              <span
+                style={{
+                  fontSize: "20px",
+                  fontWeight: 700,
+                  letterSpacing: "0.06em",
+                  color: "#0F141E",
+                }}
+              >
                 AKAOLISA ENWEDO
               </span>
-              <span style={{ fontSize: "14px", color: "#6E727A", letterSpacing: "0.06em" }}>
+              <span
+                style={{
+                  fontSize: "14px",
+                  color: "#5B6475",
+                  letterSpacing: "0.05em",
+                }}
+              >
                 FOUNDER, OXAKALABS · B.MLS CLINICAL CHEMISTRY
               </span>
             </div>
@@ -65,11 +79,11 @@ export default function OpenGraphImage() {
               display: "flex",
               alignItems: "center",
               gap: "10px",
-              border: "1px solid #BFDBFE",
-              backgroundColor: "#EFF4FF",
-              color: "#0F3D91",
+              border: "1px solid rgba(29, 78, 216, 0.24)",
+              backgroundColor: "#EEF3FF",
+              color: "#153AA2",
               padding: "8px 16px",
-              borderRadius: "6px",
+              borderRadius: "10px",
               fontSize: "14px",
               fontWeight: 600,
             }}
@@ -81,11 +95,11 @@ export default function OpenGraphImage() {
         <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
           <div
             style={{
-              fontSize: "58px",
+              fontSize: "56px",
               fontWeight: 700,
               lineHeight: 1.08,
               letterSpacing: "-0.03em",
-              color: "#111214",
+              color: "#0F141E",
             }}
           >
             Full-Stack SaaS, AI Agents &amp; Quantitative Systems.
@@ -93,12 +107,13 @@ export default function OpenGraphImage() {
           <div
             style={{
               fontSize: "24px",
-              color: "#4B4E54",
+              color: "#434C5E",
               lineHeight: 1.4,
             }}
           >
-            Built with clinical laboratory rigor — shipping production Next.js platforms,
-            multi-agent governance, and algorithmic trading infrastructure.
+            Built with clinical laboratory rigor: shipping production Next.js
+            platforms, multi-agent governance, and algorithmic trading
+            infrastructure.
           </div>
         </div>
 
@@ -106,10 +121,10 @@ export default function OpenGraphImage() {
           style={{
             display: "flex",
             justifyContent: "space-between",
-            borderTop: "2px solid #E5E2DC",
+            borderTop: "2px solid rgba(15, 20, 30, 0.08)",
             paddingTop: "24px",
             fontSize: "16px",
-            color: "#4B4E54",
+            color: "#434C5E",
           }}
         >
           <span>oxakalabs.xyz · github.com/Aka4real</span>

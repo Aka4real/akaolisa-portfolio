@@ -13,13 +13,15 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#111214",
-          color: "#FAF9F6",
-          fontSize: "15px",
+          position: "relative",
+          backgroundColor: "#0F141E",
+          color: "#F8F9FB",
+          fontSize: "14px",
           fontWeight: 700,
-          borderRadius: "4px",
+          borderRadius: "7px",
           fontFamily: "sans-serif",
-          letterSpacing: "-0.02em",
+          letterSpacing: "-0.03em",
+          borderBottom: "3px solid #1D4ED8",
         }}
       >
         AE

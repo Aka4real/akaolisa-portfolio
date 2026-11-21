@@ -11,24 +11,21 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
-      <header className="mb-10 border-b border-[#E5E2DC] pb-8">
-        <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#0F3D91]">
-          Direct Dispatch · Remote Worldwide (UTC+1)
-        </p>
-        <h1 className="mt-2.5 text-3xl font-semibold tracking-tight text-[#111214] sm:text-4xl">
-          Start a Project or Engineering Conversation
+      <header className="mb-10 border-b border-[var(--border-hairline)] pb-8">
+        <h1 className="text-[clamp(2rem,3.2vw,2.75rem)] font-semibold leading-[1.1] tracking-[-0.03em] text-[var(--ink-primary)]">
+          Start a Project or Technical Conversation
         </h1>
-        <p className="mt-3 max-w-2xl text-base leading-relaxed text-[#4B4E54]">
-          Available for freelance SaaS builds, autonomous AI agent pipelines,
-          algorithmic trading tooling, technical leadership roles, and
-          hackathon or research collaborations.
+        <p className="mt-4 max-w-[60ch] text-[17px] leading-[1.6] text-[var(--ink-secondary)]">
+          Available remotely worldwide from UTC+1 for full-stack SaaS builds,
+          multi-agent AI pipelines, algorithmic trading tooling, technical
+          leadership roles, and research collaborations.
         </p>
       </header>
 
       <Suspense
         fallback={
-          <div className="rounded-lg border border-[#E5E2DC] bg-white p-8 font-mono text-xs text-[#6E727A]">
-            Loading inquiry specification...
+          <div className="surface-elevated rounded-[var(--radius-lg)] p-8 font-mono text-xs text-[var(--ink-muted)]">
+            Loading inquiry workbench...
           </div>
         }
       >

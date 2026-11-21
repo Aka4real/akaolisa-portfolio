@@ -41,7 +41,7 @@ export const EXPERIENCE_ITEMS: ExperienceItem[] = [
     organization: "OXAKALABS",
     role: "Founder, Principal Full-Stack, AI & Quantitative Engineer",
     location: "Remote",
-    period: "2022 — Present",
+    period: "2022-Present",
     category: "software-ai",
     highlightBadge: "Studio Venture",
     bullets: [
@@ -58,7 +58,7 @@ export const EXPERIENCE_ITEMS: ExperienceItem[] = [
     organization: "Outlier.ai & OneForma",
     role: "Freelance AI Trainer & RLHF Code/Reasoning Specialist",
     location: "Remote",
-    period: "2026 — Present",
+    period: "2026-Present",
     category: "software-ai",
     highlightBadge: "Frontier LLM Evaluation",
     bullets: [
@@ -70,7 +70,7 @@ export const EXPERIENCE_ITEMS: ExperienceItem[] = [
     organization: "Federal Medical Centre (FMC) Umuahia",
     role: "Medical Lab Scientist Intern & Lead Intern Coordinator",
     location: "Umuahia, Nigeria",
-    period: "Feb 2026 — Present",
+    period: "Feb 2026-Present",
     category: "clinical-biomedical",
     highlightBadge: "250+ Trainees Directed",
     bullets: [
@@ -83,7 +83,7 @@ export const EXPERIENCE_ITEMS: ExperienceItem[] = [
     organization: "Nnamdi Azikiwe University Teaching Hospital (NAUTH)",
     role: "Clinical Laboratory Trainee (SIWES & Postings)",
     location: "Nnewi, Nigeria",
-    period: "2023 — 2024",
+    period: "2023-2024",
     category: "clinical-biomedical",
     bullets: [
       "Conducted biochemical, hematological, and microbiological assays alongside strict clinical data validation protocols.",
@@ -94,7 +94,7 @@ export const EXPERIENCE_ITEMS: ExperienceItem[] = [
     organization: "May & Baker Nigeria Plc",
     role: "Sales & Medical Representative",
     location: "Lagos, Nigeria",
-    period: "2021 — 2022",
+    period: "2021-2022",
     category: "clinical-biomedical",
     bullets: [
       "Drove territory B2B pharmaceutical sales, technical medical product detailing, and hospital/pharmacy client acquisition.",
@@ -134,7 +134,7 @@ export const HACKATHONS_AND_PROGRAMS: HackathonProgram[] = [
     name: "Google Stitch Loop Early Access",
     organizer: "Google",
     year: "2026",
-    focus: "Selected cohort member — built Stitch Retail Operations OS",
+    focus: "Selected cohort member: built Stitch Retail Operations OS",
   },
   {
     name: "Meta VR Start Developer Competition",

@@ -10,18 +10,14 @@ export const metadata: Metadata = {
 export default function WorkPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
-      <header className="mb-10 border-b border-[#E5E2DC] pb-8">
-        <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#0F3D91]">
-          OXAKALABS · Shipped Portfolio (2022 — Present)
-        </p>
-        <h1 className="mt-2.5 text-3xl font-semibold tracking-tight text-[#111214] sm:text-4xl">
+      <header className="mb-10 border-b border-[var(--border-hairline)] pb-8">
+        <h1 className="text-[clamp(2rem,3.2vw,2.75rem)] font-semibold leading-[1.1] tracking-[-0.03em] text-[var(--ink-primary)]">
           Selected Systems &amp; Technical Dossiers
         </h1>
-        <p className="mt-3 max-w-2xl text-base leading-relaxed text-[#4B4E54]">
+        <p className="mt-4 max-w-[60ch] text-[17px] leading-[1.6] text-[var(--ink-secondary)]">
           Production SaaS platforms, multi-agent governance tooling, FinTech
           ledgers, and algorithmic trading engines. Open any dossier to inspect
-          its interactive architecture schematic, execution trade-offs, and
-          business outcomes.
+          its interactive architecture schematic and operational outcomes.
         </p>
       </header>
 
