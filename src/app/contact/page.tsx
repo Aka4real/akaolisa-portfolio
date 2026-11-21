@@ -1,12 +1,14 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { ContactForm } from "@/components/contact/ContactForm";
+import { buildPageMetadata } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Contact & Project Inquiry",
   description:
     "Start a Full-Stack SaaS, Multi-Agent AI, Quantitative FinTech, or HealthTech project with Akaolisa Enwedo (OXAKALABS). Available remotely worldwide from UTC+1.",
-};
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (

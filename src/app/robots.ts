@@ -1,14 +1,29 @@
 import type { MetadataRoute } from "next";
+import { SITE_URL } from "@/lib/site";
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://oxakalabs.xyz";
-
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-    },
-    sitemap: `${baseUrl}/sitemap.xml`,
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+      },
+      {
+        userAgent: [
+          "WhatsApp",
+          "facebookexternalhit",
+          "Facebot",
+          "Twitterbot",
+          "LinkedInBot",
+          "Slackbot-LinkExpanding",
+          "TelegramBot",
+          "Discordbot",
+          "Applebot",
+        ],
+        allow: "/",
+      },
+    ],
+    sitemap: `${SITE_URL}/sitemap.xml`,
+    host: SITE_URL,
   };
 }

@@ -11,6 +11,7 @@ import {
 import { getProjectBySlug, PROJECTS } from "@/data/projects";
 import { ProjectSchematic } from "@/components/schematics/ProjectSchematic";
 import { ScrollProgressRail } from "@/components/ui/MotionPrimitives";
+import { buildPageMetadata } from "@/lib/site";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -27,10 +28,11 @@ export async function generateMetadata({
   const project = getProjectBySlug(slug);
   if (!project) return { title: "Case Study Not Found" };
 
-  return {
+  return buildPageMetadata({
     title: `${project.title}: Case Study (${project.indexCode})`,
     description: project.summary,
-  };
+    path: `/work/${project.slug}`,
+  });
 }
 
 export default async function CaseStudyPage({ params }: PageProps) {

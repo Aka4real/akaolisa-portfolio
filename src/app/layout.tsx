@@ -5,16 +5,25 @@ import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { PortfolioShell } from "@/components/layout/PortfolioShell";
 import { PROFILE } from "@/data/profile";
+import {
+  OG_IMAGE_ALT,
+  OG_IMAGE_URL,
+  SITE_URL,
+  getRootUrlWithTrailingSlash,
+} from "@/lib/site";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://oxakalabs.xyz";
+const defaultTitle = `${PROFILE.displayName} - Full-Stack, AI Agent & Quantitative Engineer`;
+const ogDescription =
+  "Founder at OXAKALABS delivering production SaaS, autonomous multi-agent systems, algorithmic trading tooling, and biomedical data solutions.";
+const rootCanonicalUrl = getRootUrlWithTrailingSlash();
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
   alternates: {
-    canonical: "/",
+    canonical: rootCanonicalUrl,
   },
   title: {
-    default: `${PROFILE.displayName} - Full-Stack, AI Agent & Quantitative Engineer`,
+    default: defaultTitle,
     template: `%s | ${PROFILE.displayName}`,
   },
   description:
@@ -31,20 +40,45 @@ export const metadata: Metadata = {
     "Koridor Engine OS",
   ],
   authors: [{ name: PROFILE.legalName, url: PROFILE.githubUrl }],
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "32x32", type: "image/x-icon" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon.png", sizes: "64x64", type: "image/png" },
+    ],
+    shortcut: ["/favicon.ico"],
+    apple: [
+      {
+        url: "/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: siteUrl,
+    url: rootCanonicalUrl,
     siteName: `${PROFILE.displayName} · OXAKALABS`,
-    title: `${PROFILE.displayName} - Full-Stack, AI Agent & Quantitative Engineer`,
-    description:
-      "Founder at OXAKALABS delivering production SaaS, autonomous multi-agent systems, algorithmic trading tooling, and biomedical data solutions.",
+    title: defaultTitle,
+    description: ogDescription,
+    images: [
+      {
+        url: OG_IMAGE_URL,
+        secureUrl: OG_IMAGE_URL,
+        type: "image/png",
+        width: 1200,
+        height: 630,
+        alt: OG_IMAGE_ALT,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${PROFILE.displayName} - Full-Stack, AI Agent & Quantitative Engineer`,
+    title: defaultTitle,
     description:
       "Production SaaS, Multi-Agent AI, Quant/FinTech, and Biomedical Systems by Akaolisa Enwedo (OXAKALABS).",
+    images: [OG_IMAGE_URL],
   },
 };
 
