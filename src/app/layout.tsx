@@ -8,10 +8,13 @@ import "./globals.css";
 import { PortfolioShell } from "@/components/layout/PortfolioShell";
 import { PROFILE } from "@/data/profile";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://akaolisaenwedo.com";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://oxakalabs.xyz";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  alternates: {
+    canonical: "/",
+  },
   title: {
     default: `${PROFILE.displayName} — Full-Stack, AI Agent & Quantitative Engineer`,
     template: `%s | ${PROFILE.displayName}`,

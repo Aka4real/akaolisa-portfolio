@@ -3,7 +3,7 @@ import { PROJECTS } from "@/data/projects";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://akaolisaenwedo.com";
+    process.env.NEXT_PUBLIC_SITE_URL || "https://oxakalabs.xyz";
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${baseUrl}/`, lastModified: new Date(), priority: 1.0 },
