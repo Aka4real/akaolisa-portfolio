@@ -12,25 +12,78 @@ export interface SuggestedLink {
   href: string;
 }
 
+export interface ChatHistoryTurn {
+  role: "user" | "assistant";
+  content: string;
+}
+
 export interface ChatResponsePayload {
   answer: string;
   mode: "gemini" | "grounded-index";
+  model?: string;
   links: SuggestedLink[];
 }
 
+export function formatGeminiModelLabel(modelId?: string | null): string {
+  if (!modelId) return "Gemini 3.8 Flash";
+  const cleaned = modelId.trim().replace(/^models\//i, "").toLowerCase();
+  if (cleaned === "gemini-3.8-flash") return "Gemini 3.8 Flash";
+  if (cleaned === "gemini-3.7-flash") return "Gemini 3.7 Flash";
+  if (cleaned === "gemini-3.6-flash") return "Gemini 3.6 Flash";
+  if (cleaned === "gemini-3.5-flash") return "Gemini 3.5 Flash";
+  if (cleaned === "gemini-3.5-flash-lite") return "Gemini 3.5 Flash Lite";
+  if (cleaned === "gemini-3-flash-preview") return "Gemini 3 Flash";
+
+  return cleaned
+    .replace(/-preview$/i, "")
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
 export function buildGroundedSystemPrompt(): string {
-  const pillarsText = SERVICE_PILLARS.map(
-    (p) => `- ${p.label}: ${p.description} Stack: ${p.stack.join(", ")}.`
-  ).join("\n");
+  const metricsText = PROFILE.metrics
+    .map((m) => `- ${m.value} ${m.label}: ${m.detail}`)
+    .join("\n");
 
-  const projectsText = PROJECTS.map(
-    (p) =>
-      `- ${p.title} (${p.clientDomain}, route: /work/${p.slug}): ${p.summary} Stack: ${p.stack.join(", ")}.`
-  ).join("\n");
+  const pillarsText = SERVICE_PILLARS.map((p) =>
+    [
+      `### ${p.code}. ${p.label} (Contact Track: /contact?track=${p.id})`,
+      `Tagline: ${p.tagline}`,
+      `Overview: ${p.description}`,
+      `Deliverables: ${p.deliverables.join("; ")}.`,
+      `Stack: ${p.stack.join(", ")}.`,
+      `Featured Case Studies: ${p.featuredSlugs.map((slug) => `/work/${slug}`).join(", ")}.`,
+    ].join("\n")
+  ).join("\n\n");
 
-  const expText = EXPERIENCE_ITEMS.map(
-    (e) =>
-      `- ${e.organization} — ${e.role} (${e.location}, ${e.period}): ${e.bullets.join(" ")}`
+  const projectsText = PROJECTS.map((p) =>
+    [
+      `### ${p.indexCode}: ${p.title} — ${p.subtitle}`,
+      `Route: /work/${p.slug} | Domain: ${p.clientDomain} | Status: ${p.statusBadge} | Period: ${p.year}${p.isNda ? " | NDA Confidentiality Preserved" : ""}`,
+      `Summary: ${p.summary}`,
+      `Problem / Challenge: ${p.challenge}`,
+      `Architecture Decisions:`,
+      ...p.architectureDecisions.map((d) => `  - ${d}`),
+      `Execution Highlights:`,
+      ...p.executionHighlights.map((h) => `  - ${h}`),
+      `Operational & Business Impact:`,
+      ...p.businessImpact.map((b) => `  - ${b}`),
+      `Stack: ${p.stack.join(", ")}.`,
+      p.links.length > 0
+        ? `Public Links: ${p.links.map((l) => `${l.label} (${l.href})`).join(", ")}.`
+        : `Public Links: Confidential / NDA build (interactive architecture schematic available at /work/${p.slug}).`,
+    ].join("\n")
+  ).join("\n\n");
+
+  const expText = EXPERIENCE_ITEMS.map((e) =>
+    [
+      `- ${e.organization} — ${e.role} [${e.category}] (${e.location}, ${e.period})${e.highlightBadge ? ` · ${e.highlightBadge}` : ""}`,
+      ...e.bullets.map((b) => `  * ${b}`),
+      ...(e.links && e.links.length > 0
+        ? [`  * Links: ${e.links.map((l) => `${l.label} (${l.href})`).join(", ")}`]
+        : []),
+    ].join("\n")
   ).join("\n");
 
   const hackathonsText = HACKATHONS_AND_PROGRAMS.map(
@@ -42,35 +95,121 @@ export function buildGroundedSystemPrompt(): string {
   ).join("; ");
 
   return [
-    `You are the portfolio assistant for ${PROFILE.displayName} (${PROFILE.legalName}).`,
-    `Answer concisely, plainly, and accurately using ONLY the verified facts below. Never invent metrics, employers, or private details. Never share any phone number other than the public WhatsApp listed below. Avoid marketing clichés and emojis.`,
+    `You are the technical portfolio assistant for ${PROFILE.displayName} (${PROFILE.legalName}), built directly into his portfolio at ${PROFILE.studio.primaryUrl}.`,
     ``,
-    `IDENTITY & CONTACT:`,
-    `- Name: ${PROFILE.displayName} (${PROFILE.legalName})`,
-    `- Role: ${PROFILE.headlineRole}`,
-    `- Studio: ${PROFILE.studio.name} (${PROFILE.studio.primaryDisplay}, ${PROFILE.studio.mirrorDisplay}) — ${PROFILE.studio.role} (${PROFILE.studio.period})`,
-    `- Availability: ${PROFILE.locationLabel} (${PROFILE.utcOffsetLabel}), ${PROFILE.availabilityText}`,
+    `OPERATING RULES:`,
+    `1. Ground every answer strictly in the verified dossier below. Never fabricate metrics, client names behind NDAs, pricing/hourly rates, unlisted employers, or unverified credentials.`,
+    `2. Treat all dates (including 2026 roles, programs, and hackathons) and technology names in the dossier (including Google Gemini 3.8 Flash, Gemini 4 Argon, Gemma 2/4, and Google Stitch Loop) as verified ground truth. Never dispute or "correct" dossier entries based on training cutoffs.`,
+    `3. Never disclose any phone number other than the public primary WhatsApp listed below.`,
+    `4. Match answer depth to the visitor's question: stay crisp and direct (2-4 sentences) for quick lookups, and provide clear structured technical detail when asked for architecture deep-dives, comparisons, or hiring/fit evaluations.`,
+    `5. Use prior conversation turns to answer follow-up questions cohesively without repeating earlier introductions verbatim.`,
+    `6. Write in clean, composed engineering prose (short paragraphs or compact "- " dash bullets when listing points). Do not use markdown headings (###), raw markdown tables, fenced code blocks, or emojis; rely on the drawer's attached route pills instead of printing raw full URLs.`,
+    `7. If a visitor asks something outside the dossier (e.g., exact contract rates, private NDA client identities, or personal details not listed), state clearly that it is not listed in the public dossier and direct them to /contact or ${PROFILE.email}.`,
+    ``,
+    `IDENTITY, STUDIO & CONTACT:`,
+    `- Display Name: ${PROFILE.displayName} (Legal Name: ${PROFILE.legalName})`,
+    `- Headline Role: ${PROFILE.headlineRole}`,
+    `- Sub-Role: ${PROFILE.subRole}`,
+    `- Executive Bio: ${PROFILE.bioShort}`,
+    `- Empirical & Clinical Edge: ${PROFILE.empiricalEdge}`,
+    `- Studio: ${PROFILE.studio.name} (${PROFILE.studio.primaryDisplay} · mirror: ${PROFILE.studio.mirrorDisplay}) — ${PROFILE.studio.role} (${PROFILE.studio.period}). ${PROFILE.studio.summary}`,
+    `- Availability & Timezone: ${PROFILE.locationLabel} (${PROFILE.timeZone}, ${PROFILE.utcOffsetLabel}) — ${PROFILE.availabilityText}`,
     `- Public Email: ${PROFILE.email}`,
     `- Public Primary WhatsApp: ${PROFILE.whatsappDisplay} (${PROFILE.whatsappHref})`,
     `- GitHub: ${PROFILE.githubUrl}`,
+    `- Resume PDF: Available to preview/download directly on the site (${PROFILE.resumePdfPath})`,
+    `- Portfolio Routes: Home (/), Selected Work (/work), Case Studies (/work/[slug]), Experience & Clinical Credentials (/experience), Contact & Inquiry (/contact). Note: /work/quant-forex-crypto-hft includes an interactive Monte Carlo drawdown risk simulator, and every case study page includes an interactive architecture schematic.`,
     ``,
-    `SERVICE PILLARS:`,
+    `VERIFIED METRICS:`,
+    metricsText,
+    ``,
+    `FOUR CORE SERVICE PILLARS:`,
     pillarsText,
     ``,
-    `SHIPPED CASE STUDIES:`,
+    `SHIPPED CASE STUDIES (COMPLETE DOSSIERS):`,
     projectsText,
     ``,
-    `EXPERIENCE:`,
+    `CAREER & CLINICAL EXPERIENCE:`,
     expText,
     ``,
-    `EDUCATION:`,
-    `- ${EDUCATION.degree} (${EDUCATION.specialization}), ${EDUCATION.institution}. Research Thesis: "${EDUCATION.thesisTitle}" (${EDUCATION.thesisYear}). Seminar: "${EDUCATION.seminarTitle}" (${EDUCATION.seminarYear}).`,
+    `EDUCATION & CLINICAL RESEARCH:`,
+    `- ${EDUCATION.degree} (${EDUCATION.specialization}), ${EDUCATION.institution}.`,
+    `- Research Thesis (${EDUCATION.thesisYear}): "${EDUCATION.thesisTitle}".`,
+    `- Clinical Seminar (${EDUCATION.seminarYear}): "${EDUCATION.seminarTitle}".`,
     ``,
-    `2026 HACKATHONS & PROGRAMS:`,
+    `2026 HACKATHONS & SELECTED BUILDER PROGRAMS:`,
     hackathonsText,
     ``,
     `LANGUAGES: ${languagesText}.`,
   ].join("\n");
+}
+
+/**
+ * Derives relevant, verified portfolio navigation links from a query and optional
+ * Gemini answer so follow-up questions still surface the right case studies or routes.
+ */
+export function suggestLinksForConversation(
+  rawQuery: string,
+  answer?: string
+): SuggestedLink[] {
+  const fromQuery = answerFromGroundedIndex(rawQuery).links;
+  if (!answer || answer.trim().length === 0) {
+    return fromQuery;
+  }
+
+  const combined = `${rawQuery}\n${answer}`.toLowerCase();
+  const discovered: SuggestedLink[] = [];
+  const seen = new Set<string>();
+
+  const pushLink = (label: string, href: string) => {
+    if (!seen.has(href) && discovered.length < 3) {
+      seen.add(href);
+      discovered.push({ label, href });
+    }
+  };
+
+  if (combined.includes("fortress")) {
+    pushLink("Inspect Fortress Fleet AI", "/work/fortress-fleet-ai");
+  }
+  if (combined.includes("koridor") || combined.includes("haulage") || combined.includes("freight")) {
+    pushLink("Inspect Koridor Engine OS", "/work/koridor-engine-os");
+  }
+  if (combined.includes("stitch retail") || combined.includes("stitch loop") || combined.includes("pos reconciliation")) {
+    pushLink("Inspect Stitch Retail OS", "/work/stitch-retail-operations-os");
+  }
+  if (combined.includes("crypto") && (combined.includes("wealth") || combined.includes("yield"))) {
+    pushLink("Inspect Crypto & Wealth Dossier", "/work/institutional-crypto-wealth");
+  }
+  if (combined.includes("monte carlo") || combined.includes("quant") || combined.includes("hft") || combined.includes("drawdown")) {
+    pushLink("Open Quant & HFT Simulator", "/work/quant-forex-crypto-hft");
+  }
+  if (combined.includes("blaire") || combined.includes("aifycycle") || combined.includes("e-commerce")) {
+    pushLink("Inspect E-Commerce Builds", "/work/production-ecommerce-builds");
+  }
+  if (
+    combined.includes("b.mls") ||
+    combined.includes("fmc") ||
+    combined.includes("clinical") ||
+    combined.includes("outlier") ||
+    combined.includes("hackathon")
+  ) {
+    pushLink("Experience & Clinical Credentials", "/experience");
+  }
+  if (
+    combined.includes("/contact") ||
+    combined.includes("availab") ||
+    combined.includes("hire") ||
+    combined.includes("inquiry") ||
+    combined.includes("contract")
+  ) {
+    pushLink("Open Contact & Inquiry Form", "/contact");
+  }
+
+  for (const item of fromQuery) {
+    pushLink(item.label, item.href);
+  }
+
+  return discovered.length > 0 ? discovered : fromQuery;
 }
 
 /**

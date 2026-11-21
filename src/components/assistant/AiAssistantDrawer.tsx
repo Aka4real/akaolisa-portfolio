@@ -4,13 +4,19 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
+  ArrowCounterClockwise,
   ArrowRight,
   PaperPlaneRight,
   Sparkle,
   TerminalWindow,
   X,
 } from "@phosphor-icons/react";
-import type { ChatResponsePayload, SuggestedLink } from "@/lib/knowledge";
+import {
+  formatGeminiModelLabel,
+  type ChatHistoryTurn,
+  type ChatResponsePayload,
+  type SuggestedLink,
+} from "@/lib/knowledge";
 
 interface AiAssistantDrawerProps {
   open: boolean;
@@ -23,7 +29,25 @@ interface ChatMessage {
   content: string;
   links?: SuggestedLink[];
   mode?: "gemini" | "grounded-index";
+  model?: string;
+  isSystemError?: boolean;
 }
+
+interface ChatStatusResponse {
+  geminiEnabled?: boolean;
+  primaryModel?: string;
+}
+
+const WELCOME_MESSAGE: ChatMessage = {
+  id: "welcome",
+  role: "assistant",
+  content:
+    "Ask anything about Akaolisa Enwedo's architecture experience, OXAKALABS case studies, AI/Quant stack, B.MLS clinical background, or remote contract availability. All answers are strictly grounded in his verified dossier.",
+  links: [
+    { label: "Explore Selected Work", href: "/work" },
+    { label: "Experience & Clinical Lab", href: "/experience" },
+  ],
+};
 
 const QUICK_PROMPTS = [
   "What is Akaolisa's AI & multi-agent stack?",
@@ -34,27 +58,126 @@ const QUICK_PROMPTS = [
 
 const EASE_DRAWER: [number, number, number, number] = [0.32, 0.72, 0, 1];
 
+function renderInlineEmphasis(text: string) {
+  const segments = text.split(/(\*\*[^*]+\*\*)/g);
+  return segments.map((seg, idx) => {
+    if (seg.startsWith("**") && seg.endsWith("**") && seg.length > 4) {
+      return (
+        <strong key={idx} className="font-semibold text-[#111214]">
+          {seg.slice(2, -2)}
+        </strong>
+      );
+    }
+    return <span key={idx}>{seg}</span>;
+  });
+}
+
+function FormattedAssistantText({ content }: { content: string }) {
+  const lines = content.split(/\r?\n/);
+  const blocks: Array<
+    | { type: "heading"; text: string }
+    | { type: "paragraph"; text: string }
+    | { type: "list"; items: string[] }
+  > = [];
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line) continue;
+
+    const headingMatch = line.match(/^#{1,4}\s+(.+)$/);
+    if (headingMatch) {
+      blocks.push({ type: "heading", text: headingMatch[1].replace(/\*\*/g, "") });
+      continue;
+    }
+
+    const bulletMatch = line.match(/^[-*•]\s+(.+)$/);
+    if (bulletMatch) {
+      const prev = blocks[blocks.length - 1];
+      if (prev && prev.type === "list") {
+        prev.items.push(bulletMatch[1]);
+      } else {
+        blocks.push({ type: "list", items: [bulletMatch[1]] });
+      }
+      continue;
+    }
+
+    blocks.push({ type: "paragraph", text: line });
+  }
+
+  return (
+    <div className="space-y-2">
+      {blocks.map((block, idx) => {
+        if (block.type === "heading") {
+          return (
+            <p
+              key={idx}
+              className="pt-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-[#0F3D91]"
+            >
+              {block.text}
+            </p>
+          );
+        }
+        if (block.type === "list") {
+          return (
+            <ul key={idx} className="space-y-1.5 pl-4">
+              {block.items.map((item, itemIdx) => (
+                <li
+                  key={itemIdx}
+                  className="list-disc text-[13px] leading-relaxed text-[#111214] marker:text-[#1D4ED8]"
+                >
+                  {renderInlineEmphasis(item)}
+                </li>
+              ))}
+            </ul>
+          );
+        }
+        return (
+          <p key={idx} className="text-[13px] leading-relaxed text-[#111214]">
+            {renderInlineEmphasis(block.text)}
+          </p>
+        );
+      })}
+    </div>
+  );
+}
+
 export function AiAssistantDrawer({ open, onClose }: AiAssistantDrawerProps) {
   const prefersReduced = useReducedMotion();
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [geminiEnabled, setGeminiEnabled] = useState(false);
+  const [configuredModel, setConfiguredModel] = useState<string>(
+    "gemini-3.8-flash"
+  );
   const [activeMode, setActiveMode] = useState<"gemini" | "grounded-index">(
     "grounded-index"
   );
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: "welcome",
-      role: "assistant",
-      content:
-        "Ask anything about Akaolisa Enwedo's architecture experience, OXAKALABS case studies, AI/Quant stack, B.MLS clinical background, or remote contract availability. All answers are strictly grounded in his verified dossier.",
-      links: [
-        { label: "Explore Selected Work", href: "/work" },
-        { label: "Experience & Clinical Lab", href: "/experience" },
-      ],
-    },
-  ]);
+  const [activeModel, setActiveModel] = useState<string | null>(null);
+  const [messages, setMessages] = useState<ChatMessage[]>([WELCOME_MESSAGE]);
 
   const scrollRef = useRef<HTMLDivElement>(null);
+  const statusCheckedRef = useRef(false);
+
+  useEffect(() => {
+    if (!open || statusCheckedRef.current) return;
+    statusCheckedRef.current = true;
+
+    fetch("/api/chat")
+      .then((res) => (res.ok ? (res.json() as Promise<ChatStatusResponse>) : null))
+      .then((status) => {
+        if (!status) return;
+        if (status.primaryModel) {
+          setConfiguredModel(status.primaryModel);
+        }
+        if (status.geminiEnabled) {
+          setGeminiEnabled(true);
+          setActiveMode("gemini");
+        }
+      })
+      .catch(() => {
+        // Silently keep grounded-index label if status check fails
+      });
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -71,9 +194,26 @@ export function AiAssistantDrawer({ open, onClose }: AiAssistantDrawerProps) {
     }
   }, [messages, loading]);
 
+  function resetConversation() {
+    if (loading) return;
+    setMessages([WELCOME_MESSAGE]);
+    setActiveModel(null);
+    if (geminiEnabled) {
+      setActiveMode("gemini");
+    }
+  }
+
   async function submitQuestion(rawQuestion: string) {
     const trimmed = rawQuestion.trim();
     if (!trimmed || loading) return;
+
+    const history: ChatHistoryTurn[] = messages
+      .filter((msg) => msg.id !== WELCOME_MESSAGE.id && !msg.isSystemError)
+      .slice(-20)
+      .map((msg) => ({
+        role: msg.role,
+        content: msg.content,
+      }));
 
     const userMsg: ChatMessage = {
       id: `u-${Date.now()}`,
@@ -89,7 +229,7 @@ export function AiAssistantDrawer({ open, onClose }: AiAssistantDrawerProps) {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: trimmed }),
+        body: JSON.stringify({ query: trimmed, history }),
       });
 
       if (!res.ok) {
@@ -98,6 +238,13 @@ export function AiAssistantDrawer({ open, onClose }: AiAssistantDrawerProps) {
 
       const data = (await res.json()) as ChatResponsePayload;
       setActiveMode(data.mode);
+      if (data.mode === "gemini") {
+        setGeminiEnabled(true);
+        setActiveModel(data.model ?? configuredModel);
+      } else {
+        setActiveModel(null);
+      }
+
       setMessages((prev) => [
         ...prev,
         {
@@ -106,6 +253,7 @@ export function AiAssistantDrawer({ open, onClose }: AiAssistantDrawerProps) {
           content: data.answer,
           links: data.links,
           mode: data.mode,
+          model: data.model,
         },
       ]);
     } catch {
@@ -117,12 +265,24 @@ export function AiAssistantDrawer({ open, onClose }: AiAssistantDrawerProps) {
           content:
             "Unable to query the dossier endpoint right now. You can inspect all case studies on /work or reach Akaolisa directly at akaolisaenwedo4real@gmail.com.",
           links: [{ label: "Go to Contact", href: "/contact" }],
+          isSystemError: true,
         },
       ]);
     } finally {
       setLoading(false);
     }
   }
+
+  const displayModelLabel = formatGeminiModelLabel(
+    activeModel ?? configuredModel
+  );
+
+  const statusLabel =
+    activeMode === "gemini"
+      ? activeModel
+        ? `${displayModelLabel} · Live`
+        : `${displayModelLabel} · Ready`
+      : "Grounded Dossier Index";
 
   return (
     <AnimatePresence>
@@ -176,21 +336,34 @@ export function AiAssistantDrawer({ open, onClose }: AiAssistantDrawerProps) {
                   </h2>
                   <p className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider text-[#6E727A]">
                     <TerminalWindow size={11} weight="bold" />
-                    {activeMode === "gemini"
-                      ? "Gemini Live Synthesis"
-                      : "Grounded Dossier Index"}
+                    {statusLabel}
                   </p>
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={onClose}
-                aria-label="Close dossier assistant"
-                className="btn-press inline-flex h-8 w-8 items-center justify-center rounded border border-[#E5E2DC] bg-white text-[#4B4E54] hover:border-[#D1CDC4] hover:text-[#111214]"
-              >
-                <X size={16} weight="bold" />
-              </button>
+              <div className="flex items-center gap-1.5">
+                {messages.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={resetConversation}
+                    disabled={loading}
+                    aria-label="Reset conversation"
+                    title="Start a new thread"
+                    className="btn-press inline-flex h-8 w-8 items-center justify-center rounded border border-[#E5E2DC] bg-white text-[#4B4E54] hover:border-[#D1CDC4] hover:text-[#111214] disabled:opacity-40"
+                  >
+                    <ArrowCounterClockwise size={15} weight="bold" />
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={onClose}
+                  aria-label="Close dossier assistant"
+                  className="btn-press inline-flex h-8 w-8 items-center justify-center rounded border border-[#E5E2DC] bg-white text-[#4B4E54] hover:border-[#D1CDC4] hover:text-[#111214]"
+                >
+                  <X size={16} weight="bold" />
+                </button>
+              </div>
             </div>
 
             {/* Messages */}
@@ -207,7 +380,11 @@ export function AiAssistantDrawer({ open, onClose }: AiAssistantDrawerProps) {
                       : "mr-4 rounded-lg border border-[#E5E2DC] bg-white px-4 py-3 text-[13px] leading-relaxed text-[#111214]"
                   }
                 >
-                  <p className="whitespace-pre-wrap">{msg.content}</p>
+                  {msg.role === "assistant" ? (
+                    <FormattedAssistantText content={msg.content} />
+                  ) : (
+                    <p className="whitespace-pre-wrap">{msg.content}</p>
+                  )}
                   {msg.links && msg.links.length > 0 && (
                     <div className="mt-3 flex flex-wrap gap-1.5 border-t border-[#F3F1EC] pt-2.5">
                       {msg.links.map((item) => (
@@ -228,7 +405,9 @@ export function AiAssistantDrawer({ open, onClose }: AiAssistantDrawerProps) {
 
               {loading && (
                 <div className="mr-12 rounded-lg border border-[#E5E2DC] bg-white px-4 py-3 font-mono text-xs text-[#6E727A]">
-                  Querying verified dossier...
+                  {geminiEnabled
+                    ? `Synthesizing with ${displayModelLabel}...`
+                    : "Querying verified dossier..."}
                 </div>
               )}
 
@@ -266,6 +445,7 @@ export function AiAssistantDrawer({ open, onClose }: AiAssistantDrawerProps) {
                 <input
                   type="text"
                   value={input}
+                  maxLength={4000}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Ask about stack, projects, B.MLS, availability..."
                   className="flex-1 rounded border border-[#E5E2DC] bg-[#FAF9F6] px-3 py-2 text-sm text-[#111214] placeholder:text-[#6E727A] focus:border-[#1D4ED8] focus:bg-white focus:outline-none"
@@ -280,7 +460,9 @@ export function AiAssistantDrawer({ open, onClose }: AiAssistantDrawerProps) {
                 </button>
               </div>
               <p className="mt-2 font-mono text-[10px] text-[#6E727A]">
-                Zero fabricated claims · Auto-upgrades with GEMINI_API_KEY
+                {geminiEnabled
+                  ? `Grounded in verified dossier · Multi-turn ${displayModelLabel}`
+                  : "Zero fabricated claims · Auto-upgrades with GEMINI_API_KEY"}
               </p>
             </form>
           </motion.aside>
