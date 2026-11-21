@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "@fontsource/instrument-serif/400.css";
@@ -58,6 +59,7 @@ export default function RootLayout({
     >
       <body className="antialiased">
         <PortfolioShell>{children}</PortfolioShell>
+        <Analytics />
       </body>
     </html>
   );
