@@ -1,0 +1,277 @@
+import { PROFILE, SERVICE_PILLARS } from "@/data/profile";
+import { PROJECTS } from "@/data/projects";
+import {
+  EDUCATION,
+  EXPERIENCE_ITEMS,
+  HACKATHONS_AND_PROGRAMS,
+  LANGUAGES,
+} from "@/data/experience";
+
+export interface SuggestedLink {
+  label: string;
+  href: string;
+}
+
+export interface ChatResponsePayload {
+  answer: string;
+  mode: "gemini" | "grounded-index";
+  links: SuggestedLink[];
+}
+
+export function buildGroundedSystemPrompt(): string {
+  const pillarsText = SERVICE_PILLARS.map(
+    (p) => `- ${p.label}: ${p.description} Stack: ${p.stack.join(", ")}.`
+  ).join("\n");
+
+  const projectsText = PROJECTS.map(
+    (p) =>
+      `- ${p.title} (${p.clientDomain}, route: /work/${p.slug}): ${p.summary} Stack: ${p.stack.join(", ")}.`
+  ).join("\n");
+
+  const expText = EXPERIENCE_ITEMS.map(
+    (e) =>
+      `- ${e.organization} — ${e.role} (${e.location}, ${e.period}): ${e.bullets.join(" ")}`
+  ).join("\n");
+
+  const hackathonsText = HACKATHONS_AND_PROGRAMS.map(
+    (h) => `- ${h.name} (${h.organizer}, ${h.year}): ${h.focus}`
+  ).join("\n");
+
+  const languagesText = LANGUAGES.map(
+    (l) => `${l.name} (${l.proficiency}${l.notes ? ` — ${l.notes}` : ""})`
+  ).join("; ");
+
+  return [
+    `You are the portfolio assistant for ${PROFILE.displayName} (${PROFILE.legalName}).`,
+    `Answer concisely, plainly, and accurately using ONLY the verified facts below. Never invent metrics, employers, or private details. Never share any phone number other than the public WhatsApp listed below. Avoid marketing clichés and emojis.`,
+    ``,
+    `IDENTITY & CONTACT:`,
+    `- Name: ${PROFILE.displayName} (${PROFILE.legalName})`,
+    `- Role: ${PROFILE.headlineRole}`,
+    `- Studio: ${PROFILE.studio.name} (${PROFILE.studio.primaryDisplay}, ${PROFILE.studio.mirrorDisplay}) — ${PROFILE.studio.role} (${PROFILE.studio.period})`,
+    `- Availability: ${PROFILE.locationLabel} (${PROFILE.utcOffsetLabel}), ${PROFILE.availabilityText}`,
+    `- Public Email: ${PROFILE.email}`,
+    `- Public Primary WhatsApp: ${PROFILE.whatsappDisplay} (${PROFILE.whatsappHref})`,
+    `- GitHub: ${PROFILE.githubUrl}`,
+    ``,
+    `SERVICE PILLARS:`,
+    pillarsText,
+    ``,
+    `SHIPPED CASE STUDIES:`,
+    projectsText,
+    ``,
+    `EXPERIENCE:`,
+    expText,
+    ``,
+    `EDUCATION:`,
+    `- ${EDUCATION.degree} (${EDUCATION.specialization}), ${EDUCATION.institution}. Research Thesis: "${EDUCATION.thesisTitle}" (${EDUCATION.thesisYear}). Seminar: "${EDUCATION.seminarTitle}" (${EDUCATION.seminarYear}).`,
+    ``,
+    `2026 HACKATHONS & PROGRAMS:`,
+    hackathonsText,
+    ``,
+    `LANGUAGES: ${languagesText}.`,
+  ].join("\n");
+}
+
+/**
+ * Deterministic grounded knowledge synthesizer used when GEMINI_API_KEY is not configured
+ * or as an instant fallback if the upstream Gemini API is unreachable.
+ */
+export function answerFromGroundedIndex(rawQuery: string): ChatResponsePayload {
+  const q = rawQuery.toLowerCase().trim();
+
+  // 1. Specific project lookups
+  if (q.includes("fortress") && q.includes("koridor")) {
+    return {
+      mode: "grounded-index",
+      answer:
+        "Fortress Fleet AI is an institutional multi-agent governance platform built for the Google Cloud & Devpost All Things Agentic Hackathon using Google Cloud Run, Gemini, Gemma 2, and Supabase pgvector for semantic memory and autonomous tool-use guardrails. Koridor Engine OS is an industrial digital freight network and haulage OS built with Next.js App Router, TypeScript, Mapbox GL JS, Supabase RLS, and Gemini AI for real-time fleet telemetry, automated load matching, and route dispatch.",
+      links: [
+        { label: "Inspect Fortress Fleet AI", href: "/work/fortress-fleet-ai" },
+        { label: "Inspect Koridor Engine OS", href: "/work/koridor-engine-os" },
+      ],
+    };
+  }
+
+  if (q.includes("koridor") || q.includes("freight") || q.includes("haulage") || q.includes("logistics") || q.includes("mapbox")) {
+    const p = PROJECTS.find((item) => item.slug === "koridor-engine-os")!;
+    return {
+      mode: "grounded-index",
+      answer: `${p.title} (${p.clientDomain}) is an industrial digital freight network and haulage OS built with ${p.stack.join(", ")}. It handles real-time fleet telemetry, automated load matching via Gemini AI, and Mapbox GL JS route dispatch.`,
+      links: [
+        { label: "Inspect Koridor Engine OS", href: `/work/${p.slug}` },
+        { label: "View All Work", href: "/work" },
+      ],
+    };
+  }
+
+  if (q.includes("fortress") || q.includes("guardrail") || q.includes("pgvector") || q.includes("cloud run")) {
+    const p = PROJECTS.find((item) => item.slug === "fortress-fleet-ai")!;
+    return {
+      mode: "grounded-index",
+      answer: `${p.title} is an institutional multi-agent governance platform built for the Google Cloud & Devpost All Things Agentic Hackathon. It runs on Google Cloud Run with Gemini, Gemma 2, and Supabase pgvector for semantic memory and autonomous tool-use guardrails.`,
+      links: [
+        { label: "Inspect Fortress Fleet AI", href: `/work/${p.slug}` },
+        { label: "Start an AI Project", href: "/contact?track=ai-agents" },
+      ],
+    };
+  }
+
+  if (q.includes("stitch") || q.includes("retail") || q.includes("pos") || q.includes("inventory")) {
+    const p = PROJECTS.find((item) => item.slug === "stitch-retail-operations-os")!;
+    return {
+      mode: "grounded-index",
+      answer: `${p.title} is an end-to-end retail operations management system covering multi-store inventory, POS reconciliation, supplier workflows, and sales analytics. It was selected into Google's Stitch Loop Early Access program (2026).`,
+      links: [{ label: "Inspect Stitch Retail OS", href: `/work/${p.slug}` }],
+    };
+  }
+
+  if (q.includes("crypto") || q.includes("wealth") || q.includes("yield") || q.includes("orderbook") || q.includes("ticker")) {
+    const p = PROJECTS.find((item) => item.slug === "institutional-crypto-wealth")!;
+    return {
+      mode: "grounded-index",
+      answer: `For an NDA FinTech client, Akaolisa engineered an Institutional Crypto & Wealth Platform featuring real-time WebSocket market ticker tapes, custom interactive SVG financial charts, native PostgreSQL automated yield-accrual engines, admin governance, and Resend SMTP relays.`,
+      links: [
+        { label: "Inspect Crypto & Wealth Dossier", href: `/work/${p.slug}` },
+        { label: "Quant & FinTech Track", href: "/contact?track=quant-fintech" },
+      ],
+    };
+  }
+
+  if (q.includes("quant") || q.includes("hft") || q.includes("forex") || q.includes("trading") || q.includes("monte carlo") || q.includes("backtest") || q.includes("drawdown")) {
+    const p = PROJECTS.find((item) => item.slug === "quant-forex-crypto-hft")!;
+    return {
+      mode: "grounded-index",
+      answer: `Akaolisa builds algorithmic Forex, Crypto, and HFT execution scripts, prop-firm drawdown calculators, and Python (pandas, numpy, matplotlib) / R backtesting and Monte Carlo risk simulators for independent traders and funds. You can try the interactive Monte Carlo drawdown visualizer inside the Quant case study.`,
+      links: [
+        { label: "Open Quant & HFT Simulator", href: `/work/${p.slug}` },
+        { label: "Inquire on Quant Tooling", href: "/contact?track=quant-fintech" },
+      ],
+    };
+  }
+
+  if (q.includes("blaire") || q.includes("aify") || q.includes("ecommerce") || q.includes("e-commerce") || q.includes("store")) {
+    const p = PROJECTS.find((item) => item.slug === "production-ecommerce-builds")!;
+    return {
+      mode: "grounded-index",
+      answer: `Akaolisa ships fast, mobile-first e-commerce storefronts and brand ecosystems — including live builds at blaireaesthetics.shop and aifycycle.vercel.app — wired with Cloudflare DNS routing, automated checkout flows, and scalable cloud database backends.`,
+      links: [
+        { label: "Inspect E-Commerce Builds", href: `/work/${p.slug}` },
+      ],
+    };
+  }
+
+  // 2. AI & LLM Stack
+  if (q.includes("ai") || q.includes("llm") || q.includes("agent") || q.includes("gemini") || q.includes("mcp") || q.includes("rag") || q.includes("rlhf") || q.includes("outlier")) {
+    return {
+      mode: "grounded-index",
+      answer: `Akaolisa's AI stack covers multi-agent orchestration, Google Gemini API (3.8 Flash / 4 Argon), Gemma 2/4, Qwen, RAG with Supabase pgvector, Model Context Protocol (MCP), local LLM runtimes (Ollama, LM Studio), and QLoRA/Unsloth fine-tuning. Beyond shipping Fortress Fleet AI and Koridor Engine OS, he benchmarks frontier LLM code, quantitative math, and clinical reasoning for Outlier.ai and OneForma (2026–Present).`,
+      links: [
+        { label: "Inspect Fortress Fleet AI", href: "/work/fortress-fleet-ai" },
+        { label: "Experience & RLHF Track", href: "/experience" },
+      ],
+    };
+  }
+
+  // 3. Biomedical / Clinical / Education
+  if (
+    q.includes("bio") ||
+    q.includes("medic") ||
+    q.includes("lab") ||
+    q.includes("clinical") ||
+    q.includes("health") ||
+    q.includes("fmc") ||
+    q.includes("degree") ||
+    q.includes("education") ||
+    q.includes("thesis") ||
+    q.includes("b.mls") ||
+    q.includes("trainee")
+  ) {
+    return {
+      mode: "grounded-index",
+      answer: `Akaolisa holds a B.MLS (Clinical Chemistry Specialization) from Nnamdi Azikiwe University, Awka (2024 thesis on Plasma/Serum ATP & AMP levels; Gaucher's Disease seminar). At Federal Medical Centre (FMC) Umuahia (Feb 2026–Present), he serves as Medical Lab Scientist Intern & Lead Intern Coordinator — directing bench schedules and onboarding for 100+ MLS interns and supervising 150+ university students (250+ trainees total) alongside IQC/EQA calibration and seminars on PSA Screening & Clinical Toxicology. For software teams, this translates into rigorous validation, calm operational leadership, and deep HealthTech/LIS domain fluency.`,
+      links: [
+        { label: "Explore Clinical & Lab Experience", href: "/experience" },
+        { label: "HealthTech Inquiry", href: "/contact?track=healthtech-biomedical" },
+      ],
+    };
+  }
+
+  // 4. Studio / OXAKALABS
+  if (q.includes("oxaka") || q.includes("studio") || q.includes("agency") || q.includes("founder")) {
+    return {
+      mode: "grounded-index",
+      answer: `OXAKALABS (${PROFILE.studio.primaryDisplay} · ${PROFILE.studio.mirrorDisplay}) is Akaolisa's independent product engineering studio (2022–Present). Through OXAKALABS he leads end-to-end architecture, UI/UX engineering, PostgreSQL modeling, and cloud deployment across SaaS, AI automation, FinTech, and retail clients.`,
+      links: [
+        { label: "Browse Shipped Systems", href: "/work" },
+        { label: "Start a Project", href: "/contact" },
+      ],
+    };
+  }
+
+  // 5. Hackathons / Languages
+  if (q.includes("hackathon") || q.includes("meta") || q.includes("devpost") || q.includes("dora") || q.includes("cerebral")) {
+    return {
+      mode: "grounded-index",
+      answer: `In 2026, Akaolisa participated in the Google Cloud & Devpost All Things Agentic Hackathon (shipping Fortress Fleet AI), Google Stitch Loop Early Access (Stitch Retail Operations OS), Meta VR Start Developer Competition, Devpost Build With AI & Agentic Cinema, and Cerebral Valley & DoraHacks.`,
+      links: [
+        { label: "View Hackathons & Credentials", href: "/experience" },
+        { label: "Inspect Fortress Fleet AI", href: "/work/fortress-fleet-ai" },
+      ],
+    };
+  }
+
+  if (q.includes("language") || q.includes("sign") || q.includes("asl") || q.includes("igbo")) {
+    return {
+      mode: "grounded-index",
+      answer: `Akaolisa speaks English (Native/Bilingual), Igbo (Native), and conversational Sign Language — both American Sign Language (ASL) and Nigerian Sign Language (NSL).`,
+      links: [{ label: "View Full Background", href: "/experience" }],
+    };
+  }
+
+  // 6. Availability, Contact, Hiring, Rates, Stack
+  if (
+    q.includes("avail") ||
+    q.includes("hire") ||
+    q.includes("contact") ||
+    q.includes("email") ||
+    q.includes("whatsapp") ||
+    q.includes("remote") ||
+    q.includes("timezone") ||
+    q.includes("utc") ||
+    q.includes("freelance") ||
+    q.includes("resume") ||
+    q.includes("cv")
+  ) {
+    return {
+      mode: "grounded-index",
+      answer: `Akaolisa is available for remote freelance contracts, founding/principal engineering collaborations, and technical advisory worldwide from UTC+1 (West Africa Time). Reach him via the Contact form, email (${PROFILE.email}), or primary WhatsApp (${PROFILE.whatsappDisplay}), or download his full resume PDF directly from the header.`,
+      links: [
+        { label: "Open Contact & Inquiry Form", href: "/contact" },
+        { label: "View Experience & Resume", href: "/experience" },
+      ],
+    };
+  }
+
+  if (q.includes("stack") || q.includes("next") || q.includes("supabase") || q.includes("docker") || q.includes("coolify") || q.includes("tech")) {
+    return {
+      mode: "grounded-index",
+      answer: `Core full-stack & infrastructure tooling: Next.js (App Router), React, TypeScript, Node.js, Tailwind CSS, Framer Motion, Supabase (PostgreSQL, RLS, Auth), REST & WebSockets, Docker, Coolify, Linux VPS self-hosting, Vercel, Cloudflare DNS, and Resend SMTP — complemented by Gemini/Gemma/MCP AI pipelines and Python/R quantitative engines.`,
+      links: [
+        { label: "Inspect All 6 Shipped Systems", href: "/work" },
+        { label: "Start a SaaS Build", href: "/contact?track=full-stack-saas" },
+      ],
+    };
+  }
+
+  // Default executive overview
+  return {
+    mode: "grounded-index",
+    answer: `${PROFILE.displayName} is the Founder & Principal Engineer at OXAKALABS (2022–Present), shipping Full-Stack Next.js SaaS systems, autonomous multi-agent AI platforms (Fortress Fleet AI, Koridor Engine OS), and Quantitative Forex/Crypto/HFT suites. He combines software execution with empirical discipline as a licensed Medical Laboratory Scientist (B.MLS) directing 250+ clinical trainees. Ask me about any specific project, his AI/Quant stack, clinical leadership, or remote availability.`,
+    links: [
+      { label: "Explore Selected Work", href: "/work" },
+      { label: "Experience & Clinical Lab", href: "/experience" },
+      { label: "Start a Project Inquiry", href: "/contact" },
+    ],
+  };
+}
