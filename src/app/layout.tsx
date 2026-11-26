@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
-import { Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
+import { Hanken_Grotesk, IBM_Plex_Mono, Newsreader } from "next/font/google";
 import "./globals.css";
 import { PortfolioShell } from "@/components/layout/PortfolioShell";
 import { PROFILE } from "@/data/profile";
@@ -11,17 +11,25 @@ import {
   getRootUrlWithTrailingSlash,
 } from "@/lib/site";
 
-const spaceGrotesk = Space_Grotesk({
+const newsreader = Newsreader({
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  variable: "--font-display",
+  style: ["normal", "italic"],
+  axes: ["opsz"],
+  variable: "--font-newsreader",
   display: "swap",
 });
 
-const plusJakartaSans = Plus_Jakarta_Sans({
+const hankenGrotesk = Hanken_Grotesk({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-body",
+  style: ["normal", "italic"],
+  variable: "--font-hanken-grotesk",
+  display: "swap",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-ibm-plex-mono",
   display: "swap",
 });
 
@@ -103,7 +111,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${spaceGrotesk.variable} ${plusJakartaSans.variable}`}
+      className={`${newsreader.variable} ${hankenGrotesk.variable} ${ibmPlexMono.variable}`}
     >
       <body className="antialiased">
         <PortfolioShell>{children}</PortfolioShell>

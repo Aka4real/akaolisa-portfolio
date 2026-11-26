@@ -118,9 +118,11 @@ export function Reveal({
 export function HeroLineReveal({
   lines,
   className,
+  italicLineIndices = [],
 }: {
   lines: string[];
   className?: string;
+  italicLineIndices?: number[];
 }) {
   const prefersReduced = useReducedMotion();
 
@@ -128,7 +130,10 @@ export function HeroLineReveal({
     return (
       <h1 className={className}>
         {lines.map((line, i) => (
-          <span key={i} className="block">
+          <span
+            key={i}
+            className={`block ${italicLineIndices.includes(i) ? "italic" : ""}`}
+          >
             {line}
           </span>
         ))}
@@ -138,22 +143,25 @@ export function HeroLineReveal({
 
   return (
     <h1 className={className}>
-      {lines.map((line, i) => (
-        <span key={i} className="block overflow-hidden pb-[0.06em]">
-          <motion.span
-            className="block"
-            initial={{ y: "26%", opacity: 0.01 }}
-            animate={{ y: "0%", opacity: 1 }}
-            transition={{
-              duration: 0.56,
-              delay: i * 0.07,
-              ease: EASE_OUT_EXPO,
-            }}
-          >
-            {line}
-          </motion.span>
-        </span>
-      ))}
+      {lines.map((line, i) => {
+        const isItalic = italicLineIndices.includes(i);
+        return (
+          <span key={i} className="block overflow-hidden pr-[0.06em] pb-[0.1em]">
+            <motion.span
+              className={`block ${isItalic ? "italic" : ""}`}
+              initial={{ y: "26%", opacity: 0.01 }}
+              animate={{ y: "0%", opacity: 1 }}
+              transition={{
+                duration: 0.56,
+                delay: i * 0.07,
+                ease: EASE_OUT_EXPO,
+              }}
+            >
+              {line}
+            </motion.span>
+          </span>
+        );
+      })}
     </h1>
   );
 }

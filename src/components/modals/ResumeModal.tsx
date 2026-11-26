@@ -416,7 +416,7 @@ function ResumeModalSheet({ onClose }: { onClose: () => void }) {
                 >
                   {PROFILE.legalName} · Curriculum vitae
                 </h2>
-                <p className="type-sm tabular-nums text-[var(--ink-muted)]">
+                <p className="type-meta text-[var(--ink-muted)]">
                   {PROFILE.resumeFileName} · 3 pages
                 </p>
               </div>

@@ -75,7 +75,7 @@ export function SiteFooter({
 
           {/* Navigation */}
           <div className="md:col-span-2">
-            <h3 className="type-sm font-semibold text-[var(--ink-on-marine)]">
+            <h3 className="type-kicker text-[var(--ink-on-marine-muted)]">
               Navigation
             </h3>
             <ul className="type-sm mt-4 space-y-2.5 text-[var(--ink-on-marine-secondary)]">
@@ -124,7 +124,7 @@ export function SiteFooter({
 
           {/* Ecosystem */}
           <div className="md:col-span-2">
-            <h3 className="type-sm font-semibold text-[var(--ink-on-marine)]">
+            <h3 className="type-kicker text-[var(--ink-on-marine-muted)]">
               Ecosystem
             </h3>
             <ul className="type-sm mt-4 space-y-2.5 text-[var(--ink-on-marine-secondary)]">
@@ -197,7 +197,7 @@ export function SiteFooter({
 
           {/* Direct Channels */}
           <div className="md:col-span-3">
-            <h3 className="type-sm font-semibold text-[var(--ink-on-marine)]">
+            <h3 className="type-kicker text-[var(--ink-on-marine-muted)]">
               Direct contact
             </h3>
             <div className="mt-4 space-y-3">
@@ -207,7 +207,7 @@ export function SiteFooter({
                 aria-label={copied ? "Email copied" : `Copy ${PROFILE.email}`}
                 className="btn-press type-sm flex w-full items-center justify-between gap-2 rounded-[var(--radius-sm)] border border-[var(--border-on-marine)] bg-[var(--bg-marine-elevated)] px-3.5 py-2.5 text-left text-[var(--ink-on-marine)] hover:border-[var(--border-on-marine-strong)]"
               >
-                <span className="min-w-0 truncate text-[var(--ink-on-marine-secondary)]">
+                <span className="type-meta min-w-0 truncate text-[var(--ink-on-marine-secondary)]">
                   {PROFILE.email}
                 </span>
                 <span className="inline-flex shrink-0 items-center justify-end font-medium">
@@ -273,7 +273,7 @@ export function SiteFooter({
             &copy; {new Date().getFullYear()} {PROFILE.legalName} ·{" "}
             {PROFILE.studio.name}
           </p>
-          <p className="tabular-nums">
+          <p className="type-meta">
             {PROFILE.locationLabel} ({PROFILE.utcOffsetLabel})
           </p>
         </div>

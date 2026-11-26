@@ -305,10 +305,10 @@ export function ContactForm() {
           {/* Email Row */}
           <div className="flex items-center justify-between gap-4 py-5">
             <div className="min-w-0">
-              <p className="type-sm text-[var(--ink-muted)]">Email</p>
+              <p className="type-kicker text-[var(--ink-muted)]">Email</p>
               <a
                 href={`mailto:${PROFILE.email}`}
-                className="type-body mt-0.5 block truncate font-medium text-[var(--ink-primary)] transition-colors duration-150 hover:text-[var(--accent-deep)]"
+                className="type-meta mt-1 block truncate font-medium text-[var(--ink-primary)] transition-colors duration-150 hover:text-[var(--accent-deep)]"
               >
                 {PROFILE.email}
               </a>
@@ -354,14 +354,14 @@ export function ContactForm() {
           {/* Primary WhatsApp Row */}
           <div className="flex items-center justify-between gap-4 py-5">
             <div className="min-w-0">
-              <p className="type-sm text-[var(--ink-muted)]">
+              <p className="type-kicker text-[var(--ink-muted)]">
                 Primary WhatsApp
               </p>
               <a
                 href={PROFILE.whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="type-body group mt-0.5 inline-flex items-center gap-1.5 font-medium tabular-nums text-[var(--ink-primary)] transition-colors duration-150 hover:text-[var(--status-positive)]"
+                className="type-meta group mt-1 inline-flex items-center gap-1.5 font-medium text-[var(--ink-primary)] transition-colors duration-150 hover:text-[var(--status-positive)]"
               >
                 <span>{PROFILE.whatsappDisplay}</span>
                 <ArrowUpRight
@@ -642,7 +642,7 @@ export function ContactForm() {
               </label>
               <span
                 id="contact-message-hint"
-                className={`type-sm tabular-nums transition-colors duration-150 ${
+                className={`type-meta transition-colors duration-150 ${
                   messageReady
                     ? "text-[var(--status-positive)]"
                     : messageError
@@ -768,7 +768,7 @@ export function ContactForm() {
           </AnimatePresence>
 
           <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[var(--border-hairline)] pt-6">
-            <p className="type-sm text-[var(--ink-muted)]">
+            <p className="type-meta text-[var(--ink-muted)]">
               Wired for Resend SMTP and Studio Console triage
             </p>
 

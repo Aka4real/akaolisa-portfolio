@@ -685,7 +685,7 @@ function AiAssistantDrawerSheet({
               >
                 Ask about Akaolisa
               </h2>
-              <p className="type-sm text-[var(--ink-on-marine-muted)]">
+              <p className="type-meta text-[var(--ink-on-marine-muted)]">
                 {statusLabel}
               </p>
             </div>
@@ -796,7 +796,7 @@ function AiAssistantDrawerSheet({
 
           {messages.length <= 2 && !loading && (
             <div className="pt-2">
-              <p className="type-sm mb-2.5 font-medium text-[var(--ink-muted)]">
+              <p className="type-kicker mb-2.5 text-[var(--ink-muted)]">
                 Suggested questions
               </p>
               <div className="divide-y divide-[var(--border-hairline)] border-y border-[var(--border-hairline)]">
@@ -841,7 +841,7 @@ function AiAssistantDrawerSheet({
               <PaperPlaneRight size={16} weight="bold" aria-hidden="true" />
             </button>
           </div>
-          <p className="type-sm mt-2 text-[var(--ink-muted)]">
+          <p className="type-meta mt-2 text-[var(--ink-muted)]">
             {geminiEnabled
               ? `Grounded in verified dossier via ${displayModelLabel}`
               : "Grounded deterministic dossier index"}

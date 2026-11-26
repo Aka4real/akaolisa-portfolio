@@ -80,7 +80,7 @@ export function LiveClockBadge({
       </span>
       <span aria-hidden="true">·</span>
       <span
-        className={`transition-opacity duration-[180ms] ease-out ${
+        className={`type-meta transition-opacity duration-[180ms] ease-out ${
           timeStr ? "opacity-100" : "opacity-0"
         }`}
       >

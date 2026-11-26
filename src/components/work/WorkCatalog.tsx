@@ -189,7 +189,7 @@ export function WorkCatalog() {
             <StaggerItem key={project.slug} index={idx}>
               <article className="grid items-center gap-8 py-12 first:pt-2 lg:grid-cols-12 lg:gap-12">
                 <div className="min-w-0 lg:col-span-5">
-                  <p className="type-sm tabular-nums text-[var(--ink-muted)]">
+                  <p className="type-meta text-[var(--ink-muted)]">
                     {project.clientDomain} · {project.year} ·{" "}
                     <span
                       className={
@@ -215,7 +215,7 @@ export function WorkCatalog() {
                     {project.summary}
                   </p>
 
-                  <p className="type-sm mt-4 text-[var(--ink-muted)]">
+                  <p className="type-meta mt-4 text-[var(--ink-muted)]">
                     {project.stack.slice(0, 5).join(" · ")}
                     {project.stack.length > 5
                       ? ` · +${project.stack.length - 5} more`

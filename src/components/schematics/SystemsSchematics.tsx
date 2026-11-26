@@ -328,8 +328,8 @@ export function KoridorSchematic({ compact = false }: SchematicProps) {
                 y={165}
                 textAnchor={idx === 0 ? "start" : idx === 3 ? "end" : "middle"}
                 fill="#506376"
-                fontSize="9.5"
-                fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
+                fontSize="9"
+                fontFamily="var(--font-mono), ui-monospace, monospace"
               >
                 {KORIDOR_STAGES[idx].coord}
               </text>
@@ -431,8 +431,8 @@ export function KoridorSchematic({ compact = false }: SchematicProps) {
                   textAnchor="middle"
                   fill={isCurrent ? "#09131D" : "#344658"}
                   fontSize="10.5"
-                  fontWeight={isCurrent ? "700" : "600"}
-                  fontFamily="var(--font-display), ui-sans-serif, system-ui, sans-serif"
+                  fontWeight={isCurrent ? "600" : "500"}
+                  fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
                 >
                   {stage.label}
                 </text>
@@ -441,9 +441,9 @@ export function KoridorSchematic({ compact = false }: SchematicProps) {
                   y={codeY}
                   textAnchor="middle"
                   fill={isCurrent ? "#0E41A6" : "#506376"}
-                  fontSize="9"
+                  fontSize="8.5"
                   fontWeight="500"
-                  fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
+                  fontFamily="var(--font-mono), ui-monospace, monospace"
                 >
                   {stage.metric}
                 </text>
@@ -682,7 +682,7 @@ export function FortressSchematic({
               fill="#F4F7FA"
               fontSize="10"
               fontWeight="600"
-              fontFamily="var(--font-display), ui-sans-serif, system-ui, sans-serif"
+              fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
             >
               Prompt
             </text>
@@ -748,9 +748,9 @@ export function FortressSchematic({
             y="151"
             textAnchor="middle"
             fill={mutedText}
-            fontSize="9.5"
+            fontSize="9"
             fontWeight="500"
-            fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
+            fontFamily="var(--font-mono), ui-monospace, monospace"
           >
             Immutable audit log · Zero unverified tool mutations
           </text>
@@ -825,7 +825,7 @@ export function FortressSchematic({
                   fill={primaryText}
                   fontSize="10.5"
                   fontWeight="600"
-                  fontFamily="var(--font-display), ui-sans-serif, system-ui, sans-serif"
+                  fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
                 >
                   {gate.svgTitle}
                 </text>
@@ -835,9 +835,9 @@ export function FortressSchematic({
                   y={89}
                   textAnchor="middle"
                   fill={isVerified ? positiveFill : mutedText}
-                  fontSize="9"
+                  fontSize="8.5"
                   fontWeight="500"
-                  fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
+                  fontFamily="var(--font-mono), ui-monospace, monospace"
                 >
                   {isVerified ? gate.status : gate.svgSub}
                 </text>
@@ -1352,8 +1352,8 @@ export function CryptoWealthSchematic({ compact = false }: SchematicProps) {
                 y={tick.y + 3.5}
                 textAnchor="end"
                 fill="#506376"
-                fontSize="10"
-                fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
+                fontSize="9.5"
+                fontFamily="var(--font-mono), ui-monospace, monospace"
               >
                 {tick.val.toFixed(1)}
               </text>
@@ -1369,8 +1369,8 @@ export function CryptoWealthSchematic({ compact = false }: SchematicProps) {
                 stepIdx === 0 ? "start" : stepIdx === 8 ? "end" : "middle"
               }
               fill="#506376"
-              fontSize="9.5"
-              fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
+              fontSize="9"
+              fontFamily="var(--font-mono), ui-monospace, monospace"
             >
               {current.timestamps[stepIdx]}
             </text>
@@ -1611,7 +1611,7 @@ export function StitchRetailSchematic({ compact = false }: SchematicProps) {
                   fill="#09131D"
                   fontSize="10.5"
                   fontWeight="600"
-                  fontFamily="var(--font-display), ui-sans-serif, system-ui, sans-serif"
+                  fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
                 >
                   {branch.name}
                 </text>
@@ -1619,8 +1619,8 @@ export function StitchRetailSchematic({ compact = false }: SchematicProps) {
                   x="44"
                   y={branch.y + 10.5}
                   fill={isActive ? "#0E41A6" : "#506376"}
-                  fontSize="9"
-                  fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
+                  fontSize="8.5"
+                  fontFamily="var(--font-mono), ui-monospace, monospace"
                 >
                   {branch.shortCount} · {branch.posSync}
                 </text>
@@ -1663,7 +1663,7 @@ export function StitchRetailSchematic({ compact = false }: SchematicProps) {
               fill="#09131D"
               fontSize="10.5"
               fontWeight="600"
-              fontFamily="var(--font-display), ui-sans-serif, system-ui, sans-serif"
+              fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
             >
               PostgreSQL ledger core
             </text>
@@ -1682,9 +1682,9 @@ export function StitchRetailSchematic({ compact = false }: SchematicProps) {
               y="76"
               textAnchor="end"
               fill="#0E41A6"
-              fontSize="9.5"
+              fontSize="9"
               fontWeight="600"
-              fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
+              fontFamily="var(--font-mono), ui-monospace, monospace"
             >
               {current.shortCount}
             </text>
@@ -1712,9 +1712,9 @@ export function StitchRetailSchematic({ compact = false }: SchematicProps) {
               y="106"
               textAnchor="end"
               fill="#0C6B4B"
-              fontSize="10"
-              fontWeight="700"
-              fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
+              fontSize="9.5"
+              fontWeight="600"
+              fontFamily="var(--font-mono), ui-monospace, monospace"
             >
               {current.variance}
             </text>
@@ -1742,9 +1742,9 @@ export function StitchRetailSchematic({ compact = false }: SchematicProps) {
               y="134"
               textAnchor="end"
               fill="#09131D"
-              fontSize="9.5"
+              fontSize="9"
               fontWeight="600"
-              fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
+              fontFamily="var(--font-mono), ui-monospace, monospace"
             >
               ACID reconciled
             </text>
@@ -1972,9 +1972,9 @@ export function EcommerceSchematic({ compact = false }: SchematicProps) {
                   y={58}
                   textAnchor="middle"
                   fill={isActiveSeg ? "#0E41A6" : "#506376"}
-                  fontSize="8.5"
+                  fontSize="8"
                   fontWeight="600"
-                  fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
+                  fontFamily="var(--font-mono), ui-monospace, monospace"
                 >
                   {COMMERCE_STAGES[segIdx].protocol}
                 </text>
@@ -2035,9 +2035,9 @@ export function EcommerceSchematic({ compact = false }: SchematicProps) {
                   y={68}
                   textAnchor="middle"
                   fill="#09131D"
-                  fontSize="10.8"
+                  fontSize="10.5"
                   fontWeight="600"
-                  fontFamily="var(--font-display), ui-sans-serif, system-ui, sans-serif"
+                  fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
                 >
                   {stage.title}
                 </text>
@@ -2047,9 +2047,9 @@ export function EcommerceSchematic({ compact = false }: SchematicProps) {
                   y={87}
                   textAnchor="middle"
                   fill={isSelected ? "#0E41A6" : "#506376"}
-                  fontSize="9"
+                  fontSize="8.5"
                   fontWeight="500"
-                  fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
+                  fontFamily="var(--font-mono), ui-monospace, monospace"
                 >
                   {stage.metric}
                 </text>
@@ -2071,9 +2071,9 @@ export function EcommerceSchematic({ compact = false }: SchematicProps) {
             y="130"
             textAnchor="end"
             fill="#0C6B4B"
-            fontSize="9"
+            fontSize="8.5"
             fontWeight="600"
-            fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
+            fontFamily="var(--font-mono), ui-monospace, monospace"
           >
             SSL hardened · Webhook verified
           </text>

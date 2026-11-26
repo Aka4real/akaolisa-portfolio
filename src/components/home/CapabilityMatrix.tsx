@@ -65,7 +65,7 @@ export function CapabilityMatrix() {
               </p>
 
               <div className="mt-8">
-                <p className="type-sm font-semibold text-[var(--ink-primary)]">
+                <p className="type-kicker text-[var(--ink-muted)]">
                   Core deliverables
                 </p>
                 <ul className="mt-4 space-y-3">
@@ -90,17 +90,17 @@ export function CapabilityMatrix() {
             {/* Right 5 Cols: Typographic Stack Index, Linked Dossiers & Single Action */}
             <div className="flex flex-col justify-between gap-8 border-t border-[var(--border-hairline)] pt-8 lg:col-span-5 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-10">
               <div>
-                <p className="type-sm font-semibold text-[var(--ink-primary)]">
+                <p className="type-kicker text-[var(--ink-muted)]">
                   Production stack
                 </p>
-                <p className="type-sm mt-3 leading-relaxed text-[var(--ink-secondary)]">
+                <p className="type-meta mt-3 leading-relaxed text-[var(--ink-secondary)]">
                   {current.stack.join(" · ")}
                 </p>
               </div>
 
               <div className="space-y-6 border-t border-[var(--border-hairline)] pt-6">
                 <div>
-                  <p className="type-sm font-semibold text-[var(--ink-primary)]">
+                  <p className="type-kicker text-[var(--ink-muted)]">
                     Deployed case studies
                   </p>
                   <ul className="mt-2 divide-y divide-[var(--border-hairline)]">

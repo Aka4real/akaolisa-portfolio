@@ -46,6 +46,7 @@ export default function HomePage() {
           <div className="max-w-3xl">
             <HeroLineReveal
               lines={["Systems built with", "clinical precision"]}
+              italicLineIndices={[1]}
               className="type-hero text-[var(--ink-on-marine)]"
             />
 
@@ -127,7 +128,7 @@ export default function HomePage() {
           <Reveal>
             <article className="grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
               <div className="min-w-0 lg:col-span-5">
-                <p className="type-sm tabular-nums text-[var(--ink-muted)]">
+                <p className="type-meta text-[var(--ink-muted)]">
                   {koridorProject.clientDomain} · {koridorProject.year}
                 </p>
 
@@ -144,7 +145,7 @@ export default function HomePage() {
                   {koridorProject.summary}
                 </p>
 
-                <p className="type-sm mt-5 text-[var(--ink-muted)]">
+                <p className="type-meta mt-5 text-[var(--ink-muted)]">
                   {koridorProject.stack.slice(0, 5).join(" · ")}
                 </p>
 
@@ -180,7 +181,7 @@ export default function HomePage() {
           <Reveal>
             <article className="grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
               <div className="min-w-0 lg:col-span-5">
-                <p className="type-sm tabular-nums text-[var(--ink-on-marine-muted)]">
+                <p className="type-meta text-[var(--ink-on-marine-muted)]">
                   {fortressProject.clientDomain} · {fortressProject.year}
                 </p>
 
@@ -197,7 +198,7 @@ export default function HomePage() {
                   {fortressProject.summary}
                 </p>
 
-                <p className="type-sm mt-5 text-[var(--ink-on-marine-muted)]">
+                <p className="type-meta mt-5 text-[var(--ink-on-marine-muted)]">
                   {fortressProject.stack.slice(0, 5).join(" · ")}
                 </p>
 
@@ -237,7 +238,7 @@ export default function HomePage() {
             <div className="grid gap-12 lg:grid-cols-12 lg:gap-12">
               {/* Left 7 Cols: Interactive Monte Carlo Quant Suite */}
               <article className="min-w-0 lg:col-span-7">
-                <p className="type-sm tabular-nums text-[var(--ink-muted)]">
+                <p className="type-meta text-[var(--ink-muted)]">
                   {quantProject.clientDomain} · {quantProject.year}
                 </p>
 
@@ -259,7 +260,7 @@ export default function HomePage() {
                 </div>
 
                 <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
-                  <p className="type-sm text-[var(--ink-muted)]">
+                  <p className="type-meta text-[var(--ink-muted)]">
                     {quantProject.stack.slice(0, 4).join(" · ")}
                   </p>
                   <Link
@@ -280,7 +281,7 @@ export default function HomePage() {
               {/* Right 5 Cols: Institutional Crypto & Wealth Platform */}
               <article className="flex min-w-0 flex-col justify-between border-t border-[var(--border-hairline)] pt-10 lg:col-span-5 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-10">
                 <div>
-                  <p className="type-sm tabular-nums text-[var(--ink-muted)]">
+                  <p className="type-meta text-[var(--ink-muted)]">
                     {wealthProject.clientDomain} · {wealthProject.year}
                   </p>
 
@@ -306,7 +307,7 @@ export default function HomePage() {
                 </div>
 
                 <div className="mt-7 border-t border-[var(--border-hairline)] pt-5">
-                  <p className="type-sm text-[var(--ink-muted)]">
+                  <p className="type-meta text-[var(--ink-muted)]">
                     {wealthProject.stack.slice(0, 4).join(" · ")}
                   </p>
                   <Link
@@ -395,11 +396,11 @@ export default function HomePage() {
                           <h3 className="type-subhead text-[var(--ink-primary)]">
                             {item.name}
                           </h3>
-                          <span className="type-sm shrink-0 tabular-nums text-[var(--ink-muted)]">
+                          <span className="type-meta shrink-0 text-[var(--ink-muted)]">
                             {item.year}
                           </span>
                         </div>
-                        <p className="type-sm mt-1 font-medium text-[var(--accent-deep)]">
+                        <p className="type-meta mt-1 font-medium text-[var(--accent-deep)]">
                           {item.organizer}
                         </p>
                         <p className="type-body mt-1.5 text-[var(--ink-secondary)]">

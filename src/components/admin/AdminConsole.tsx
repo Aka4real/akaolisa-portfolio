@@ -755,7 +755,7 @@ export function AdminConsole({
                     assistant status for {state.profile.displayName}.
                   </p>
                 </div>
-                <p className="type-table tabular-nums text-[var(--ink-muted)]">
+                <p className="type-meta text-[var(--ink-muted)]">
                   Storage: {state.storageMode} · Updated{" "}
                   {formatDate(state.updatedAt)}
                 </p>
@@ -764,31 +764,31 @@ export function AdminConsole({
               {/* Operational Telemetry Ledger */}
               <dl className="grid grid-cols-2 divide-y divide-[var(--border-hairline)] border-y border-[var(--border-hairline)] bg-[var(--bg-surface)] sm:grid-cols-4 sm:divide-x sm:divide-y-0">
                 <div className="p-5">
-                  <dt className="type-sm text-[var(--ink-muted)]">
+                  <dt className="type-kicker text-[var(--ink-muted)]">
                     Shipped dossiers
                   </dt>
-                  <dd className="type-heading mt-1 tabular-nums text-[var(--ink-primary)]">
+                  <dd className="type-heading mt-1.5 tabular-nums text-[var(--ink-primary)]">
                     {state.projects.length}
                   </dd>
                 </div>
                 <div className="p-5">
-                  <dt className="type-sm text-[var(--ink-muted)]">
+                  <dt className="type-kicker text-[var(--ink-muted)]">
                     Featured on home
                   </dt>
-                  <dd className="type-heading mt-1 tabular-nums text-[var(--ink-primary)]">
+                  <dd className="type-heading mt-1.5 tabular-nums text-[var(--ink-primary)]">
                     {featuredCount}
                   </dd>
                 </div>
                 <div className="p-5">
-                  <dt className="type-sm text-[var(--ink-muted)]">
+                  <dt className="type-kicker text-[var(--ink-muted)]">
                     Open inquiries
                   </dt>
-                  <dd className="type-heading mt-1 tabular-nums text-[var(--accent-deep)]">
+                  <dd className="type-heading mt-1.5 tabular-nums text-[var(--accent-deep)]">
                     {openInquiriesCount}
                   </dd>
                 </div>
                 <div className="p-5">
-                  <dt className="type-sm text-[var(--ink-muted)]">
+                  <dt className="type-kicker text-[var(--ink-muted)]">
                     AI assistant mode
                   </dt>
                   <dd className="type-subhead mt-2 text-[var(--ink-primary)]">
@@ -807,7 +807,7 @@ export function AdminConsole({
                 <div className="mt-4 overflow-x-auto rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)]">
                   <table className="w-full border-collapse text-left">
                     <thead>
-                      <tr className="type-table border-b border-[var(--border-hairline)] bg-[var(--bg-canvas)] text-[var(--ink-muted)]">
+                      <tr className="type-kicker border-b border-[var(--border-hairline)] bg-[var(--bg-canvas)] text-[var(--ink-muted)]">
                         <th className="px-4 py-3 font-medium">Subsystem</th>
                         <th className="px-4 py-3 font-medium">Status</th>
                         <th className="px-4 py-3 font-medium">Configuration</th>
@@ -831,7 +831,7 @@ export function AdminConsole({
                               : "Grounded fallback"}
                           </span>
                         </td>
-                        <td className="px-4 py-3 tabular-nums text-[var(--ink-secondary)]">
+                        <td className="px-4 py-3 font-mono text-[0.78125rem] tabular-nums text-[var(--ink-secondary)]">
                           {diagnostics.primaryModel} · Thinking{" "}
                           {diagnostics.thinkingLevel} ·{" "}
                           {diagnostics.maxOutputTokens} max tokens
@@ -854,7 +854,7 @@ export function AdminConsole({
                               : "Mailto and console log"}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-[var(--ink-secondary)]">
+                        <td className="px-4 py-3 font-mono text-[0.78125rem] text-[var(--ink-secondary)]">
                           Destination {state.profile.email}
                         </td>
                       </tr>
@@ -875,7 +875,7 @@ export function AdminConsole({
                               : "Open local mode"}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-[var(--ink-secondary)]">
+                        <td className="px-4 py-3 font-mono text-[0.78125rem] text-[var(--ink-secondary)]">
                           Canonical host {diagnostics.canonicalUrl}
                         </td>
                       </tr>
@@ -1000,7 +1000,7 @@ export function AdminConsole({
                 <div className="overflow-x-auto rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] xl:col-span-7">
                   <table className="w-full border-collapse text-left">
                     <thead>
-                      <tr className="type-table border-b border-[var(--border-hairline)] bg-[var(--bg-canvas)] text-[var(--ink-muted)]">
+                      <tr className="type-kicker border-b border-[var(--border-hairline)] bg-[var(--bg-canvas)] text-[var(--ink-muted)]">
                         <th className="px-4 py-3 font-medium">System</th>
                         <th className="px-4 py-3 font-medium">Year</th>
                         <th className="px-4 py-3 font-medium">Status</th>
@@ -1446,7 +1446,7 @@ export function AdminConsole({
                   <div className="overflow-x-auto rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] xl:col-span-7">
                     <table className="w-full border-collapse text-left">
                       <thead>
-                        <tr className="type-table border-b border-[var(--border-hairline)] bg-[var(--bg-canvas)] text-[var(--ink-muted)]">
+                        <tr className="type-kicker border-b border-[var(--border-hairline)] bg-[var(--bg-canvas)] text-[var(--ink-muted)]">
                           <th className="px-4 py-3 font-medium">Sender</th>
                           <th className="px-4 py-3 font-medium">Discipline</th>
                           <th className="px-4 py-3 font-medium">Status</th>
@@ -1840,34 +1840,34 @@ export function AdminConsole({
 
               <dl className="grid grid-cols-2 divide-y divide-[var(--border-hairline)] border-y border-[var(--border-hairline)] bg-[var(--bg-surface)] sm:grid-cols-4 sm:divide-x sm:divide-y-0">
                 <div className="p-4">
-                  <dt className="type-table text-[var(--ink-muted)]">
+                  <dt className="type-kicker text-[var(--ink-muted)]">
                     Primary model
                   </dt>
-                  <dd className="type-sm mt-1 font-semibold text-[var(--ink-primary)]">
+                  <dd className="type-meta mt-1.5 font-medium text-[var(--ink-primary)]">
                     {diagnostics.primaryModel}
                   </dd>
                 </div>
                 <div className="p-4">
-                  <dt className="type-table text-[var(--ink-muted)]">
+                  <dt className="type-kicker text-[var(--ink-muted)]">
                     Failover chain
                   </dt>
-                  <dd className="type-table mt-1 text-[var(--ink-secondary)]">
+                  <dd className="type-meta mt-1.5 text-[var(--ink-secondary)]">
                     {diagnostics.fallbackModels.join(", ")}
                   </dd>
                 </div>
                 <div className="p-4">
-                  <dt className="type-table text-[var(--ink-muted)]">
+                  <dt className="type-kicker text-[var(--ink-muted)]">
                     Thinking / token cap
                   </dt>
-                  <dd className="type-sm mt-1 font-semibold tabular-nums text-[var(--ink-primary)]">
+                  <dd className="type-meta mt-1.5 font-medium text-[var(--ink-primary)]">
                     {diagnostics.thinkingLevel} · {diagnostics.maxOutputTokens}
                   </dd>
                 </div>
                 <div className="p-4">
-                  <dt className="type-table text-[var(--ink-muted)]">
+                  <dt className="type-kicker text-[var(--ink-muted)]">
                     Grounded context
                   </dt>
-                  <dd className="type-sm mt-1 font-semibold tabular-nums text-[var(--ink-primary)]">
+                  <dd className="type-meta mt-1.5 font-medium text-[var(--ink-primary)]">
                     {diagnostics.systemPromptChars.toLocaleString()} chars
                   </dd>
                 </div>
@@ -1914,7 +1914,7 @@ export function AdminConsole({
 
                 {sandboxResult && (
                   <div className="mt-6 border-t border-[var(--border-hairline)] pt-5">
-                    <div className="type-table flex flex-wrap items-center gap-x-5 gap-y-1 tabular-nums text-[var(--ink-muted)]">
+                    <div className="type-meta flex flex-wrap items-center gap-x-5 gap-y-1 text-[var(--ink-muted)]">
                       <span>
                         Mode:{" "}
                         <strong className="text-[var(--ink-primary)]">
@@ -1971,7 +1971,7 @@ export function AdminConsole({
                 </button>
 
                 {showSystemPrompt && (
-                  <pre className="type-table mt-4 max-h-96 overflow-auto rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-5 whitespace-pre-wrap text-[var(--ink-secondary)]">
+                  <pre className="type-meta mt-4 max-h-96 overflow-auto rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-5 whitespace-pre-wrap text-[var(--ink-secondary)]">
                     {diagnostics.systemPromptPreview}
                   </pre>
                 )}

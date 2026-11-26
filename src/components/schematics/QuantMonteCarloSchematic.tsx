@@ -609,9 +609,9 @@ export function QuantMonteCarloSchematic({
                         ? "#09131D"
                         : "#506376"
                   }
-                  fontSize="10"
+                  fontSize="9.5"
                   fontWeight={isBase ? "600" : "500"}
-                  fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
+                  fontFamily="var(--font-mono), ui-monospace, monospace"
                 >
                   {tick}%
                 </text>
@@ -646,8 +646,8 @@ export function QuantMonteCarloSchematic({
                     step === 0 ? "start" : step === 40 ? "end" : "middle"
                   }
                   fill="#506376"
-                  fontSize="10"
-                  fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
+                  fontSize="9.5"
+                  fontFamily="var(--font-mono), ui-monospace, monospace"
                 >
                   T{step}
                 </text>
@@ -720,9 +720,9 @@ export function QuantMonteCarloSchematic({
               y={-6}
               textAnchor="end"
               fill="#B42318"
-              fontSize="9.5"
-              fontWeight="600"
-              fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
+              fontSize="9"
+              fontWeight="500"
+              fontFamily="var(--font-mono), ui-monospace, monospace"
             >
               -10% max drawdown floor
             </text>
@@ -794,19 +794,21 @@ export function QuantMonteCarloSchematic({
       </div>
 
       {/* Calibrated Telemetry Footer */}
-      <div className="type-sm grid grid-cols-2 divide-x divide-y divide-[var(--border-hairline)] border-t border-[var(--border-hairline)] bg-[var(--bg-surface)] tabular-nums sm:grid-cols-4 sm:divide-y-0">
+      <div className="grid grid-cols-2 divide-x divide-y divide-[var(--border-hairline)] border-t border-[var(--border-hairline)] bg-[var(--bg-surface)] tabular-nums sm:grid-cols-4 sm:divide-y-0">
         <div className="px-4 py-3">
-          <div className="text-[var(--ink-muted)]">Median end</div>
-          <div className="mt-0.5 font-semibold text-[var(--ink-primary)]">
+          <div className="type-kicker text-[var(--ink-muted)]">Median end</div>
+          <div className="type-meta mt-1 font-medium text-[var(--ink-primary)]">
             <BlurCrossfade inline contentKey={`${riskKey}-${winRateKey}-med`}>
               {simulation.medianEnd.toFixed(1)}%
             </BlurCrossfade>
           </div>
         </div>
         <div className="px-4 py-3">
-          <div className="text-[var(--ink-muted)]">Worst drawdown</div>
+          <div className="type-kicker text-[var(--ink-muted)]">
+            Worst drawdown
+          </div>
           <div
-            className={`mt-0.5 font-semibold ${
+            className={`type-meta mt-1 font-medium ${
               simulation.breachesPropLimit
                 ? "text-[var(--status-danger)]"
                 : "text-[var(--status-positive)]"
@@ -818,8 +820,8 @@ export function QuantMonteCarloSchematic({
           </div>
         </div>
         <div className="px-4 py-3">
-          <div className="text-[var(--ink-muted)]">Expectancy</div>
-          <div className="mt-0.5 font-semibold text-[var(--accent-deep)]">
+          <div className="type-kicker text-[var(--ink-muted)]">Expectancy</div>
+          <div className="type-meta mt-1 font-medium text-[var(--accent-deep)]">
             <BlurCrossfade inline contentKey={`${riskKey}-${winRateKey}-exp`}>
               {simulation.expectancyR >= 0 ? "+" : ""}
               {simulation.expectancyR.toFixed(2)}R
@@ -827,8 +829,10 @@ export function QuantMonteCarloSchematic({
           </div>
         </div>
         <div className="px-4 py-3">
-          <div className="text-[var(--ink-muted)]">P25 to P75 spread</div>
-          <div className="mt-0.5 font-semibold text-[var(--ink-primary)]">
+          <div className="type-kicker text-[var(--ink-muted)]">
+            P25 to P75 spread
+          </div>
+          <div className="type-meta mt-1 font-medium text-[var(--ink-primary)]">
             <BlurCrossfade inline contentKey={`${riskKey}-${winRateKey}-iqr`}>
               {simulation.p25End.toFixed(0)} to {simulation.p75End.toFixed(0)}%
             </BlurCrossfade>

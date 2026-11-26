@@ -78,7 +78,7 @@ export default async function CaseStudyPage({ params }: PageProps) {
             {project.subtitle}
           </p>
 
-          <p className="type-sm mt-3 tabular-nums text-[var(--ink-muted)]">
+          <p className="type-meta mt-3 text-[var(--ink-muted)]">
             {project.clientDomain} · {project.year} · {project.statusBadge}
             {project.isNda ? " · Client confidentiality preserved" : ""}
           </p>
@@ -97,7 +97,7 @@ export default async function CaseStudyPage({ params }: PageProps) {
             <h2 className="type-subhead text-[var(--ink-primary)]">
               Interactive architecture schematic
             </h2>
-            <p className="type-sm text-[var(--ink-muted)]">
+            <p className="type-meta text-[var(--ink-muted)]">
               Inspect nodes, switch timeframes, or scrub parameters directly
             </p>
           </div>
@@ -180,17 +180,17 @@ export default async function CaseStudyPage({ params }: PageProps) {
           {/* Sticky Technical Specification Rail */}
           <aside className="lg:sticky lg:top-24 lg:col-span-4 lg:self-start lg:border-l lg:border-[var(--border-hairline)] lg:pl-10">
             <div>
-              <h3 className="type-subhead text-[var(--ink-primary)]">
+              <h3 className="type-kicker text-[var(--ink-muted)]">
                 Production stack
               </h3>
-              <p className="type-sm mt-3 leading-relaxed text-[var(--ink-secondary)]">
+              <p className="type-meta mt-3 leading-relaxed text-[var(--ink-secondary)]">
                 {project.stack.join(" · ")}
               </p>
             </div>
 
             {project.links.length > 0 && (
               <div className="mt-8 border-t border-[var(--border-hairline)] pt-6">
-                <h3 className="type-subhead text-[var(--ink-primary)]">
+                <h3 className="type-kicker text-[var(--ink-muted)]">
                   Deployments and references
                 </h3>
                 <ul className="mt-3 space-y-2.5">
@@ -246,16 +246,16 @@ export default async function CaseStudyPage({ params }: PageProps) {
             href={`/work/${prevProject.slug}`}
             className="group block py-2"
           >
-            <span className="type-sm inline-flex items-center gap-1.5 text-[var(--ink-muted)]">
+            <span className="type-kicker inline-flex items-center gap-1.5 text-[var(--ink-muted)]">
               <ArrowLeft
-                size={14}
+                size={13}
                 weight="bold"
                 className="hover-nudge-x-neg shrink-0"
                 aria-hidden="true"
               />
               <span>Previous dossier</span>
             </span>
-            <span className="type-subhead mt-1.5 block text-[var(--ink-primary)] transition-colors duration-150 group-hover:text-[var(--accent-deep)]">
+            <span className="type-subhead mt-2 block text-[var(--ink-primary)] transition-colors duration-150 group-hover:text-[var(--accent-deep)]">
               {prevProject.title}
             </span>
           </Link>
@@ -264,16 +264,16 @@ export default async function CaseStudyPage({ params }: PageProps) {
             href={`/work/${nextProject.slug}`}
             className="group block py-2 sm:text-right"
           >
-            <span className="type-sm inline-flex items-center gap-1.5 text-[var(--ink-muted)]">
+            <span className="type-kicker inline-flex items-center gap-1.5 text-[var(--ink-muted)]">
               <span>Next dossier</span>
               <ArrowRight
-                size={14}
+                size={13}
                 weight="bold"
                 className="hover-nudge-x shrink-0"
                 aria-hidden="true"
               />
             </span>
-            <span className="type-subhead mt-1.5 block text-[var(--ink-primary)] transition-colors duration-150 group-hover:text-[var(--accent-deep)]">
+            <span className="type-subhead mt-2 block text-[var(--ink-primary)] transition-colors duration-150 group-hover:text-[var(--accent-deep)]">
               {nextProject.title}
             </span>
           </Link>

@@ -113,13 +113,13 @@ export function ExperienceView() {
               <StaggerItem key={item.id} index={idx}>
                 <article className="grid gap-5 py-9 lg:grid-cols-12 lg:gap-10">
                   <div className="lg:col-span-3">
-                    <p className="type-body font-semibold tabular-nums text-[var(--ink-primary)]">
+                    <p className="type-meta font-medium text-[var(--ink-primary)]">
                       {item.period}
                     </p>
                     <p className="type-sm mt-1 text-[var(--ink-muted)]">
                       {item.location}
                     </p>
-                    <p className="type-sm mt-2 font-medium text-[var(--accent-deep)]">
+                    <p className="type-kicker mt-2.5 text-[var(--accent-deep)]">
                       {item.category === "software-ai"
                         ? "Software and AI"
                         : "Clinical and biomedical"}
@@ -132,7 +132,7 @@ export function ExperienceView() {
                         {item.organization}
                       </h3>
                       {item.highlightBadge && (
-                        <span className="type-sm text-[var(--ink-muted)]">
+                        <span className="type-meta text-[var(--ink-muted)]">
                           · {item.highlightBadge}
                         </span>
                       )}
@@ -196,13 +196,13 @@ export function ExperienceView() {
           <h3 className="type-subhead mt-6 text-[var(--ink-primary)]">
             {EDUCATION.degree}
           </h3>
-          <p className="type-sm mt-1 text-[var(--ink-muted)]">
+          <p className="type-meta mt-1 text-[var(--ink-muted)]">
             {EDUCATION.specialization} · {EDUCATION.institution}
           </p>
 
           <div className="mt-8 grid gap-8 sm:grid-cols-2">
             <div className="border-t border-[var(--border-hairline)] pt-4">
-              <p className="type-sm font-medium tabular-nums text-[var(--accent-deep)]">
+              <p className="type-kicker tabular-nums text-[var(--accent-deep)]">
                 Research thesis · {EDUCATION.thesisYear}
               </p>
               <p className="type-body mt-2 text-[var(--ink-primary)]">
@@ -211,7 +211,7 @@ export function ExperienceView() {
             </div>
 
             <div className="border-t border-[var(--border-hairline)] pt-4">
-              <p className="type-sm font-medium tabular-nums text-[var(--accent-deep)]">
+              <p className="type-kicker tabular-nums text-[var(--accent-deep)]">
                 Clinical seminar · {EDUCATION.seminarYear}
               </p>
               <p className="type-body mt-2 text-[var(--ink-primary)]">
@@ -233,7 +233,7 @@ export function ExperienceView() {
                   <span className="type-subhead text-[var(--ink-primary)]">
                     {lang.name}
                   </span>
-                  <span className="type-sm text-[var(--ink-muted)]">
+                  <span className="type-meta text-[var(--ink-muted)]">
                     {lang.proficiency}
                   </span>
                 </div>
@@ -266,7 +266,7 @@ export function ExperienceView() {
               key={item.name}
               className="border-t border-[var(--border-hairline)] pt-4"
             >
-              <p className="type-sm font-medium tabular-nums text-[var(--accent-deep)]">
+              <p className="type-meta font-medium text-[var(--accent-deep)]">
                 {item.organizer} · {item.year}
               </p>
               <h3 className="type-subhead mt-2 text-[var(--ink-primary)]">
