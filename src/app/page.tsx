@@ -4,7 +4,6 @@ import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { PROFILE } from "@/data/profile";
 import { PROJECTS, type ProjectDossier } from "@/data/projects";
 import { HACKATHONS_AND_PROGRAMS } from "@/data/experience";
-import { LiveClockBadge } from "@/components/ui/LiveClockBadge";
 import { Reveal } from "@/components/ui/MotionPrimitives";
 import {
   ClosingCtaButtons,
@@ -48,11 +47,9 @@ export default function HomePage() {
       <section className="bg-[var(--bg-canvas)] pt-10 pb-14 lg:pt-14 lg:pb-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,7.4fr)_minmax(0,4.6fr)] lg:gap-8">
-            {/* Left 7-Col Strict 4-Element Stack */}
+            {/* Left 7-Col Strict 3-Element Stack */}
             <div className="min-w-0">
-              <LiveClockBadge />
-
-              <h1 className="mt-5 text-[clamp(2.15rem,3.2vw,2.625rem)] font-semibold leading-[1.08] tracking-[-0.035em] text-[var(--ink-primary)] text-balance">
+              <h1 className="text-[clamp(2.15rem,3.2vw,2.625rem)] font-semibold leading-[1.08] tracking-[-0.035em] text-[var(--ink-primary)] text-balance">
                 Engineering SaaS, AI agents &amp;{" "}
                 <br className="hidden lg:inline" />
                 quant systems with{" "}

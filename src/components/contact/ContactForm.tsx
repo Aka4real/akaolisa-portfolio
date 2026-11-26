@@ -16,7 +16,6 @@ import {
   WhatsappLogo,
 } from "@phosphor-icons/react";
 import { PROFILE, SERVICE_PILLARS } from "@/data/profile";
-import { LiveClockBadge } from "@/components/ui/LiveClockBadge";
 import {
   BlurCrossfade,
   EASE_OUT_EXPO,
@@ -309,9 +308,7 @@ export function ContactForm() {
       {/* Left Column: Direct Channels & Availability */}
       <aside className="min-w-0 space-y-6 lg:col-span-5">
         <div>
-          <LiveClockBadge compact />
-
-          <h2 className="mt-5 text-xl font-semibold tracking-[-0.02em] text-[var(--ink-primary)]">
+          <h2 className="text-xl font-semibold tracking-[-0.02em] text-[var(--ink-primary)]">
             Direct Communication Channels
           </h2>
           <p className="mt-2 max-w-[44ch] text-sm leading-relaxed text-[var(--ink-secondary)]">

@@ -11,7 +11,6 @@ import {
   Sparkle,
 } from "@phosphor-icons/react";
 import { PROFILE } from "@/data/profile";
-import { LiveClockBadge } from "@/components/ui/LiveClockBadge";
 import { BlurCrossfade } from "@/components/ui/MotionPrimitives";
 
 interface SiteFooterProps {
@@ -78,9 +77,6 @@ export function SiteFooter({
               . Licensed Biomedical Scientist (B.MLS) applying empirical rigor
               to production software.
             </p>
-            <div className="mt-5">
-              <LiveClockBadge compact />
-            </div>
           </div>
 
           {/* Directory */}
