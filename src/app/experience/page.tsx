@@ -5,7 +5,7 @@ import { buildPageMetadata } from "@/lib/site";
 export const metadata: Metadata = buildPageMetadata({
   title: "Experience, Clinical Lab & Credentials",
   description:
-    "Career timeline, OXAKALABS studio leadership, Outlier.ai & OneForma RLHF benchmarking, FMC Umuahia clinical leadership (250+ trainees), B.MLS Clinical Chemistry thesis, 2026 hackathons, and languages.",
+    "Career timeline, OXAKALABS studio & DevOps cloud engineering leadership, Outlier.ai & OneForma RLHF benchmarking, FMC Umuahia clinical leadership (250+ trainees), B.MLS Clinical Chemistry thesis, 2026 hackathons, and languages.",
   path: "/experience",
 });
 

@@ -123,7 +123,7 @@ export function buildGroundedSystemPrompt(): string {
     `VERIFIED METRICS:`,
     metricsText,
     ``,
-    `FOUR CORE SERVICE PILLARS:`,
+    `FIVE CORE SERVICE PILLARS:`,
     pillarsText,
     ``,
     `SHIPPED CASE STUDIES (COMPLETE DOSSIERS):`,
@@ -168,6 +168,16 @@ export function suggestLinksForConversation(
     }
   };
 
+  if (
+    combined.includes("gravitator") ||
+    combined.includes("orbital wire") ||
+    combined.includes("gravity deck") ||
+    combined.includes("opspilot") ||
+    combined.includes("orbitbench") ||
+    combined.includes("skunkworks")
+  ) {
+    pushLink("Inspect G-Gravitator Dossier", "/work/g-gravitator");
+  }
   if (combined.includes("fortress")) {
     pushLink("Inspect Fortress Fleet AI", "/work/fortress-fleet-ai");
   }
@@ -185,6 +195,18 @@ export function suggestLinksForConversation(
   }
   if (combined.includes("blaire") || combined.includes("aifycycle") || combined.includes("e-commerce")) {
     pushLink("Inspect E-Commerce Builds", "/work/production-ecommerce-builds");
+  }
+  if (
+    combined.includes("devops") ||
+    combined.includes("docker") ||
+    combined.includes("coolify") ||
+    combined.includes("ci/cd") ||
+    combined.includes("linux vps") ||
+    combined.includes("cloudflare") ||
+    combined.includes("cloud run") ||
+    combined.includes("infrastructure")
+  ) {
+    pushLink("Start a DevOps Project", "/contact?track=devops-cloud");
   }
   if (
     combined.includes("b.mls") ||
@@ -220,6 +242,25 @@ export function answerFromGroundedIndex(rawQuery: string): ChatResponsePayload {
   const q = rawQuery.toLowerCase().trim();
 
   // 1. Specific project lookups
+  if (
+    q.includes("gravitator") ||
+    q.includes("orbital wire") ||
+    q.includes("gravity deck") ||
+    q.includes("opspilot") ||
+    q.includes("orbitbench") ||
+    q.includes("skunkworks")
+  ) {
+    const p = PROJECTS.find((item) => item.slug === "g-gravitator")!;
+    return {
+      mode: "grounded-index",
+      answer: `${p.title} (ggravitator.xyz) is Akaolisa's flagship software and AI creativity lab operating OXAKALABS as a four-unit flywheel: Systems (B2B Gravity Audits, Velocity MVPs, and retainers), OXAKALABS Skunkworks (48-hour sprints and a Live Hackathon Radar tracking 13+ global events), Labs (commercial drops G-01 through G-04 graduated via a 25-point scorecard), and Orbit (6-week technical builders residency), paired with The Orbital Wire real-time Gemini 2.5 Flash intelligence pipeline.`,
+      links: [
+        { label: "Inspect G-Gravitator Dossier", href: `/work/${p.slug}` },
+        { label: "Browse All Work", href: "/work" },
+      ],
+    };
+  }
+
   if (q.includes("fortress") && q.includes("koridor")) {
     return {
       mode: "grounded-index",
@@ -244,7 +285,7 @@ export function answerFromGroundedIndex(rawQuery: string): ChatResponsePayload {
     };
   }
 
-  if (q.includes("fortress") || q.includes("guardrail") || q.includes("pgvector") || q.includes("cloud run")) {
+  if (q.includes("fortress") || q.includes("guardrail") || q.includes("pgvector")) {
     const p = PROJECTS.find((item) => item.slug === "fortress-fleet-ai")!;
     return {
       mode: "grounded-index",
@@ -300,19 +341,48 @@ export function answerFromGroundedIndex(rawQuery: string): ChatResponsePayload {
     };
   }
 
-  // 2. AI & LLM Stack
+  // 2. DevOps & Cloud Infrastructure
+  if (
+    q.includes("devops") ||
+    q.includes("docker") ||
+    q.includes("coolify") ||
+    q.includes("vps") ||
+    q.includes("linux") ||
+    q.includes("ci/cd") ||
+    q.includes("cicd") ||
+    q.includes("github actions") ||
+    q.includes("cloudflare") ||
+    q.includes("cloud run") ||
+    q.includes("infrastructure") ||
+    q.includes("sre") ||
+    q.includes("deploy") ||
+    q.includes("nginx")
+  ) {
+    return {
+      mode: "grounded-index",
+      answer: `Akaolisa is a hands-on DevOps and cloud infrastructure engineer shipping containerized Docker services, self-hosted Ubuntu Linux VPS and Coolify clusters, Google Cloud Run deployments, automated GitHub Actions CI/CD release gates, Cloudflare DNS/WAF and SSL/TLS edge hardening, and PostgreSQL/Resend SMTP (SPF/DKIM) operational reliability across G-Gravitator, Fortress Fleet AI, Koridor Engine OS, and client SaaS platforms.`,
+      links: [
+        { label: "Start a DevOps Project", href: "/contact?track=devops-cloud" },
+        { label: "Inspect Fortress Fleet AI", href: "/work/fortress-fleet-ai" },
+        { label: "Browse Shipped Systems", href: "/work" },
+      ],
+    };
+  }
+
+  // 3. AI & LLM Stack
   if (q.includes("ai") || q.includes("llm") || q.includes("agent") || q.includes("gemini") || q.includes("mcp") || q.includes("rag") || q.includes("rlhf") || q.includes("outlier")) {
     return {
       mode: "grounded-index",
-      answer: `Akaolisa's AI stack covers multi-agent orchestration, Google Gemini API (3.8 Flash / 4 Argon), Gemma 2/4, Qwen, RAG with Supabase pgvector, Model Context Protocol (MCP), local LLM runtimes (Ollama, LM Studio), and QLoRA/Unsloth fine-tuning. Beyond shipping Fortress Fleet AI and Koridor Engine OS, he benchmarks frontier LLM code, quantitative math, and clinical reasoning for Outlier.ai and OneForma (2026-Present).`,
+      answer: `Akaolisa's AI stack covers multi-agent orchestration, Google Gemini API (3.8 Flash / 4 Argon), Gemma 2/4, Qwen, RAG with Supabase pgvector, Model Context Protocol (MCP), local LLM runtimes (Ollama, LM Studio), and QLoRA/Unsloth fine-tuning. Beyond shipping G-Gravitator, Fortress Fleet AI, and Koridor Engine OS, he benchmarks frontier LLM code, quantitative math, and clinical reasoning for Outlier.ai and OneForma (2026-Present).`,
       links: [
+        { label: "Inspect G-Gravitator", href: "/work/g-gravitator" },
         { label: "Inspect Fortress Fleet AI", href: "/work/fortress-fleet-ai" },
         { label: "Experience & RLHF Track", href: "/experience" },
       ],
     };
   }
 
-  // 3. Biomedical / Clinical / Education
+  // 4. Biomedical / Clinical / Education
   if (
     q.includes("bio") ||
     q.includes("medic") ||
@@ -336,19 +406,20 @@ export function answerFromGroundedIndex(rawQuery: string): ChatResponsePayload {
     };
   }
 
-  // 4. Studio / OXAKALABS
+  // 5. Studio / OXAKALABS
   if (q.includes("oxaka") || q.includes("studio") || q.includes("agency") || q.includes("founder")) {
     return {
       mode: "grounded-index",
-      answer: `OXAKALABS (${PROFILE.studio.primaryDisplay} · ${PROFILE.studio.mirrorDisplay}) is Akaolisa's independent product engineering studio (2022-Present). Through OXAKALABS he leads end-to-end architecture, UI/UX engineering, PostgreSQL modeling, and cloud deployment across SaaS, AI automation, FinTech, and retail clients.`,
+      answer: `OXAKALABS (${PROFILE.studio.primaryDisplay} · ${PROFILE.studio.mirrorDisplay}) is Akaolisa's independent product engineering studio (2022-Present), now also operating within the G-Gravitator software and AI creativity lab (ggravitator.xyz). He leads end-to-end architecture, DevOps & cloud deployment, UI/UX engineering, and PostgreSQL modeling across SaaS, AI automation, FinTech, and retail clients.`,
       links: [
+        { label: "Inspect G-Gravitator", href: "/work/g-gravitator" },
         { label: "Browse Shipped Systems", href: "/work" },
         { label: "Start a Project", href: "/contact" },
       ],
     };
   }
 
-  // 5. Hackathons / Languages
+  // 6. Hackathons / Languages
   if (q.includes("hackathon") || q.includes("meta") || q.includes("devpost") || q.includes("dora") || q.includes("cerebral")) {
     return {
       mode: "grounded-index",
@@ -368,7 +439,7 @@ export function answerFromGroundedIndex(rawQuery: string): ChatResponsePayload {
     };
   }
 
-  // 6. Availability, Contact, Hiring, Rates, Stack
+  // 7. Availability, Contact, Hiring, Rates, Stack
   if (
     q.includes("avail") ||
     q.includes("hire") ||
@@ -384,7 +455,7 @@ export function answerFromGroundedIndex(rawQuery: string): ChatResponsePayload {
   ) {
     return {
       mode: "grounded-index",
-      answer: `Akaolisa is available for remote freelance contracts, founding/principal engineering collaborations, and technical advisory worldwide from UTC+1 (West Africa Time). Reach him via the Contact form, email (${PROFILE.email}), or primary WhatsApp (${PROFILE.whatsappDisplay}), or download his full resume PDF directly from the header.`,
+      answer: `Akaolisa is available for remote freelance contracts, founding/principal engineering collaborations, DevOps cloud architecture, and technical advisory worldwide from UTC+1 (West Africa Time). Reach him via the Contact form, email (${PROFILE.email}), or primary WhatsApp (${PROFILE.whatsappDisplay}), or download his full resume PDF directly from the header.`,
       links: [
         { label: "Open Contact & Inquiry Form", href: "/contact" },
         { label: "View Experience & Resume", href: "/experience" },
@@ -392,13 +463,13 @@ export function answerFromGroundedIndex(rawQuery: string): ChatResponsePayload {
     };
   }
 
-  if (q.includes("stack") || q.includes("next") || q.includes("supabase") || q.includes("docker") || q.includes("coolify") || q.includes("tech")) {
+  if (q.includes("stack") || q.includes("next") || q.includes("supabase") || q.includes("tech")) {
     return {
       mode: "grounded-index",
-      answer: `Core full-stack & infrastructure tooling: Next.js (App Router), React, TypeScript, Node.js, Tailwind CSS, Framer Motion, Supabase (PostgreSQL, RLS, Auth), REST & WebSockets, Docker, Coolify, Linux VPS self-hosting, Vercel, Cloudflare DNS, and Resend SMTP. This is complemented by Gemini/Gemma/MCP AI pipelines and Python/R quantitative engines.`,
+      answer: `Core full-stack & DevOps tooling: Next.js (App Router), React, TypeScript, Node.js, Tailwind CSS, Framer Motion, Supabase (PostgreSQL, RLS, Auth), REST & WebSockets, Docker, Coolify, Ubuntu Linux VPS, Google Cloud Run, GitHub Actions CI/CD, Vercel, Cloudflare DNS, and Resend SMTP. This is complemented by Gemini/Gemma/MCP AI pipelines and Python/R quantitative engines.`,
       links: [
-        { label: "Inspect All 6 Shipped Systems", href: "/work" },
-        { label: "Start a SaaS Build", href: "/contact?track=full-stack-saas" },
+        { label: `Inspect All ${PROJECTS.length} Shipped Systems`, href: "/work" },
+        { label: "Start a DevOps Project", href: "/contact?track=devops-cloud" },
       ],
     };
   }
@@ -406,7 +477,7 @@ export function answerFromGroundedIndex(rawQuery: string): ChatResponsePayload {
   // Default executive overview
   return {
     mode: "grounded-index",
-    answer: `${PROFILE.displayName} is the Founder & Principal Engineer at OXAKALABS (2022-Present), shipping Full-Stack Next.js SaaS systems, autonomous multi-agent AI platforms (Fortress Fleet AI, Koridor Engine OS), and Quantitative Forex/Crypto/HFT suites. He combines software execution with empirical discipline as a licensed Medical Laboratory Scientist (B.MLS) directing 250+ clinical trainees. Ask me about any specific project, his AI/Quant stack, clinical leadership, or remote availability.`,
+    answer: `${PROFILE.displayName} is the Founder & Principal Engineer at OXAKALABS and G-Gravitator (ggravitator.xyz), shipping Full-Stack Next.js SaaS systems, hardened DevOps & cloud infrastructure (Docker, Coolify, Linux VPS, Cloud Run, CI/CD), autonomous multi-agent AI platforms, and Quantitative Forex/Crypto/HFT suites. He combines software and infrastructure reliability with empirical discipline as a licensed Medical Laboratory Scientist (B.MLS) directing 250+ clinical trainees.`,
     links: [
       { label: "Explore Selected Work", href: "/work" },
       { label: "Experience & Clinical Lab", href: "/experience" },

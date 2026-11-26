@@ -2366,3 +2366,440 @@ export function EcommerceSchematic({ compact = false }: SchematicProps) {
     </div>
   );
 }
+
+/* ========================================================================== */
+/*  7. G-GRAVITATOR — FOUR-UNIT OPERATING FLYWHEEL & ORBITAL WIRE SCHEMATIC  */
+/* ========================================================================== */
+
+interface GravitatorUnit {
+  id: string;
+  code: string;
+  title: string;
+  route: string;
+  metric: string;
+  status: string;
+  detail: string;
+  x: number;
+  y: number;
+}
+
+const GRAVITATOR_UNITS: GravitatorUnit[] = [
+  {
+    id: "systems",
+    code: "UNIT-01",
+    title: "G-Gravitator Systems",
+    route: "/systems",
+    metric: "5d Audit · 4w MVP",
+    status: "Active B2B",
+    detail:
+      "Enterprise AI foundry delivering 5-day Gravity Audits, 4-week Velocity MVPs, and monthly Lab Retainers with 100% foreground IP transfer, funding Labs drops without dilution.",
+    x: 112,
+    y: 44,
+  },
+  {
+    id: "skunkworks",
+    code: "UNIT-02",
+    title: "OXAKALABS Skunkworks",
+    route: "/skunkworks",
+    metric: "48h Sprints · 13+ Events",
+    status: "Live Radar",
+    detail:
+      "48-hour experimental R&D arm and cross-source Hackathon Radar tracking Devpost, DoraHacks, Lablab.ai, MLH, X, and Luma to stress-test frontier models under time compression.",
+    x: 528,
+    y: 44,
+  },
+  {
+    id: "labs",
+    code: "UNIT-03",
+    title: "G-Gravitator Labs",
+    route: "/labs",
+    metric: "G-01..G-04 · 23/25",
+    status: "Graduated",
+    detail:
+      "Proprietary software & AI drops promoted via the 25-point Graduation Scorecard: Gravity Deck (G-01), OpsPilot (G-02), Kinetic Studio (G-03), and OrbitBench (G-04).",
+    x: 528,
+    y: 132,
+  },
+  {
+    id: "orbit",
+    code: "UNIT-04",
+    title: "G-Gravitator Orbit",
+    route: "/orbit",
+    metric: "6-Week Residency",
+    status: "Cycle 01",
+    detail:
+      "Selective builders cohort training Applied AI, Product Systems, and Kinetic Design engineers alongside Systems principals and OXAKALABS squads through Demo Day.",
+    x: 112,
+    y: 132,
+  },
+];
+
+const GRAVITATOR_LINKS = [
+  {
+    domain: "ggravitator.xyz",
+    href: "https://ggravitator.xyz",
+    note: "Four-unit lab HQ · Command-K",
+  },
+  {
+    domain: "ggravitator.xyz/journal",
+    href: "https://www.ggravitator.xyz/journal",
+    note: "12 Dispatches · Gemini 2.5 Flash Wire",
+  },
+] as const;
+
+export function GGravitatorSchematic({ compact = false }: SchematicProps) {
+  const uid = useId();
+  const prefersReduced = useReducedMotion();
+  const [activeUnit, setActiveUnit] = useState(0);
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const current = GRAVITATOR_UNITS[activeUnit];
+
+  return (
+    <div className="flex flex-col overflow-hidden rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)]">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)]/55 px-4 py-2.5">
+        <span className="text-xs font-semibold text-[var(--ink-primary)]">
+          Four-Unit Operating Flywheel &amp; Orbital Wire
+        </span>
+        <span className="font-mono text-[11px] tabular-nums text-[var(--ink-muted)]">
+          Next.js · Gemini 2.5 Flash · Zod
+        </span>
+      </div>
+
+      <div className="relative bg-[var(--bg-surface)] px-3 pt-4 pb-3 sm:px-5">
+        <svg
+          viewBox="0 0 640 176"
+          className="h-auto w-full select-none"
+          role="img"
+          aria-label="G-Gravitator four-unit flywheel connecting Systems, OXAKALABS Skunkworks, Labs G-01 through G-04 drops, and Orbit around The Orbital Wire Gemini 2.5 Flash core"
+        >
+          {/* Subtle Orbital Field Rings */}
+          <ellipse
+            cx="320"
+            cy="88"
+            rx="168"
+            ry="58"
+            fill="none"
+            stroke="rgba(15, 20, 30, 0.065)"
+            strokeWidth="1"
+            strokeDasharray="4 4"
+          />
+          <circle
+            cx="320"
+            cy="88"
+            r="46"
+            fill="rgba(29, 78, 216, 0.045)"
+            stroke="rgba(29, 78, 216, 0.24)"
+            strokeWidth="1.2"
+          />
+
+          {/* Closed-Loop Flywheel Perimeter Vectors */}
+          {/* Top: Systems -> Skunkworks */}
+          <line
+            x1="204"
+            y1="44"
+            x2="432"
+            y2="44"
+            stroke={activeUnit === 0 ? "#1D4ED8" : "rgba(15, 20, 30, 0.16)"}
+            strokeWidth={activeUnit === 0 ? "2" : "1.25"}
+            strokeDasharray={activeUnit === 0 ? undefined : "3 3"}
+            style={{
+              transition: prefersReduced ? "none" : "stroke 200ms ease",
+            }}
+          />
+          <polygon
+            points="430,40.5 436,44 430,47.5"
+            fill={activeUnit === 0 ? "#1D4ED8" : "rgba(15, 20, 30, 0.28)"}
+          />
+
+          {/* Right: Skunkworks -> Labs */}
+          <line
+            x1="528"
+            y1="72"
+            x2="528"
+            y2="100"
+            stroke={activeUnit === 1 ? "#1D4ED8" : "rgba(15, 20, 30, 0.16)"}
+            strokeWidth={activeUnit === 1 ? "2" : "1.25"}
+            strokeDasharray={activeUnit === 1 ? undefined : "3 3"}
+            style={{
+              transition: prefersReduced ? "none" : "stroke 200ms ease",
+            }}
+          />
+          <polygon
+            points="524.5,98 528,104 531.5,98"
+            fill={activeUnit === 1 ? "#1D4ED8" : "rgba(15, 20, 30, 0.28)"}
+          />
+
+          {/* Bottom: Labs -> Orbit */}
+          <line
+            x1="436"
+            y1="132"
+            x2="208"
+            y2="132"
+            stroke={activeUnit === 2 ? "#1D4ED8" : "rgba(15, 20, 30, 0.16)"}
+            strokeWidth={activeUnit === 2 ? "2" : "1.25"}
+            strokeDasharray={activeUnit === 2 ? undefined : "3 3"}
+            style={{
+              transition: prefersReduced ? "none" : "stroke 200ms ease",
+            }}
+          />
+          <polygon
+            points="210,128.5 204,132 210,135.5"
+            fill={activeUnit === 2 ? "#1D4ED8" : "rgba(15, 20, 30, 0.28)"}
+          />
+
+          {/* Left: Orbit -> Systems */}
+          <line
+            x1="112"
+            y1="104"
+            x2="112"
+            y2="76"
+            stroke={activeUnit === 3 ? "#1D4ED8" : "rgba(15, 20, 30, 0.16)"}
+            strokeWidth={activeUnit === 3 ? "2" : "1.25"}
+            strokeDasharray={activeUnit === 3 ? undefined : "3 3"}
+            style={{
+              transition: prefersReduced ? "none" : "stroke 200ms ease",
+            }}
+          />
+          <polygon
+            points="108.5,78 112,72 115.5,78"
+            fill={activeUnit === 3 ? "#1D4ED8" : "rgba(15, 20, 30, 0.28)"}
+          />
+
+          {/* Radial Telemetry Spokes into Central Orbital Wire Core */}
+          {GRAVITATOR_UNITS.map((unit, idx) => {
+            const isActive = idx === activeUnit;
+            const startX = unit.x < 320 ? unit.x + 90 : unit.x - 90;
+            const endX = unit.x < 320 ? 278 : 362;
+            const endY = unit.y < 88 ? 72 : 104;
+            return (
+              <line
+                key={`spoke-${unit.id}`}
+                x1={startX}
+                y1={unit.y}
+                x2={endX}
+                y2={endY}
+                stroke={isActive ? "#1D4ED8" : "rgba(15, 20, 30, 0.1)"}
+                strokeWidth={isActive ? "1.75" : "1"}
+                strokeDasharray={isActive ? undefined : "2.5 2.5"}
+                style={{
+                  transition: prefersReduced ? "none" : "stroke 200ms ease",
+                }}
+              />
+            );
+          })}
+
+          {/* Central Intelligence Hub: Orbital Wire */}
+          <g>
+            <circle
+              cx="320"
+              cy="88"
+              r="38"
+              fill="#0F141E"
+              stroke="#1D4ED8"
+              strokeWidth="1.5"
+            />
+            <text
+              x="320"
+              y="83"
+              textAnchor="middle"
+              fill="#F8F9FB"
+              fontSize="9.5"
+              fontWeight="600"
+              fontFamily="var(--font-sans), ui-sans-serif, system-ui, sans-serif"
+            >
+              Orbital Wire
+            </text>
+            <text
+              x="320"
+              y="97"
+              textAnchor="middle"
+              fill="#93C5FD"
+              fontSize="8"
+              fontWeight="500"
+              fontFamily="var(--font-mono), ui-monospace, monospace"
+            >
+              &lt;200ms FSM
+            </text>
+          </g>
+
+          {/* Four Interlocking Unit Cards */}
+          {GRAVITATOR_UNITS.map((unit, idx) => {
+            const isSelected = idx === activeUnit;
+            const rectX = unit.x - 92;
+            const rectY = unit.y - 26;
+            return (
+              <g
+                key={unit.id}
+                onClick={compact ? undefined : () => setActiveUnit(idx)}
+                className={compact ? undefined : "cursor-pointer"}
+              >
+                {isSelected && (
+                  <rect
+                    x={rectX - 3.5}
+                    y={rectY - 3.5}
+                    width="191"
+                    height="59"
+                    rx="11"
+                    fill="rgba(29, 78, 216, 0.08)"
+                    stroke="#1D4ED8"
+                    strokeOpacity="0.55"
+                    strokeWidth="1.2"
+                  />
+                )}
+                <rect
+                  x={rectX}
+                  y={rectY}
+                  width="184"
+                  height="52"
+                  rx="8"
+                  fill={isSelected ? "#EEF3FF" : "#FFFFFF"}
+                  stroke={isSelected ? "#1D4ED8" : "rgba(15, 20, 30, 0.14)"}
+                  strokeWidth={isSelected ? "1.5" : "1"}
+                />
+                <circle
+                  cx={rectX + 14}
+                  cy={rectY + 18}
+                  r="3"
+                  fill={isSelected ? "#1D4ED8" : "#136F3A"}
+                />
+                <text
+                  x={rectX + 24}
+                  y={rectY + 21.5}
+                  fill="#0F141E"
+                  fontSize="10.2"
+                  fontWeight="600"
+                  fontFamily="var(--font-sans), ui-sans-serif, system-ui, sans-serif"
+                >
+                  {unit.title}
+                </text>
+                <text
+                  x={rectX + 24}
+                  y={rectY + 38}
+                  fill={isSelected ? "#153AA2" : "#5B6475"}
+                  fontSize="8.5"
+                  fontWeight="500"
+                  fontFamily="var(--font-mono), ui-monospace, monospace"
+                >
+                  {unit.metric}
+                </text>
+              </g>
+            );
+          })}
+        </svg>
+      </div>
+
+      {!compact ? (
+        <>
+          <LayoutGroup id={`gravitator-${uid}`}>
+            <div
+              role="tablist"
+              aria-label="Inspect G-Gravitator operating flywheel divisions"
+              className="grid grid-cols-2 divide-x divide-y divide-[var(--border-hairline)] border-t border-[var(--border-hairline)] sm:grid-cols-4 sm:divide-y-0"
+            >
+              {GRAVITATOR_UNITS.map((unit, idx) => {
+                const isSelected = idx === activeUnit;
+                return (
+                  <button
+                    key={unit.id}
+                    ref={(el) => {
+                      tabRefs.current[idx] = el;
+                    }}
+                    type="button"
+                    role="tab"
+                    aria-selected={isSelected}
+                    tabIndex={isSelected ? 0 : -1}
+                    onClick={() => setActiveUnit(idx)}
+                    onKeyDown={(e) =>
+                      handleTabListKeyDown(
+                        e,
+                        idx,
+                        GRAVITATOR_UNITS.length,
+                        setActiveUnit,
+                        tabRefs
+                      )
+                    }
+                    className={`btn-press relative px-4 py-3 text-left ${
+                      isSelected
+                        ? "bg-[var(--accent-soft)] text-[var(--ink-primary)]"
+                        : "bg-[var(--bg-surface)] text-[var(--ink-secondary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--ink-primary)]"
+                    }`}
+                  >
+                    {isSelected && (
+                      <motion.span
+                        layoutId="gravitator-unit-bar"
+                        transition={SPRING_TAB}
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-[var(--accent)]"
+                      />
+                    )}
+                    <div className="text-xs font-semibold text-[var(--ink-primary)]">
+                      {unit.title
+                        .replace("G-Gravitator ", "")
+                        .replace("OXAKALABS ", "")}
+                    </div>
+                    <div className="mt-0.5 font-mono text-[11px] text-[var(--ink-muted)]">
+                      {unit.route}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </LayoutGroup>
+
+          <div className="border-t border-[var(--border-hairline)] bg-[var(--bg-subtle)]/55 px-4 py-3">
+            <BlurCrossfade contentKey={current.id}>
+              <div className="flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] tabular-nums">
+                <span className="font-semibold text-[var(--accent-deep)]">
+                  {current.code} · {current.title.toUpperCase()} ({current.route})
+                </span>
+                <span className="text-[var(--status-positive)]">
+                  {current.status} · {current.metric}
+                </span>
+              </div>
+              <p className="mt-1.5 text-xs leading-relaxed text-[var(--ink-secondary)]">
+                {current.detail}
+              </p>
+            </BlurCrossfade>
+          </div>
+
+          <div className="grid divide-y divide-[var(--border-hairline)] border-t border-[var(--border-hairline)] bg-[var(--bg-surface)] sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+            {GRAVITATOR_LINKS.map((item) => (
+              <a
+                key={item.domain}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-press group flex items-center justify-between gap-3 px-4 py-3 text-xs text-[var(--ink-primary)] hover:bg-[var(--bg-subtle)]/60 hover:text-[var(--accent-deep)]"
+              >
+                <div className="min-w-0">
+                  <div className="truncate font-mono font-semibold">
+                    {item.domain}
+                  </div>
+                  <div className="mt-0.5 font-mono text-[11px] tabular-nums text-[var(--ink-muted)]">
+                    {item.note}
+                  </div>
+                </div>
+                <span className="inline-flex shrink-0 items-center gap-1.5 font-mono text-[11px] font-medium text-[var(--status-positive)]">
+                  LIVE
+                  <ArrowUpRight
+                    size={13}
+                    weight="bold"
+                    className="hover-nudge-ne text-[var(--ink-secondary)] group-hover:text-[var(--accent-deep)]"
+                    aria-hidden="true"
+                  />
+                </span>
+              </a>
+            ))}
+          </div>
+        </>
+      ) : (
+        <div className="flex items-center justify-between border-t border-[var(--border-hairline)] bg-[var(--bg-subtle)]/55 px-4 py-2 font-mono text-[11px] tabular-nums text-[var(--ink-muted)]">
+          <span>SYSTEMS · SKUNKWORKS · LABS · ORBIT</span>
+          <span className="font-medium text-[var(--status-positive)]">
+            GGRAVITATOR.XYZ LIVE
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}

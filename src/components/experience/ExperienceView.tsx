@@ -32,7 +32,7 @@ type ExpFilter = "all" | ExperienceCategory;
 
 const EXPERIENCE_TABS: ReadonlyArray<SegmentedTabOption<ExpFilter>> = [
   { value: "all", label: "All Roles" },
-  { value: "software-ai", label: "Software & AI" },
+  { value: "software-ai", label: "Software, DevOps & AI" },
   { value: "clinical-biomedical", label: "Clinical & Lab" },
 ];
 
@@ -53,13 +53,14 @@ export function ExperienceView() {
       {/* Page Header with Inline Resume Actions (zero standalone CV banner box) */}
       <header className="flex flex-col justify-between gap-6 border-b border-[var(--border-hairline)] pb-9 lg:flex-row lg:items-end">
         <div className="min-w-0">
-          <h1 className="text-[clamp(2rem,3.2vw,2.75rem)] font-semibold leading-[1.1] tracking-[-0.03em] text-[var(--ink-primary)]">
+          <h1 className="text-[clamp(2rem,3.2vw,2.75rem)] font-medium leading-[1.1] tracking-[-0.03em] text-[var(--ink-primary)]">
             Experience, Clinical Lab &amp; Credentials
           </h1>
-          <p className="mt-4 max-w-[58ch] text-[17px] leading-[1.6] text-[var(--ink-secondary)]">
-            Full-lifecycle software engineering at OXAKALABS and frontier RLHF
-            evaluation paired with licensed clinical chemistry training and
-            leadership across 250+ medical laboratory trainees.
+          <p className="mt-4 max-w-[60ch] text-[16.5px] leading-[1.62] text-[var(--ink-secondary)]">
+            Full-lifecycle software engineering, DevOps &amp; cloud
+            infrastructure at OXAKALABS, and frontier RLHF evaluation paired
+            with licensed clinical chemistry training and leadership across 250+
+            medical laboratory trainees.
           </p>
         </div>
 
@@ -95,13 +96,14 @@ export function ExperienceView() {
           <div>
             <h2
               id="trajectory-heading"
-              className="text-[clamp(1.375rem,2vw,1.75rem)] font-semibold leading-[1.2] tracking-[-0.025em] text-[var(--ink-primary)]"
+              className="text-[clamp(1.375rem,2vw,1.75rem)] font-medium leading-[1.2] tracking-[-0.025em] text-[var(--ink-primary)]"
             >
-              Engineering, AI Training &amp; Clinical Leadership
+              Engineering, DevOps, AI &amp; Clinical Leadership
             </h2>
             <p className="mt-2 max-w-[56ch] text-sm leading-relaxed text-[var(--ink-secondary)]">
-              Filter by engineering and AI work or licensed clinical laboratory
-              leadership across teaching hospitals and public health programs.
+              Filter by software, DevOps, and AI engineering work or licensed
+              clinical laboratory leadership across teaching hospitals and
+              public health programs.
             </p>
           </div>
 
@@ -157,7 +159,7 @@ export function ExperienceView() {
                         )}
                         <span>
                           {item.category === "software-ai"
-                            ? "Software & AI"
+                            ? "Software, DevOps & AI"
                             : "Clinical & Biomedical"}
                         </span>
                       </span>

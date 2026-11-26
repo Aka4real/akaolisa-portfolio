@@ -64,8 +64,8 @@ export function SiteFooter({
               </span>
             </div>
             <p className="mt-3.5 max-w-sm text-sm leading-relaxed text-[var(--ink-secondary)]">
-              Principal Full-Stack, AI Agent &amp; Quantitative Systems Engineer
-              at{" "}
+              Principal Full-Stack, DevOps &amp; Cloud Infrastructure, AI Agent
+              &amp; Quantitative Systems Engineer at{" "}
               <a
                 href={PROFILE.studio.primaryUrl}
                 target="_blank"
@@ -75,7 +75,7 @@ export function SiteFooter({
                 {PROFILE.studio.name}
               </a>
               . Licensed Biomedical Scientist (B.MLS) applying empirical rigor
-              to production software.
+              to production software and cloud operations.
             </p>
           </div>
 
@@ -144,6 +144,22 @@ export function SiteFooter({
               </li>
               <li>
                 <a
+                  href="https://ggravitator.xyz"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-1 text-[var(--ink-secondary)] transition-colors duration-150 hover:text-[var(--accent-deep)]"
+                >
+                  ggravitator.xyz
+                  <ArrowUpRight
+                    size={13}
+                    weight="bold"
+                    className="hover-nudge-ne shrink-0"
+                    aria-hidden="true"
+                  />
+                </a>
+              </li>
+              <li>
+                <a
                   href={PROFILE.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -158,22 +174,7 @@ export function SiteFooter({
                   />
                 </a>
               </li>
-              <li>
-                <a
-                  href="https://blaireaesthetics.shop"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-1 text-[var(--ink-secondary)] transition-colors duration-150 hover:text-[var(--accent-deep)]"
-                >
-                  blaireaesthetics
-                  <ArrowUpRight
-                    size={13}
-                    weight="bold"
-                    className="hover-nudge-ne shrink-0"
-                    aria-hidden="true"
-                  />
-                </a>
-              </li>
+              {/* Temporarily removed per user request: blaireaesthetics.shop */}
               <li>
                 <a
                   href="https://aifycycle.vercel.app"

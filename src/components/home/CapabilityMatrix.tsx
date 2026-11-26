@@ -9,11 +9,20 @@ import {
   ChartLineUp,
   CheckCircle,
   Flask,
+  HardDrives,
   Stack,
 } from "@phosphor-icons/react";
 import { SERVICE_PILLARS, type TrackId } from "@/data/profile";
 import { PROJECTS } from "@/data/projects";
 import { BlurCrossfade, SPRING_TAB } from "@/components/ui/MotionPrimitives";
+
+const TRACK_CTA_LABELS: Record<TrackId, string> = {
+  "full-stack-saas": "Start a SaaS Project",
+  "devops-cloud": "Start a DevOps Project",
+  "ai-agents": "Start an AI Project",
+  "quant-fintech": "Start a Quant Project",
+  "healthtech-biomedical": "Start a HealthTech Project",
+};
 
 function TrackIcon({ id, active }: { id: TrackId; active: boolean }) {
   const cls = active
@@ -22,6 +31,10 @@ function TrackIcon({ id, active }: { id: TrackId; active: boolean }) {
   switch (id) {
     case "full-stack-saas":
       return <Stack size={16} weight="bold" className={cls} aria-hidden="true" />;
+    case "devops-cloud":
+      return (
+        <HardDrives size={16} weight="bold" className={cls} aria-hidden="true" />
+      );
     case "ai-agents":
       return <Brain size={16} weight="bold" className={cls} aria-hidden="true" />;
     case "quant-fintech":
@@ -77,7 +90,7 @@ export function CapabilityMatrix() {
         <div
           role="tablist"
           aria-label="Engineering and Biomedical Disciplines"
-          className="grid grid-cols-2 gap-1 rounded-[12px] bg-[var(--bg-subtle)] p-1 lg:grid-cols-4"
+          className="grid grid-cols-2 gap-1 rounded-[12px] bg-[var(--bg-subtle)] p-1 sm:grid-cols-3 lg:grid-cols-5"
         >
           {SERVICE_PILLARS.map((pillar, idx) => {
             const active = pillar.id === activeId;
@@ -95,7 +108,9 @@ export function CapabilityMatrix() {
                 tabIndex={active ? 0 : -1}
                 onClick={() => setActiveId(pillar.id)}
                 onKeyDown={(e) => handleKeyDown(e, idx)}
-                className={`btn-press relative flex items-center justify-center gap-2 rounded-[9px] px-3 py-2.5 text-center text-xs font-medium select-none sm:text-[13px] lg:justify-start lg:px-4 lg:text-left ${
+                className={`btn-press relative flex items-center justify-center gap-2 rounded-[9px] px-3 py-2.5 text-center text-xs font-medium select-none sm:text-[13px] lg:justify-start lg:px-3.5 lg:text-left ${
+                  idx === SERVICE_PILLARS.length - 1 ? "col-span-2 sm:col-span-1" : ""
+                } ${
                   active
                     ? "text-[var(--ink-primary)]"
                     : "text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]"
@@ -214,7 +229,7 @@ export function CapabilityMatrix() {
                     href={`/contact?track=${current.id}`}
                     className="btn-press group inline-flex items-center gap-2 whitespace-nowrap rounded-[var(--radius-sm)] bg-[var(--bg-inverse)] px-4 py-2.5 text-xs font-medium text-[var(--ink-inverse)] hover:bg-[var(--bg-inverse-hover)]"
                   >
-                    Start a Project
+                    {TRACK_CTA_LABELS[current.id]}
                     <ArrowRight
                       size={14}
                       weight="bold"

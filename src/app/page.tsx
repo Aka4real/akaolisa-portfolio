@@ -47,18 +47,22 @@ export default function HomePage() {
       <section className="bg-[var(--bg-canvas)] pt-10 pb-14 lg:pt-14 lg:pb-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,7.4fr)_minmax(0,4.6fr)] lg:gap-8">
-            {/* Left 7-Col Strict 3-Element Stack */}
+            {/* Left 7-Col Strict Editorial Stack */}
             <div className="min-w-0">
-              <h1 className="text-[clamp(2.15rem,3.2vw,2.625rem)] font-semibold leading-[1.08] tracking-[-0.035em] text-[var(--ink-primary)] text-balance">
-                Engineering SaaS, AI agents &amp;{" "}
+              <p className="mb-4 font-mono text-[11px] font-medium uppercase tracking-[0.09em] text-[var(--accent-deep)]">
+                Full-Stack · DevOps &amp; Cloud Infrastructure · AI Systems · OXAKALABS
+              </p>
+
+              <h1 className="text-[clamp(2.2rem,3.4vw,2.85rem)] font-medium leading-[1.06] tracking-[-0.035em] text-[var(--ink-primary)] text-balance">
+                Engineering SaaS, DevOps &amp;{" "}
                 <br className="hidden lg:inline" />
-                quant systems with{" "}
-                <span className="text-[var(--accent-deep)]">
+                AI systems with{" "}
+                <span className="font-light text-[var(--accent-deep)]">
                   clinical rigor.
                 </span>
               </h1>
 
-              <p className="mt-5 max-w-[54ch] text-base leading-[1.6] text-[var(--ink-secondary)] sm:text-[17px]">
+              <p className="mt-5 max-w-[54ch] text-base leading-[1.62] text-[var(--ink-secondary)] sm:text-[16.5px]">
                 {PROFILE.bioShort}
               </p>
 
@@ -112,17 +116,138 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <Reveal>
             <div className="mb-10 max-w-[60ch]">
-              <h2 className="text-[clamp(1.625rem,2.3vw,2.125rem)] font-semibold leading-[1.15] tracking-[-0.025em] text-[var(--ink-primary)]">
-                Four disciplines, one production standard
+              <h2 className="text-[clamp(1.625rem,2.3vw,2.125rem)] font-medium leading-[1.15] tracking-[-0.025em] text-[var(--ink-primary)]">
+                Five disciplines, one production standard
               </h2>
               <p className="mt-3 text-[15px] leading-[1.62] text-[var(--ink-secondary)] sm:text-base">
-                Switch tracks to inspect production frameworks, architectural
-                deliverables, and verified systems shipped across each
-                discipline.
+                Switch tracks to inspect production frameworks, DevOps &amp;
+                cloud infrastructure standards, architectural deliverables, and
+                verified systems shipped across each discipline.
               </p>
             </div>
 
             <CapabilityMatrix />
+          </Reveal>
+        </div>
+      </section>
+
+      {/* BAND 2B: DEVOPS & CLOUD INFRASTRUCTURE SPECIFICATION LEDGER */}
+      <section
+        aria-labelledby="devops-infrastructure-heading"
+        className="border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)] py-18 lg:py-22"
+      >
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <Reveal>
+            <div className="flex flex-col justify-between gap-6 border-b border-[var(--border-hairline)] pb-9 lg:flex-row lg:items-end">
+              <div className="max-w-[60ch]">
+                <p className="font-mono text-[11px] font-medium uppercase tracking-[0.09em] text-[var(--accent-deep)]">
+                  DevOps &amp; Cloud Infrastructure Engineering
+                </p>
+                <h2
+                  id="devops-infrastructure-heading"
+                  className="mt-2.5 text-[clamp(1.625rem,2.3vw,2.125rem)] font-medium leading-[1.15] tracking-[-0.025em] text-[var(--ink-primary)]"
+                >
+                  Production infrastructure built for zero-downtime delivery
+                </h2>
+                <p className="mt-3 text-[15px] leading-[1.62] text-[var(--ink-secondary)] sm:text-base">
+                  Every system ships with its operational backbone—from
+                  Dockerized runtimes and self-hosted Ubuntu VPS clusters to
+                  automated GitHub Actions release gates, Cloudflare edge
+                  hardening, and PostgreSQL governance.
+                </p>
+              </div>
+
+              <Link
+                href="/contact?track=devops-cloud"
+                className="btn-press group inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap text-sm font-medium text-[var(--accent-deep)] hover:text-[var(--accent)]"
+              >
+                Scope DevOps &amp; cloud work
+                <ArrowRight
+                  size={14}
+                  weight="bold"
+                  className="hover-nudge-x shrink-0"
+                  aria-hidden="true"
+                />
+              </Link>
+            </div>
+
+            <div className="mt-9 grid gap-7 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="flex flex-col justify-between gap-4 border-t border-[var(--border-strong)] pt-4">
+                <div>
+                  <p className="font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--ink-muted)]">
+                    01 · Containers &amp; Runtimes
+                  </p>
+                  <h3 className="mt-2 text-base font-medium leading-snug text-[var(--ink-primary)]">
+                    Docker, Cloud Run &amp; Linux VPS
+                  </h3>
+                  <p className="mt-1.5 text-[13.5px] leading-relaxed text-[var(--ink-secondary)]">
+                    Multi-stage container images, standalone Next.js builds,
+                    Google Cloud Run services, and Coolify-managed Ubuntu VPS
+                    hosts.
+                  </p>
+                </div>
+                <p className="font-mono text-[11px] text-[var(--ink-muted)]">
+                  Docker · Cloud Run · Coolify
+                </p>
+              </div>
+
+              <div className="flex flex-col justify-between gap-4 border-t border-[var(--border-strong)] pt-4">
+                <div>
+                  <p className="font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--ink-muted)]">
+                    02 · CI/CD &amp; Release Gates
+                  </p>
+                  <h3 className="mt-2 text-base font-medium leading-snug text-[var(--ink-primary)]">
+                    Automated pipelines &amp; verification
+                  </h3>
+                  <p className="mt-1.5 text-[13.5px] leading-relaxed text-[var(--ink-secondary)]">
+                    GitHub Actions workflows enforcing typechecks, lint, and
+                    production build gates with isolated previews and safe
+                    rollbacks.
+                  </p>
+                </div>
+                <p className="font-mono text-[11px] text-[var(--ink-muted)]">
+                  GitHub Actions · CI/CD · Vercel
+                </p>
+              </div>
+
+              <div className="flex flex-col justify-between gap-4 border-t border-[var(--border-strong)] pt-4">
+                <div>
+                  <p className="font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--ink-muted)]">
+                    03 · Edge &amp; Perimeter Security
+                  </p>
+                  <h3 className="mt-2 text-base font-medium leading-snug text-[var(--ink-primary)]">
+                    Cloudflare DNS, TLS &amp; reverse proxies
+                  </h3>
+                  <p className="mt-1.5 text-[13.5px] leading-relaxed text-[var(--ink-secondary)]">
+                    Edge DNS and WAF policies, automated SSL/TLS termination,
+                    Nginx routing, and strict environment-secret isolation
+                    across stages.
+                  </p>
+                </div>
+                <p className="font-mono text-[11px] text-[var(--ink-muted)]">
+                  Cloudflare · Nginx · TLS
+                </p>
+              </div>
+
+              <div className="flex flex-col justify-between gap-4 border-t border-[var(--border-strong)] pt-4">
+                <div>
+                  <p className="font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--ink-muted)]">
+                    04 · Data, Mail &amp; Observability
+                  </p>
+                  <h3 className="mt-2 text-base font-medium leading-snug text-[var(--ink-primary)]">
+                    Schema governance &amp; telemetry
+                  </h3>
+                  <p className="mt-1.5 text-[13.5px] leading-relaxed text-[var(--ink-secondary)]">
+                    PostgreSQL migrations, Supabase Row-Level Security
+                    hardening, SPF/DKIM authenticated Resend SMTP, and runtime
+                    diagnostics.
+                  </p>
+                </div>
+                <p className="font-mono text-[11px] text-[var(--ink-muted)]">
+                  PostgreSQL RLS · Resend · Logs
+                </p>
+              </div>
+            </div>
           </Reveal>
         </div>
       </section>
@@ -132,13 +257,14 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <Reveal>
             <div className="mb-12 max-w-[60ch]">
-              <h2 className="text-[clamp(1.625rem,2.3vw,2.125rem)] font-semibold leading-[1.15] tracking-[-0.025em] text-[var(--ink-primary)]">
+              <h2 className="text-[clamp(1.625rem,2.3vw,2.125rem)] font-medium leading-[1.15] tracking-[-0.025em] text-[var(--ink-primary)]">
                 Selected shipped systems
               </h2>
               <p className="mt-3 text-[15px] leading-[1.62] text-[var(--ink-secondary)] sm:text-base">
-                Production architectures spanning digital freight dispatch,
-                multi-agent governance, digital asset wealth, and quantitative
-                risk modeling.{" "}
+                Production software and cloud architectures spanning the
+                G-Gravitator AI lab, digital freight dispatch, multi-agent
+                governance, digital asset wealth, and quantitative risk
+                modeling.{" "}
                 <Link
                   href="/work"
                   className="group inline-flex items-center gap-1 whitespace-nowrap font-medium text-[var(--accent-deep)] underline decoration-[var(--accent-border)] transition-colors duration-150 hover:text-[var(--accent)] hover:decoration-[var(--accent)]"
@@ -343,7 +469,7 @@ export default function HomePage() {
             <div className="grid gap-12 lg:grid-cols-12 lg:gap-14">
               {/* Left 7 Cols: Open Empirical Edge Narrative + Studio Photography */}
               <div className="min-w-0 lg:col-span-7">
-                <h2 className="text-[clamp(1.625rem,2.3vw,2.125rem)] font-semibold leading-[1.15] tracking-[-0.025em] text-[var(--ink-primary)]">
+                <h2 className="text-[clamp(1.625rem,2.3vw,2.125rem)] font-medium leading-[1.15] tracking-[-0.025em] text-[var(--ink-primary)]">
                   Empirical rigor from the clinical bench to production
                 </h2>
 
@@ -365,14 +491,15 @@ export default function HomePage() {
                 <div className="mt-8 grid gap-6 sm:grid-cols-2">
                   <div className="border-t border-[var(--border-hairline)] pt-4">
                     <p className="font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--ink-muted)]">
-                      Studio Venture
+                      Studio &amp; DevOps
                     </p>
                     <p className="mt-1.5 text-[15px] font-semibold tabular-nums text-[var(--ink-primary)]">
                       {PROFILE.studio.name} · {PROFILE.studio.period}
                     </p>
                     <p className="mt-1 text-xs leading-relaxed text-[var(--ink-secondary)]">
-                      Full-stack SaaS, autonomous multi-agent AI, and
-                      quantitative infrastructure delivery.
+                      Full-stack SaaS, DevOps &amp; cloud infrastructure,
+                      autonomous multi-agent AI, and quantitative systems
+                      delivery.
                     </p>
                   </div>
 
@@ -408,7 +535,7 @@ export default function HomePage() {
 
               {/* Right 5 Cols: Unboxed Hairline Cohort Ledger */}
               <div className="min-w-0 lg:col-span-5 lg:border-l lg:border-[var(--border-hairline)] lg:pl-10">
-                <h2 className="text-xl font-semibold leading-[1.25] tracking-[-0.015em] text-[var(--ink-primary)] sm:text-[22px]">
+                <h2 className="text-xl font-medium leading-[1.25] tracking-[-0.015em] text-[var(--ink-primary)] sm:text-[22px]">
                   2026 Hackathons &amp; Cohorts
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-[var(--ink-secondary)]">
@@ -448,14 +575,14 @@ export default function HomePage() {
           <Reveal>
             <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-end">
               <div className="max-w-[56ch]">
-                <h2 className="text-[clamp(1.625rem,2.3vw,2.125rem)] font-semibold leading-[1.15] tracking-[-0.025em] text-[var(--ink-primary)]">
+                <h2 className="text-[clamp(1.625rem,2.3vw,2.125rem)] font-medium leading-[1.15] tracking-[-0.025em] text-[var(--ink-primary)]">
                   Have a production system to ship?
                 </h2>
                 <p className="mt-3 text-[15px] leading-[1.62] text-[var(--ink-secondary)] sm:text-base">
                   Available worldwide ({PROFILE.utcOffsetLabel}) for remote
-                  freelance contracts, SaaS platforms, multi-agent AI
-                  architecture, quantitative tooling, and HealthTech engineering
-                  advisory.
+                  freelance contracts, SaaS platforms, DevOps &amp; cloud
+                  infrastructure engineering, multi-agent AI architecture,
+                  quantitative tooling, and HealthTech engineering advisory.
                 </p>
               </div>
 

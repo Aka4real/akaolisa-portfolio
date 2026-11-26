@@ -581,14 +581,14 @@ export function ClipSegmentedTabs<T extends string>({
   return (
     <div
       className={`rounded-[var(--radius-sm)] bg-[var(--bg-subtle)] p-1 ${
-        fullWidth ? "flex w-full" : "inline-flex"
+        fullWidth ? "flex w-full" : "inline-flex max-w-full overflow-x-auto"
       } ${className}`}
     >
       <div
         ref={railRef}
         role="tablist"
         aria-label={ariaLabel}
-        className={`relative flex items-center ${fullWidth ? "w-full" : ""}`}
+        className={`relative flex items-center ${fullWidth ? "w-full" : "min-w-max"}`}
       >
         {/* Interactive base layer */}
         {options.map((opt, idx) => {

@@ -30,6 +30,7 @@ type FilterOption = "all" | TrackId;
 const FILTER_TABS: ReadonlyArray<{ id: FilterOption; label: string }> = [
   { id: "all", label: "All Systems" },
   { id: "full-stack-saas", label: "Full-Stack SaaS" },
+  { id: "devops-cloud", label: "DevOps & Cloud" },
   { id: "ai-agents", label: "AI Agents & LLMs" },
   { id: "quant-fintech", label: "Quant & FinTech" },
 ];
@@ -47,6 +48,7 @@ export function WorkCatalog() {
     const counts: Record<FilterOption, number> = {
       all: PROJECTS.length,
       "full-stack-saas": 0,
+      "devops-cloud": 0,
       "ai-agents": 0,
       "quant-fintech": 0,
       "healthtech-biomedical": 0,
@@ -129,7 +131,7 @@ export function WorkCatalog() {
   return (
     <div>
       {/* Open Control Bar: Track Filter Rail + High-Contrast Search */}
-      <div className="mb-9 flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
+      <div className="mb-9 flex flex-col justify-between gap-4 xl:flex-row xl:items-center">
         <LayoutGroup id="work-filters">
           <div
             role="tablist"
@@ -182,7 +184,7 @@ export function WorkCatalog() {
           </div>
         </LayoutGroup>
 
-        <div className="relative w-full lg:w-72">
+        <div className="relative w-full xl:w-72">
           <MagnifyingGlass
             size={15}
             weight="bold"
@@ -196,7 +198,7 @@ export function WorkCatalog() {
             inputMode="search"
             value={search}
             onChange={(e) => updateSearch(e.target.value)}
-            placeholder="Filter stack (Next.js, pgvector...)"
+            placeholder="Filter stack (Next.js, Docker...)"
             aria-label="Filter projects by technology or keyword"
             className="w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] py-2.5 pr-9 pl-9.5 text-sm text-[var(--ink-primary)] placeholder:text-[var(--ink-muted)] transition-[border-color,box-shadow] duration-150 focus:border-[var(--accent)] focus:ring-3 focus:ring-[var(--accent-ring)] focus:outline-none"
           />
@@ -248,9 +250,9 @@ export function WorkCatalog() {
             {activeTrack !== "all" ? ` in ${activeTrackLabel}` : ""}.
           </p>
           <p className="mx-auto mt-2 max-w-md text-sm text-[var(--ink-secondary)]">
-            Try another stack keyword such as Next.js, PostgreSQL, Python, or
-            Gemini, or reset filters to view all {PROJECTS.length} shipped
-            systems.
+            Try another stack keyword such as Next.js, Docker, PostgreSQL,
+            Python, or Gemini, or reset filters to view all {PROJECTS.length}{" "}
+            shipped systems.
           </p>
           <button
             type="button"

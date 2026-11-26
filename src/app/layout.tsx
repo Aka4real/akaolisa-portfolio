@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
+import { Geist_Mono, Host_Grotesk, Onest } from "next/font/google";
 import "./globals.css";
 import { PortfolioShell } from "@/components/layout/PortfolioShell";
 import { PROFILE } from "@/data/profile";
@@ -12,9 +11,28 @@ import {
   getRootUrlWithTrailingSlash,
 } from "@/lib/site";
 
-const defaultTitle = `${PROFILE.displayName} - Full-Stack, AI Agent & Quantitative Engineer`;
+const hostGrotesk = Host_Grotesk({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  variable: "--font-host-grotesk",
+  display: "swap",
+});
+
+const onest = Onest({
+  subsets: ["latin"],
+  variable: "--font-onest",
+  display: "swap",
+});
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
+  display: "swap",
+});
+
+const defaultTitle = `${PROFILE.displayName} - Full-Stack, DevOps, AI Agent & Quantitative Engineer`;
 const ogDescription =
-  "Founder at OXAKALABS delivering production SaaS, autonomous multi-agent systems, algorithmic trading tooling, and biomedical data solutions.";
+  "Founder at OXAKALABS delivering production SaaS, resilient DevOps & cloud infrastructure, autonomous multi-agent systems, algorithmic trading tooling, and biomedical data solutions.";
 const rootCanonicalUrl = getRootUrlWithTrailingSlash();
 
 export const metadata: Metadata = {
@@ -27,11 +45,16 @@ export const metadata: Metadata = {
     template: `%s | ${PROFILE.displayName}`,
   },
   description:
-    "Personal engineering portfolio of Akaolisa Enwedo (Enwedo Akaolisa Gift), Founder at OXAKALABS shipping Full-Stack Next.js SaaS, Multi-Agent AI systems, Quant/FinTech tooling, and HealthTech solutions with licensed B.MLS empirical rigor.",
+    "Personal engineering portfolio of Akaolisa Enwedo (Enwedo Akaolisa Gift), Founder at OXAKALABS shipping Full-Stack Next.js SaaS, DevOps & Cloud Infrastructure (Docker, Coolify, Linux VPS, Cloud Run, CI/CD), Multi-Agent AI systems, Quant/FinTech tooling, and HealthTech solutions with licensed B.MLS empirical rigor.",
   keywords: [
     "Akaolisa Enwedo",
     "Enwedo Akaolisa Gift",
     "OXAKALABS",
+    "G-Gravitator",
+    "DevOps Engineer",
+    "Cloud Infrastructure Engineer",
+    "Docker & Linux VPS",
+    "CI/CD & Google Cloud Run",
     "Full-Stack Next.js Engineer",
     "AI Agent Engineer",
     "Quantitative FinTech Developer",
@@ -77,7 +100,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: defaultTitle,
     description:
-      "Production SaaS, Multi-Agent AI, Quant/FinTech, and Biomedical Systems by Akaolisa Enwedo (OXAKALABS).",
+      "Production SaaS, DevOps & Cloud Infrastructure, Multi-Agent AI, Quant/FinTech, and Biomedical Systems by Akaolisa Enwedo (OXAKALABS).",
     images: [OG_IMAGE_URL],
   },
 };
@@ -90,7 +113,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${GeistSans.variable} ${GeistMono.variable}`}
+      className={`${hostGrotesk.variable} ${onest.variable} ${geistMono.variable}`}
     >
       <body className="antialiased">
         <PortfolioShell>{children}</PortfolioShell>

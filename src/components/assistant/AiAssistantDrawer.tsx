@@ -70,7 +70,7 @@ const WELCOME_MESSAGE: ChatMessage = {
   id: "welcome",
   role: "assistant",
   content:
-    "Ask anything about Akaolisa Enwedo's architecture experience, OXAKALABS case studies, AI/Quant stack, B.MLS clinical background, or remote contract availability. All answers are strictly grounded in his verified dossier.",
+    "Ask anything about Akaolisa Enwedo's full-stack architecture, DevOps & cloud infrastructure experience, OXAKALABS & G-Gravitator case studies, AI/Quant stack, B.MLS clinical background, or remote contract availability. All answers are strictly grounded in his verified dossier.",
   links: [
     { label: "View Selected Work", href: "/work" },
     { label: "Experience & Clinical Lab", href: "/experience" },
@@ -78,9 +78,9 @@ const WELCOME_MESSAGE: ChatMessage = {
 };
 
 const QUICK_PROMPTS = [
+  "What is Akaolisa's DevOps & cloud infrastructure stack?",
   "What is Akaolisa's AI & multi-agent stack?",
-  "Walk me through Fortress Fleet AI and Koridor Engine OS",
-  "How does his B.MLS clinical leadership strengthen software delivery?",
+  "Walk me through G-Gravitator, Fortress Fleet AI, and Koridor Engine OS",
   "Is he available for remote freelance contracts?",
 ];
 

@@ -13,7 +13,7 @@ export default function NotFound() {
         </h1>
         <p className="mt-4 max-w-[54ch] text-[15px] leading-relaxed text-[var(--ink-secondary)]">
           The page you requested may have moved or is not indexed on
-          oxakalabs.xyz. Return to the flagship overview or explore all six
+          oxakalabs.xyz. Return to the flagship overview or explore all seven
           shipped systems.
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-3">

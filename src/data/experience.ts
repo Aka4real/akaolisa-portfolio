@@ -39,17 +39,19 @@ export const EXPERIENCE_ITEMS: ExperienceItem[] = [
   {
     id: "oxakalabs",
     organization: "OXAKALABS",
-    role: "Founder, Principal Full-Stack, AI & Quantitative Engineer",
+    role: "Founder, Principal Full-Stack, DevOps, AI & Quantitative Engineer",
     location: "Remote",
     period: "2022-Present",
     category: "software-ai",
-    highlightBadge: "Studio Venture",
+    highlightBadge: "Studio & DevOps",
     bullets: [
       "Lead end-to-end product architecture, UI/UX engineering, database modeling, and cloud deployment for international SaaS, FinTech, retail, and AI automation clients.",
+      "Engineer resilient DevOps and cloud infrastructure: Docker containerization, self-hosted Linux VPS and Coolify clusters, Google Cloud Run services, GitHub Actions CI/CD release gates, Cloudflare DNS/TLS hardening, and zero-downtime production rollouts.",
       "Architect and ship multi-tenant Next.js App Router platforms, multi-agent LLM governance systems, algorithmic trading tooling, and commercial e-commerce builds.",
     ],
     links: [
       { label: "oxakalabs.xyz", href: "https://oxakalabs.xyz" },
+      { label: "ggravitator.xyz", href: "https://ggravitator.xyz" },
       { label: "oxakalabs.vercel.app", href: "https://oxakalabs.vercel.app" },
     ],
   },

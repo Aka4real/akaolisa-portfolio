@@ -1,5 +1,6 @@
 export type TrackId =
   | "full-stack-saas"
+  | "devops-cloud"
   | "ai-agents"
   | "quant-fintech"
   | "healthtech-biomedical";
@@ -73,8 +74,10 @@ export const PROFILE: ProfileConfig = {
   displayName: "Akaolisa Enwedo",
   legalName: "Enwedo Akaolisa Gift",
   monogram: "AE",
-  headlineRole: "Full-Stack Next.js, AI Agent & Quantitative Systems Engineer",
-  subRole: "Founder at OXAKALABS · Licensed Biomedical Scientist (B.MLS)",
+  headlineRole:
+    "Full-Stack, DevOps, AI Agent & Quantitative Systems Engineer",
+  subRole:
+    "Founder at OXAKALABS · DevOps & Cloud Engineer · Licensed Biomedical Scientist (B.MLS)",
   locationLabel: "Remote Worldwide",
   timeZone: "Africa/Lagos",
   utcOffsetLabel: "UTC+1",
@@ -93,7 +96,7 @@ export const PROFILE: ProfileConfig = {
     mirrorUrl: "https://oxakalabs.vercel.app",
     mirrorDisplay: "oxakalabs.vercel.app",
     summary:
-      "Independent product engineering studio shipping full-stack SaaS platforms, autonomous multi-agent systems, algorithmic trading infrastructure, and healthcare data solutions for international clients.",
+      "Independent product engineering studio shipping full-stack SaaS platforms, hardened DevOps & cloud infrastructure, autonomous multi-agent systems, algorithmic trading tooling, and healthcare data solutions for international clients.",
   },
   resumePdfPath: "/resume/Akaolisa-Enwedo-Resume.pdf",
   resumeFileName: "Akaolisa-Enwedo-Resume.pdf",
@@ -105,19 +108,20 @@ export const PROFILE: ProfileConfig = {
     upwork: undefined,
   },
   bioShort:
-    "Founder at OXAKALABS and licensed Biomedical Scientist (B.MLS) shipping Next.js SaaS platforms, multi-agent systems, and quantitative trading engines.",
+    "Founder at OXAKALABS, DevOps & cloud infrastructure engineer, and licensed Biomedical Scientist (B.MLS) shipping Next.js SaaS platforms, resilient container pipelines, multi-agent systems, and quantitative trading engines.",
   empiricalEdge:
-    "Trained as a licensed Medical Laboratory Scientist (B.MLS, Clinical Chemistry) and Lead Intern Coordinator directing 250+ clinical trainees, bringing laboratory calibration discipline, strict data validation, and empirical rigor to every production software release.",
+    "Trained as a licensed Medical Laboratory Scientist (B.MLS, Clinical Chemistry) and Lead Intern Coordinator directing 250+ clinical trainees, bringing laboratory calibration discipline, strict data validation, and empirical rigor to every production software and infrastructure release.",
   metrics: [
     {
       value: "4+ Yrs",
       label: "OXAKALABS Delivery",
-      detail: "End-to-end SaaS, AI & Quant systems since 2022",
+      detail: "End-to-end SaaS, DevOps, AI & Quant systems since 2022",
     },
     {
-      value: "06",
+      value: "07",
       label: "Shipped Systems",
-      detail: "Freight OS, Agentic Governance, FinTech, Retail, HFT & Commerce",
+      detail:
+        "G-Gravitator Lab, Freight OS, Agentic Governance, FinTech, Retail, HFT & Commerce",
     },
     {
       value: "250+",
@@ -125,9 +129,9 @@ export const PROFILE: ProfileConfig = {
       detail: "100+ MLS interns & 150+ university students coordinated",
     },
     {
-      value: "04",
+      value: "05",
       label: "Core Verticals",
-      detail: "Full-Stack SaaS · AI Agents · Quant/FinTech · Biomedical",
+      detail: "Full-Stack SaaS · DevOps & Cloud · AI Agents · Quant · Biomedical",
     },
   ],
 };
@@ -138,14 +142,15 @@ export const SERVICE_PILLARS: ServicePillar[] = [
     code: "01",
     label: "Full-Stack SaaS & Cloud Web Apps",
     shortLabel: "Full-Stack SaaS",
-    tagline: "Production web architecture from database schema to zero-downtime edge deployment.",
+    tagline:
+      "Production web architecture from database schema to zero-downtime edge deployment.",
     description:
       "End-to-end architecture and shipping of multi-tenant web applications, real-time operational dashboards, and commercial brand ecosystems with strict Row-Level Security, resilient cloud databases, and automated email/DNS pipelines.",
     deliverables: [
       "Multi-tenant Next.js App Router SaaS platforms",
       "PostgreSQL schema design, Supabase RLS & Auth hardening",
       "Real-time WebSocket & REST telemetry interfaces",
-      "Self-hosted Linux VPS (Docker, Coolify), Vercel & Cloudflare DNS",
+      "Production APIs, transactional Resend SMTP & Cloudflare routing",
     ],
     stack: [
       "Next.js (App Router)",
@@ -156,25 +161,60 @@ export const SERVICE_PILLARS: ServicePillar[] = [
       "Framer Motion",
       "Supabase (PostgreSQL, RLS, Auth)",
       "REST & WebSockets",
-      "Docker",
-      "Coolify",
-      "Linux VPS",
       "Vercel",
       "Cloudflare DNS",
       "Resend SMTP",
     ],
     featuredSlugs: [
+      "g-gravitator",
       "koridor-engine-os",
       "stitch-retail-operations-os",
       "production-ecommerce-builds",
     ],
   },
   {
-    id: "ai-agents",
+    id: "devops-cloud",
     code: "02",
+    label: "DevOps & Cloud Infrastructure",
+    shortLabel: "DevOps & Cloud",
+    tagline:
+      "Zero-downtime deployment pipelines, hardened Linux infrastructure, and observable cloud runtimes.",
+    description:
+      "Full-lifecycle DevOps and infrastructure engineering spanning containerized Docker workloads, self-hosted Linux VPS and Coolify clusters, Google Cloud Run services, automated GitHub Actions CI/CD release gates, Cloudflare edge DNS/TLS security, and database/SMTP operational reliability.",
+    deliverables: [
+      "Docker containerization, standalone Next.js builds & Google Cloud Run services",
+      "Self-hosted Linux VPS & Coolify orchestration with zero-downtime rollouts",
+      "Automated GitHub Actions CI/CD pipelines, preview builds & release verification",
+      "Cloudflare DNS/WAF edge hardening, SSL/TLS routing, Resend SPF/DKIM & observability",
+    ],
+    stack: [
+      "Docker",
+      "Linux VPS (Ubuntu)",
+      "Coolify",
+      "Google Cloud Run",
+      "GitHub Actions CI/CD",
+      "Cloudflare DNS & Edge",
+      "Nginx / Reverse Proxy",
+      "Vercel",
+      "PostgreSQL RLS & Migrations",
+      "Resend SMTP / SPF / DKIM",
+      "Secret & Env Hardening",
+      "Runtime Telemetry",
+    ],
+    featuredSlugs: [
+      "g-gravitator",
+      "fortress-fleet-ai",
+      "koridor-engine-os",
+      "production-ecommerce-builds",
+    ],
+  },
+  {
+    id: "ai-agents",
+    code: "03",
     label: "AI Agents & LLM Orchestration",
     shortLabel: "AI Agents & LLMs",
-    tagline: "Autonomous multi-agent pipelines built with semantic memory, tool guardrails, and RLHF rigor.",
+    tagline:
+      "Autonomous multi-agent pipelines built with semantic memory, tool guardrails, and RLHF rigor.",
     description:
       "Design and deployment of production agentic workflows combining frontier cloud models, local open-weight runtimes, pgvector semantic retrieval, and Model Context Protocol (MCP) tool servers evaluated against strict quality rubrics.",
     deliverables: [
@@ -195,14 +235,15 @@ export const SERVICE_PILLARS: ServicePillar[] = [
       "QLoRA / Unsloth",
       "RLHF Evaluation",
     ],
-    featuredSlugs: ["fortress-fleet-ai", "koridor-engine-os"],
+    featuredSlugs: ["g-gravitator", "fortress-fleet-ai", "koridor-engine-os"],
   },
   {
     id: "quant-fintech",
-    code: "03",
+    code: "04",
     label: "Quant Trading, Crypto & FinTech",
     shortLabel: "Quant & FinTech",
-    tagline: "Low-latency execution tooling, stochastic risk engines, and institutional wealth platforms.",
+    tagline:
+      "Low-latency execution tooling, stochastic risk engines, and institutional wealth platforms.",
     description:
       "Custom algorithmic execution scripts, quantitative strategy backtesting suites, Monte Carlo risk simulators, and real-time crypto/FinTech interfaces backed by automated PostgreSQL yield-accrual pipelines and WebSocket market feeds.",
     deliverables: [
@@ -228,10 +269,11 @@ export const SERVICE_PILLARS: ServicePillar[] = [
   },
   {
     id: "healthtech-biomedical",
-    code: "04",
+    code: "05",
     label: "HealthTech & Biomedical Science",
     shortLabel: "Biomedical & HealthTech",
-    tagline: "Empirical clinical discipline applied to diagnostic software, biostatistics, and LIS workflows.",
+    tagline:
+      "Empirical clinical discipline applied to diagnostic software, biostatistics, and LIS workflows.",
     description:
       "Licensed Medical Laboratory Scientist (B.MLS, Clinical Chemistry) bridging wet-lab diagnostic reality with modern software: Laboratory Information Systems, IQC/EQA analyzer calibration logic, biostatistics, post-market surveillance, and scientific research.",
     deliverables: [

@@ -23,6 +23,7 @@ import {
 
 const SCOPE_OPTIONS = [
   "Full-Stack SaaS Build",
+  "DevOps & Cloud Infrastructure",
   "AI Agent / LLM Pipeline",
   "Quant / FinTech Tooling",
   "HealthTech / LIS System",
@@ -50,6 +51,21 @@ function resolveTrackLabel(param: string | null): string {
   return match ? match.shortLabel : SERVICE_PILLARS[0].shortLabel;
 }
 
+function resolveDefaultScope(param: string | null): string {
+  switch (param) {
+    case "devops-cloud":
+      return "DevOps & Cloud Infrastructure";
+    case "ai-agents":
+      return "AI Agent / LLM Pipeline";
+    case "quant-fintech":
+      return "Quant / FinTech Tooling";
+    case "healthtech-biomedical":
+      return "HealthTech / LIS System";
+    default:
+      return SCOPE_OPTIONS[0];
+  }
+}
+
 function validateField(field: FieldName, value: string): string | null {
   const trimmed = value.trim();
   if (field === "name") {
@@ -75,7 +91,9 @@ export function ContactForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [trackOverride, setTrackOverride] = useState<string | null>(null);
-  const [scope, setScope] = useState<string>(SCOPE_OPTIONS[0]);
+  const [scope, setScope] = useState<string>(() =>
+    resolveDefaultScope(initialTrackParam)
+  );
   const [message, setMessage] = useState("");
   const [companyWebsite, setCompanyWebsite] = useState("");
 
