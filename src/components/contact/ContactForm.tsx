@@ -13,7 +13,6 @@ import {
   EnvelopeSimple,
   PaperPlaneTilt,
   WarningCircle,
-  WhatsappLogo,
 } from "@phosphor-icons/react";
 import { PROFILE, SERVICE_PILLARS } from "@/data/profile";
 import { LiveClockBadge } from "@/components/ui/LiveClockBadge";
@@ -109,18 +108,14 @@ export function ContactForm() {
 
   useEffect(() => {
     return () => {
-      if (emailTimerRef.current !== null) {
+      if (emailTimerRef.current !== null)
         window.clearTimeout(emailTimerRef.current);
-      }
-      if (whatsappTimerRef.current !== null) {
+      if (whatsappTimerRef.current !== null)
         window.clearTimeout(whatsappTimerRef.current);
-      }
-      if (briefTimerRef.current !== null) {
+      if (briefTimerRef.current !== null)
         window.clearTimeout(briefTimerRef.current);
-      }
-      if (submitResetTimerRef.current !== null) {
+      if (submitResetTimerRef.current !== null)
         window.clearTimeout(submitResetTimerRef.current);
-      }
     };
   }, []);
 
@@ -151,15 +146,14 @@ export function ContactForm() {
     try {
       await navigator.clipboard.writeText(PROFILE.email);
       setCopiedEmail(true);
-      if (emailTimerRef.current !== null) {
+      if (emailTimerRef.current !== null)
         window.clearTimeout(emailTimerRef.current);
-      }
       emailTimerRef.current = window.setTimeout(() => {
         setCopiedEmail(false);
         emailTimerRef.current = null;
       }, 2200);
     } catch {
-      // Clipboard blocked in restricted context
+      // Clipboard blocked
     }
   }
 
@@ -167,15 +161,14 @@ export function ContactForm() {
     try {
       await navigator.clipboard.writeText(PROFILE.whatsappDisplay);
       setCopiedWhatsapp(true);
-      if (whatsappTimerRef.current !== null) {
+      if (whatsappTimerRef.current !== null)
         window.clearTimeout(whatsappTimerRef.current);
-      }
       whatsappTimerRef.current = window.setTimeout(() => {
         setCopiedWhatsapp(false);
         whatsappTimerRef.current = null;
       }, 2200);
     } catch {
-      // Clipboard blocked in restricted context
+      // Clipboard blocked
     }
   }
 
@@ -183,15 +176,14 @@ export function ContactForm() {
     try {
       await navigator.clipboard.writeText(text);
       setCopiedBrief(true);
-      if (briefTimerRef.current !== null) {
+      if (briefTimerRef.current !== null)
         window.clearTimeout(briefTimerRef.current);
-      }
       briefTimerRef.current = window.setTimeout(() => {
         setCopiedBrief(false);
         briefTimerRef.current = null;
       }, 2200);
     } catch {
-      // Clipboard blocked in restricted context
+      // Clipboard blocked
     }
   }
 
@@ -235,7 +227,9 @@ export function ContactForm() {
 
       const data = (await res.json()) as ApiResponse;
       if (!res.ok) {
-        setError(data.error || "Please review the highlighted fields and try again.");
+        setError(
+          data.error || "Please review the highlighted fields and try again."
+        );
         setSubmitVisualState("idle");
         return;
       }
@@ -275,28 +269,14 @@ export function ContactForm() {
         transition: { duration: 0.14, ease: "easeOut" as const },
       }
     : {
-        initial: { opacity: 0, transform: "translateY(-3px)" },
-        animate: { opacity: 1, transform: "translateY(0px)" },
-        exit: { opacity: 0, transform: "translateY(-3px)" },
+        initial: { opacity: 0, y: -3 },
+        animate: { opacity: 1, y: 0 },
+        exit: { opacity: 0, y: -3 },
         transition: { duration: 0.16, ease: EASE_OUT_EXPO },
       };
 
-  const bannerMotion = prefersReduced
-    ? {
-        initial: { opacity: 0 },
-        animate: { opacity: 1 },
-        exit: { opacity: 0 },
-        transition: { duration: 0.16, ease: "easeOut" as const },
-      }
-    : {
-        initial: { opacity: 0, transform: "scale(0.98) translateY(6px)" },
-        animate: { opacity: 1, transform: "scale(1) translateY(0px)" },
-        exit: { opacity: 0, transform: "scale(0.98) translateY(-4px)" },
-        transition: { duration: 0.2, ease: EASE_OUT_EXPO },
-      };
-
   const baseInputClass =
-    "w-full min-w-0 rounded-[var(--radius-sm)] border bg-[var(--bg-surface)] px-3.5 py-2.5 text-sm text-[var(--ink-primary)] placeholder:text-[var(--ink-muted)] transition-[border-color,box-shadow] duration-150 focus:outline-none";
+    "type-sm w-full min-w-0 rounded-[var(--radius-sm)] border bg-[var(--bg-surface)] px-3.5 py-2.5 text-[var(--ink-primary)] placeholder:text-[var(--ink-muted)] transition-[border-color,box-shadow] duration-150 focus:outline-none";
 
   const validInputBorderClass =
     "border-[var(--border-strong)] focus:border-[var(--accent)] focus:ring-3 focus:ring-[var(--accent-ring)]";
@@ -305,61 +285,51 @@ export function ContactForm() {
     "border-[var(--status-danger)] focus:border-[var(--status-danger)] focus:ring-3 focus:ring-[var(--status-danger-border)]";
 
   return (
-    <div className="grid gap-10 lg:grid-cols-12">
-      {/* Left Column: Direct Channels & Availability */}
-      <aside className="min-w-0 space-y-6 lg:col-span-5">
+    <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+      {/* Left 5 Cols: Open Direct Channels Ledger */}
+      <aside className="min-w-0 space-y-8 lg:col-span-5">
         <div>
-          <LiveClockBadge compact />
-
-          <h2 className="mt-5 text-xl font-semibold tracking-[-0.02em] text-[var(--ink-primary)]">
-            Direct Communication Channels
+          <h2 className="type-heading text-[var(--ink-primary)]">
+            Direct channels
           </h2>
-          <p className="mt-2 max-w-[44ch] text-sm leading-relaxed text-[var(--ink-secondary)]">
+          <p className="type-body mt-3 max-w-[44ch] text-[var(--ink-secondary)]">
             Operating remotely worldwide from {PROFILE.utcOffsetLabel}. Fastest
-            response via structured inquiry brief, direct email, or WhatsApp.
+            response via structured brief, email, or WhatsApp.
           </p>
+          <div className="mt-4">
+            <LiveClockBadge compact />
+          </div>
         </div>
 
-        <div className="space-y-3">
-          {/* Email Direct Channel */}
-          <div className="surface-elevated flex min-w-0 items-center justify-between gap-3 rounded-[var(--radius-md)] px-4 py-3.5">
-            <div className="flex min-w-0 flex-1 items-center gap-3">
-              <span
-                aria-hidden="true"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--accent-soft)] text-[var(--accent-deep)]"
+        <div className="divide-y divide-[var(--border-hairline)] border-y border-[var(--border-hairline)]">
+          {/* Email Row */}
+          <div className="flex items-center justify-between gap-4 py-5">
+            <div className="min-w-0">
+              <p className="type-sm text-[var(--ink-muted)]">Email</p>
+              <a
+                href={`mailto:${PROFILE.email}`}
+                className="type-body mt-0.5 block truncate font-medium text-[var(--ink-primary)] transition-colors duration-150 hover:text-[var(--accent-deep)]"
               >
-                <EnvelopeSimple size={17} weight="bold" />
-              </span>
-              <div className="min-w-0 flex-1">
-                <div className="font-mono text-[11px] text-[var(--ink-muted)]">
-                  Email
-                </div>
-                <a
-                  href={`mailto:${PROFILE.email}`}
-                  className="mt-0.5 block truncate font-mono text-xs font-medium text-[var(--ink-primary)] transition-colors duration-150 hover:text-[var(--accent-deep)]"
-                >
-                  {PROFILE.email}
-                </a>
-              </div>
+                {PROFILE.email}
+              </a>
             </div>
-
             <button
               type="button"
               onClick={copyDirectEmail}
               aria-label={
                 copiedEmail ? "Email copied" : `Copy ${PROFILE.email}`
               }
-              className="btn-press inline-flex h-8 w-[80px] shrink-0 items-center justify-center rounded-[var(--radius-xs)] border border-[var(--border-strong)] bg-[var(--bg-surface)] font-mono text-[11px] font-medium text-[var(--ink-secondary)] hover:border-[var(--accent-border)] hover:text-[var(--ink-primary)]"
+              className="type-sm btn-press inline-flex h-9 shrink-0 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3.5 font-medium text-[var(--ink-secondary)] hover:border-[var(--accent)] hover:text-[var(--ink-primary)]"
             >
               <BlurCrossfade
                 contentKey={copiedEmail ? "copied" : "copy"}
                 inline
-                className="inline-flex items-center gap-1"
+                className="inline-flex items-center gap-1.5"
               >
                 {copiedEmail ? (
                   <>
                     <Check
-                      size={12}
+                      size={14}
                       weight="bold"
                       className="text-[var(--status-positive)]"
                       aria-hidden="true"
@@ -370,7 +340,7 @@ export function ContactForm() {
                   </>
                 ) : (
                   <>
-                    <Copy size={12} weight="bold" aria-hidden="true" />
+                    <Copy size={14} weight="bold" aria-hidden="true" />
                     <span>Copy</span>
                   </>
                 )}
@@ -381,36 +351,27 @@ export function ContactForm() {
             {copiedEmail ? "Email address copied to clipboard." : ""}
           </span>
 
-          {/* Primary WhatsApp Direct Channel (harmonious elevated row + --status-positive icon badge) */}
-          <div className="surface-elevated flex min-w-0 items-center justify-between gap-3 rounded-[var(--radius-md)] px-4 py-3.5">
-            <a
-              href={PROFILE.whatsappHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex min-w-0 flex-1 items-center gap-3 rounded-[var(--radius-xs)]"
-            >
-              <span
-                aria-hidden="true"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--status-positive-bg)] text-[var(--status-positive)]"
+          {/* Primary WhatsApp Row */}
+          <div className="flex items-center justify-between gap-4 py-5">
+            <div className="min-w-0">
+              <p className="type-sm text-[var(--ink-muted)]">
+                Primary WhatsApp
+              </p>
+              <a
+                href={PROFILE.whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="type-body group mt-0.5 inline-flex items-center gap-1.5 font-medium tabular-nums text-[var(--ink-primary)] transition-colors duration-150 hover:text-[var(--status-positive)]"
               >
-                <WhatsappLogo size={18} weight="bold" />
-              </span>
-              <div className="min-w-0 flex-1">
-                <div className="inline-flex items-center gap-1 font-mono text-[11px] text-[var(--ink-muted)]">
-                  <span>Primary WhatsApp</span>
-                  <ArrowUpRight
-                    size={12}
-                    weight="bold"
-                    className="hover-nudge-ne shrink-0 text-[var(--status-positive)]"
-                    aria-hidden="true"
-                  />
-                </div>
-                <div className="mt-0.5 truncate font-mono text-xs font-semibold tabular-nums text-[var(--ink-primary)] transition-colors duration-150 group-hover:text-[var(--status-positive)]">
-                  {PROFILE.whatsappDisplay}
-                </div>
-              </div>
-            </a>
-
+                <span>{PROFILE.whatsappDisplay}</span>
+                <ArrowUpRight
+                  size={15}
+                  weight="bold"
+                  className="hover-nudge-ne shrink-0 text-[var(--status-positive)]"
+                  aria-hidden="true"
+                />
+              </a>
+            </div>
             <button
               type="button"
               onClick={copyDirectWhatsapp}
@@ -419,17 +380,17 @@ export function ContactForm() {
                   ? "WhatsApp number copied"
                   : `Copy ${PROFILE.whatsappDisplay}`
               }
-              className="btn-press inline-flex h-8 w-[80px] shrink-0 items-center justify-center rounded-[var(--radius-xs)] border border-[var(--border-strong)] bg-[var(--bg-surface)] font-mono text-[11px] font-medium text-[var(--ink-secondary)] hover:border-[var(--accent-border)] hover:text-[var(--ink-primary)]"
+              className="type-sm btn-press inline-flex h-9 shrink-0 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3.5 font-medium text-[var(--ink-secondary)] hover:border-[var(--accent)] hover:text-[var(--ink-primary)]"
             >
               <BlurCrossfade
                 contentKey={copiedWhatsapp ? "copied" : "copy"}
                 inline
-                className="inline-flex items-center gap-1"
+                className="inline-flex items-center gap-1.5"
               >
                 {copiedWhatsapp ? (
                   <>
                     <Check
-                      size={12}
+                      size={14}
                       weight="bold"
                       className="text-[var(--status-positive)]"
                       aria-hidden="true"
@@ -440,7 +401,7 @@ export function ContactForm() {
                   </>
                 ) : (
                   <>
-                    <Copy size={12} weight="bold" aria-hidden="true" />
+                    <Copy size={14} weight="bold" aria-hidden="true" />
                     <span>Copy</span>
                   </>
                 )}
@@ -452,67 +413,62 @@ export function ContactForm() {
           </span>
         </div>
 
-        {/* Studio, GitHub & Resume Links */}
-        <div className="border-t border-[var(--border-hairline)] pt-6">
-          <div className="grid grid-cols-2 gap-2.5">
-            <a
-              href={PROFILE.studio.primaryUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-press group flex min-w-0 items-center justify-between gap-2 rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3.5 py-2.5 font-mono text-xs text-[var(--ink-primary)] hover:border-[var(--accent-border)] hover:text-[var(--accent-deep)]"
-            >
-              <span className="truncate">oxakalabs.xyz</span>
-              <ArrowUpRight
-                size={13}
-                weight="bold"
-                className="hover-nudge-ne shrink-0"
-                aria-hidden="true"
-              />
-            </a>
-
-            <a
-              href={PROFILE.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-press group flex min-w-0 items-center justify-between gap-2 rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3.5 py-2.5 font-mono text-xs text-[var(--ink-primary)] hover:border-[var(--accent-border)] hover:text-[var(--accent-deep)]"
-            >
-              <span className="truncate">GitHub</span>
-              <ArrowUpRight
-                size={13}
-                weight="bold"
-                className="hover-nudge-ne shrink-0"
-                aria-hidden="true"
-              />
-            </a>
-          </div>
-
+        {/* Studio, GitHub & Resume Text Links */}
+        <div className="type-sm flex flex-wrap items-center gap-x-6 gap-y-3">
+          <a
+            href={PROFILE.studio.primaryUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-1 font-medium text-[var(--ink-primary)] transition-colors duration-150 hover:text-[var(--accent-deep)]"
+          >
+            <span>oxakalabs.xyz</span>
+            <ArrowUpRight
+              size={14}
+              weight="bold"
+              className="hover-nudge-ne"
+              aria-hidden="true"
+            />
+          </a>
+          <a
+            href={PROFILE.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-1 font-medium text-[var(--ink-primary)] transition-colors duration-150 hover:text-[var(--accent-deep)]"
+          >
+            <span>GitHub</span>
+            <ArrowUpRight
+              size={14}
+              weight="bold"
+              className="hover-nudge-ne"
+              aria-hidden="true"
+            />
+          </a>
           <a
             href={PROFILE.resumePdfPath}
             download={PROFILE.resumeFileName}
-            className="btn-press mt-2.5 flex w-full items-center justify-center gap-2 rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-4 py-2.5 text-xs font-medium text-[var(--ink-primary)] hover:border-[var(--accent-border)] hover:text-[var(--accent-deep)]"
+            className="inline-flex items-center gap-1.5 font-medium text-[var(--accent-deep)] transition-colors duration-150 hover:text-[var(--accent)]"
           >
-            <DownloadSimple size={14} weight="bold" aria-hidden="true" />
-            <span>Download Resume</span>
+            <DownloadSimple size={15} weight="bold" aria-hidden="true" />
+            <span>Download resume PDF</span>
           </a>
         </div>
       </aside>
 
-      {/* Right Column: Structured Project Brief Workbench */}
-      <div className="surface-elevated min-w-0 rounded-[var(--radius-lg)] p-6 sm:p-8 lg:col-span-7">
-        <div className="border-b border-[var(--border-hairline)] pb-5">
-          <h2 className="text-xl font-semibold tracking-[-0.02em] text-[var(--ink-primary)]">
+      {/* Right 7 Cols: Structured Inquiry Workbench */}
+      <div className="min-w-0 rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-6 sm:p-8 lg:col-span-7">
+        <div className="border-b border-[var(--border-hairline)] pb-6">
+          <h2 className="type-heading text-[var(--ink-primary)]">
             Outline your scope, timeline, or role
           </h2>
-          <p className="mt-1.5 text-sm text-[var(--ink-secondary)]">
+          <p className="type-body mt-2 text-[var(--ink-secondary)]">
             Share key technical goals and target dates. Responses ship directly
             from {PROFILE.utcOffsetLabel}.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-5">
-          {/* Honeypot field */}
+        <form onSubmit={handleSubmit} noValidate className="mt-7 space-y-6">
           <div className="hidden" aria-hidden="true">
-            <label htmlFor="companyWebsite">Company Website</label>
+            <label htmlFor="companyWebsite">Company website</label>
             <input
               id="companyWebsite"
               name="companyWebsite"
@@ -524,13 +480,12 @@ export function ContactForm() {
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2">
-            {/* Name Field */}
             <div className="flex min-w-0 flex-col gap-2">
               <label
                 htmlFor="contact-name"
-                className="text-xs font-semibold text-[var(--ink-primary)]"
+                className="type-sm font-medium text-[var(--ink-primary)]"
               >
-                Your Name <span className="text-[var(--accent)]">*</span>
+                Your name <span className="text-[var(--accent)]">*</span>
               </label>
               <input
                 ref={nameInputRef}
@@ -558,7 +513,7 @@ export function ContactForm() {
                     id="contact-name-error"
                     role="alert"
                     {...fieldErrorMotion}
-                    className="text-xs font-medium text-[var(--status-danger)]"
+                    className="type-sm font-medium text-[var(--status-danger)]"
                   >
                     {nameError}
                   </motion.p>
@@ -566,13 +521,12 @@ export function ContactForm() {
               </AnimatePresence>
             </div>
 
-            {/* Email Field */}
             <div className="flex min-w-0 flex-col gap-2">
               <label
                 htmlFor="contact-email"
-                className="text-xs font-semibold text-[var(--ink-primary)]"
+                className="type-sm font-medium text-[var(--ink-primary)]"
               >
-                Work Email <span className="text-[var(--accent)]">*</span>
+                Work email <span className="text-[var(--accent)]">*</span>
               </label>
               <input
                 ref={emailInputRef}
@@ -602,7 +556,7 @@ export function ContactForm() {
                     id="contact-email-error"
                     role="alert"
                     {...fieldErrorMotion}
-                    className="text-xs font-medium text-[var(--status-danger)]"
+                    className="type-sm font-medium text-[var(--status-danger)]"
                   >
                     {emailError}
                   </motion.p>
@@ -612,13 +566,12 @@ export function ContactForm() {
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2">
-            {/* Technical Pillar Select */}
             <div className="flex min-w-0 flex-col gap-2">
               <label
                 htmlFor="contact-track"
-                className="text-xs font-semibold text-[var(--ink-primary)]"
+                className="type-sm font-medium text-[var(--ink-primary)]"
               >
-                Technical Pillar
+                Technical discipline
               </label>
               <div className="relative min-w-0">
                 <select
@@ -637,7 +590,7 @@ export function ContactForm() {
                   ))}
                 </select>
                 <CaretDown
-                  size={14}
+                  size={15}
                   weight="bold"
                   aria-hidden="true"
                   className="pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 text-[var(--ink-muted)]"
@@ -645,13 +598,12 @@ export function ContactForm() {
               </div>
             </div>
 
-            {/* Engagement Type Select */}
             <div className="flex min-w-0 flex-col gap-2">
               <label
                 htmlFor="contact-scope"
-                className="text-xs font-semibold text-[var(--ink-primary)]"
+                className="type-sm font-medium text-[var(--ink-primary)]"
               >
-                Engagement Type
+                Engagement type
               </label>
               <div className="relative min-w-0">
                 <select
@@ -670,7 +622,7 @@ export function ContactForm() {
                   ))}
                 </select>
                 <CaretDown
-                  size={14}
+                  size={15}
                   weight="bold"
                   aria-hidden="true"
                   className="pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 text-[var(--ink-muted)]"
@@ -679,19 +631,18 @@ export function ContactForm() {
             </div>
           </div>
 
-          {/* Message Field + Tabular Counter */}
           <div className="flex min-w-0 flex-col gap-2">
             <div className="flex items-baseline justify-between gap-2">
               <label
                 htmlFor="contact-message"
-                className="text-xs font-semibold text-[var(--ink-primary)]"
+                className="type-sm font-medium text-[var(--ink-primary)]"
               >
-                Project Brief &amp; Requirements{" "}
+                Project brief and requirements{" "}
                 <span className="text-[var(--accent)]">*</span>
               </label>
               <span
                 id="contact-message-hint"
-                className={`font-mono text-[11px] tabular-nums transition-colors duration-150 ${
+                className={`type-sm tabular-nums transition-colors duration-150 ${
                   messageReady
                     ? "text-[var(--status-positive)]"
                     : messageError
@@ -735,7 +686,7 @@ export function ContactForm() {
                   id="contact-message-error"
                   role="alert"
                   {...fieldErrorMotion}
-                  className="text-xs font-medium text-[var(--status-danger)]"
+                  className="type-sm font-medium text-[var(--status-danger)]"
                 >
                   {messageError}
                 </motion.p>
@@ -743,31 +694,26 @@ export function ContactForm() {
             </AnimatePresence>
           </div>
 
-          {/* Animated API Error & Success Banners */}
           <AnimatePresence mode="wait">
             {error && (
-              <motion.div
-                key="api-error"
+              <div
                 role="alert"
-                {...bannerMotion}
-                className="flex items-start gap-2.5 rounded-[var(--radius-sm)] border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] px-4 py-3.5 text-xs font-medium text-[var(--status-danger)]"
+                className="type-sm flex items-start gap-2.5 rounded-[var(--radius-sm)] border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] px-4 py-3.5 font-medium text-[var(--status-danger)]"
               >
                 <WarningCircle
-                  size={16}
+                  size={17}
                   weight="bold"
                   className="mt-0.5 shrink-0"
                   aria-hidden="true"
                 />
-                <span className="leading-relaxed">{error}</span>
-              </motion.div>
+                <span>{error}</span>
+              </div>
             )}
 
             {result && !error && (
-              <motion.div
-                key={`api-result-${result.status ?? "ok"}`}
+              <div
                 role="status"
-                {...bannerMotion}
-                className="rounded-[var(--radius-md)] border border-[var(--status-positive-border)] bg-[var(--status-positive-bg)] p-4 text-sm text-[var(--ink-primary)]"
+                className="rounded-[var(--radius-sm)] border border-[var(--status-positive-border)] bg-[var(--status-positive-bg)] p-4 text-[var(--ink-primary)]"
               >
                 <div className="flex items-start gap-3">
                   <CheckCircle
@@ -777,143 +723,75 @@ export function ContactForm() {
                     aria-hidden="true"
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="font-semibold text-[var(--ink-primary)]">
+                    <p className="type-subhead text-[var(--ink-primary)]">
                       {result.status === "sent"
-                        ? "Inquiry Delivered"
-                        : "Brief Validated & Formatted"}
+                        ? "Inquiry delivered"
+                        : "Brief validated and recorded"}
                     </p>
-                    <p className="mt-1 text-xs leading-relaxed text-[var(--ink-secondary)]">
+                    <p className="type-sm mt-1 text-[var(--ink-secondary)]">
                       {result.message}
                     </p>
 
                     {result.status === "fallback" && result.mailtoUrl && (
-                      <div className="mt-3.5 flex flex-wrap gap-2.5">
+                      <div className="mt-4 flex flex-wrap items-center gap-4">
                         <a
                           href={result.mailtoUrl}
-                          className="btn-press inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] bg-[var(--bg-inverse)] px-3.5 py-2 text-xs font-medium text-[var(--ink-inverse)] hover:bg-[var(--bg-inverse-hover)]"
+                          className="type-sm btn-press inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] bg-[var(--bg-marine)] px-4 py-2 font-medium text-[var(--ink-on-marine)] hover:bg-[var(--accent)]"
                         >
                           <EnvelopeSimple
-                            size={14}
+                            size={15}
                             weight="bold"
                             aria-hidden="true"
                           />
-                          <span>Open in Email Client</span>
+                          <span>Open in email client</span>
                         </a>
 
                         {result.plainBrief && (
-                          <>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                copyFormattedBrief(result.plainBrief!)
-                              }
-                              className="btn-press inline-flex min-w-[164px] items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3.5 py-2 text-xs font-medium text-[var(--ink-primary)] hover:border-[var(--accent-border)]"
-                            >
-                              <BlurCrossfade
-                                contentKey={copiedBrief ? "copied" : "copy"}
-                                inline
-                                className="inline-flex items-center gap-1.5"
-                              >
-                                {copiedBrief ? (
-                                  <>
-                                    <Check
-                                      size={13}
-                                      weight="bold"
-                                      className="text-[var(--status-positive)]"
-                                      aria-hidden="true"
-                                    />
-                                    <span className="text-[var(--status-positive)]">
-                                      Brief Copied
-                                    </span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <Copy
-                                      size={13}
-                                      weight="bold"
-                                      aria-hidden="true"
-                                    />
-                                    <span>Copy Formatted Brief</span>
-                                  </>
-                                )}
-                              </BlurCrossfade>
-                            </button>
-                            <span className="sr-only" aria-live="polite">
-                              {copiedBrief
-                                ? "Formatted project brief copied to clipboard."
-                                : ""}
-                            </span>
-                          </>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              copyFormattedBrief(result.plainBrief!)
+                            }
+                            className="type-sm font-medium text-[var(--accent-deep)] underline decoration-[var(--accent-border)] transition-colors duration-150 hover:text-[var(--accent)]"
+                          >
+                            {copiedBrief
+                              ? "Brief copied to clipboard"
+                              : "Copy formatted brief"}
+                          </button>
                         )}
                       </div>
                     )}
                   </div>
                 </div>
-              </motion.div>
+              </div>
             )}
           </AnimatePresence>
 
-          {/* Form Footer & Tactile Submit Button */}
-          <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[var(--border-hairline)] pt-5">
-            <p className="font-mono text-[11px] text-[var(--ink-muted)]">
-              Wired for Resend SMTP · Zero data stored externally
+          <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[var(--border-hairline)] pt-6">
+            <p className="type-sm text-[var(--ink-muted)]">
+              Wired for Resend SMTP and Studio Console triage
             </p>
 
             <button
               type="submit"
               disabled={submitting}
-              className="btn-press inline-flex min-w-[184px] items-center justify-center rounded-[var(--radius-sm)] bg-[var(--bg-inverse)] px-5 py-2.5 text-sm font-medium text-[var(--ink-inverse)] hover:bg-[var(--bg-inverse-hover)] disabled:cursor-not-allowed disabled:opacity-65"
+              className="btn-press type-sm inline-flex min-w-[184px] items-center justify-center gap-2 rounded-[var(--radius-sm)] bg-[var(--bg-marine)] px-6 py-3 font-medium text-[var(--ink-on-marine)] hover:bg-[var(--accent)] disabled:cursor-not-allowed disabled:opacity-65"
             >
-              <BlurCrossfade
-                contentKey={submitVisualState}
-                inline
-                className="inline-flex items-center gap-2"
-              >
-                {submitVisualState === "submitting" ? (
-                  <>
-                    <svg
-                      className="h-3.5 w-3.5 animate-[spin_600ms_linear_infinite] motion-reduce:animate-none"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <circle
-                        cx="8"
-                        cy="8"
-                        r="6"
-                        stroke="currentColor"
-                        strokeOpacity="0.28"
-                        strokeWidth="2"
-                      />
-                      <path
-                        d="M14 8a6 6 0 0 0-6-6"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                    <span>Sending Inquiry</span>
-                  </>
-                ) : submitVisualState === "sent" ? (
-                  <>
-                    <Check size={15} weight="bold" aria-hidden="true" />
-                    <span>
-                      {result?.status === "sent"
-                        ? "Inquiry Sent"
-                        : "Brief Ready"}
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <PaperPlaneTilt
-                      size={15}
-                      weight="bold"
-                      aria-hidden="true"
-                    />
-                    <span>Start a Project</span>
-                  </>
-                )}
-              </BlurCrossfade>
+              {submitVisualState === "submitting" ? (
+                <span>Sending inquiry...</span>
+              ) : submitVisualState === "sent" ? (
+                <>
+                  <Check size={15} weight="bold" aria-hidden="true" />
+                  <span>
+                    {result?.status === "sent" ? "Inquiry sent" : "Brief ready"}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <PaperPlaneTilt size={15} weight="bold" aria-hidden="true" />
+                  <span>Send project brief</span>
+                </>
+              )}
             </button>
           </div>
         </form>

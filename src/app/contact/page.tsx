@@ -12,12 +12,12 @@ export const metadata: Metadata = buildPageMetadata({
 
 export default function ContactPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
-      <header className="mb-10 border-b border-[var(--border-hairline)] pb-8">
-        <h1 className="text-[clamp(2rem,3.2vw,2.75rem)] font-semibold leading-[1.1] tracking-[-0.03em] text-[var(--ink-primary)]">
-          Start a Project or Technical Conversation
+    <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-20 lg:px-10">
+      <header className="mb-12 border-b border-[var(--border-hairline)] pb-10">
+        <h1 className="type-page-title text-[var(--ink-primary)]">
+          Start a project or technical conversation
         </h1>
-        <p className="mt-4 max-w-[60ch] text-[17px] leading-[1.6] text-[var(--ink-secondary)]">
+        <p className="type-body mt-4 max-w-[60ch] text-[var(--ink-secondary)]">
           Available remotely worldwide from UTC+1 for full-stack SaaS builds,
           multi-agent AI pipelines, algorithmic trading tooling, technical
           leadership roles, and research collaborations.
@@ -26,7 +26,7 @@ export default function ContactPage() {
 
       <Suspense
         fallback={
-          <div className="surface-elevated rounded-[var(--radius-lg)] p-8 font-mono text-xs text-[var(--ink-muted)]">
+          <div className="type-sm py-8 text-[var(--ink-muted)]">
             Loading inquiry workbench...
           </div>
         }

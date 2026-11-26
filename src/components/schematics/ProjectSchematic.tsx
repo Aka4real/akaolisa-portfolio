@@ -10,9 +10,21 @@ import {
   StitchRetailSchematic,
 } from "./SystemsSchematics";
 
+export type SchematicTheme = "light" | "marine";
+
 export type ProjectSchematicProps =
-  | { type: SchematicType; slug?: string; compact?: boolean }
-  | { slug: string; type?: SchematicType; compact?: boolean };
+  | {
+      type: SchematicType;
+      slug?: string;
+      compact?: boolean;
+      theme?: SchematicTheme;
+    }
+  | {
+      slug: string;
+      type?: SchematicType;
+      compact?: boolean;
+      theme?: SchematicTheme;
+    };
 
 const SLUG_TO_SCHEMATIC: Record<string, SchematicType> = {
   koridor: "koridor",
@@ -50,6 +62,7 @@ export function ProjectSchematic({
   type,
   slug,
   compact = false,
+  theme = "light",
 }: ProjectSchematicProps) {
   const resolved = resolveSchematicType(type, slug);
 
@@ -57,7 +70,7 @@ export function ProjectSchematic({
     case "koridor":
       return <KoridorSchematic compact={compact} />;
     case "fortress":
-      return <FortressSchematic compact={compact} />;
+      return <FortressSchematic compact={compact} theme={theme} />;
     case "crypto-wealth":
       return <CryptoWealthSchematic compact={compact} />;
     case "stitch-retail":

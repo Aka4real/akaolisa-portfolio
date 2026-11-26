@@ -1,16 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import {
-  ArrowUpRight,
-  Code,
-  DownloadSimple,
-  FilePdf,
-  Flask,
-  GraduationCap,
-  Translate,
-  Trophy,
-} from "@phosphor-icons/react";
+import { ArrowUpRight, DownloadSimple } from "@phosphor-icons/react";
 import {
   EDUCATION,
   EXPERIENCE_ITEMS,
@@ -31,9 +22,9 @@ import {
 type ExpFilter = "all" | ExperienceCategory;
 
 const EXPERIENCE_TABS: ReadonlyArray<SegmentedTabOption<ExpFilter>> = [
-  { value: "all", label: "All Roles" },
-  { value: "software-ai", label: "Software & AI" },
-  { value: "clinical-biomedical", label: "Clinical & Lab" },
+  { value: "all", label: "All roles" },
+  { value: "software-ai", label: "Software and AI" },
+  { value: "clinical-biomedical", label: "Clinical and lab" },
 ];
 
 export function ExperienceView() {
@@ -50,72 +41,63 @@ export function ExperienceView() {
 
   return (
     <div className="space-y-16">
-      {/* Page Header with Inline Resume Actions (zero standalone CV banner box) */}
-      <header className="flex flex-col justify-between gap-6 border-b border-[var(--border-hairline)] pb-9 lg:flex-row lg:items-end">
+      {/* Direct Typographic CV Sheet Header */}
+      <header className="flex flex-col justify-between gap-8 border-b border-[var(--border-hairline)] pb-10 lg:flex-row lg:items-end">
         <div className="min-w-0">
-          <h1 className="text-[clamp(2rem,3.2vw,2.75rem)] font-semibold leading-[1.1] tracking-[-0.03em] text-[var(--ink-primary)]">
-            Experience, Clinical Lab &amp; Credentials
+          <h1 className="type-page-title text-[var(--ink-primary)]">
+            Experience, clinical lab, and credentials
           </h1>
-          <p className="mt-4 max-w-[58ch] text-[17px] leading-[1.6] text-[var(--ink-secondary)]">
+          <p className="type-body mt-4 max-w-[60ch] text-[var(--ink-secondary)]">
             Full-lifecycle software engineering at OXAKALABS and frontier RLHF
             evaluation paired with licensed clinical chemistry training and
             leadership across 250+ medical laboratory trainees.
           </p>
         </div>
 
-        <div className="flex shrink-0 flex-wrap items-center gap-2.5">
+        <div className="flex shrink-0 flex-wrap items-center gap-5">
           <button
             type="button"
             onClick={openResume}
-            className="btn-press inline-flex items-center gap-2 rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-4 py-2.5 text-xs font-medium text-[var(--ink-primary)] hover:border-[var(--accent-border)] hover:text-[var(--accent-deep)]"
+            className="type-sm font-medium text-[var(--accent-deep)] underline decoration-[var(--accent-border)] transition-colors duration-150 hover:text-[var(--accent)] hover:decoration-[var(--accent)]"
           >
-            <FilePdf
-              size={15}
-              weight="bold"
-              className="text-[var(--ink-secondary)]"
-              aria-hidden="true"
-            />
-            <span>Preview PDF</span>
+            Preview PDF
           </button>
 
           <a
             href={PROFILE.resumePdfPath}
             download={PROFILE.resumeFileName}
-            className="btn-press inline-flex items-center gap-2 rounded-[var(--radius-sm)] bg-[var(--bg-inverse)] px-4 py-2.5 text-xs font-medium text-[var(--ink-inverse)] hover:bg-[var(--bg-inverse-hover)]"
+            className="btn-press type-sm inline-flex items-center gap-2 rounded-[var(--radius-sm)] bg-[var(--bg-marine)] px-5 py-3 font-medium text-[var(--ink-on-marine)] hover:bg-[var(--accent)]"
           >
             <DownloadSimple size={15} weight="bold" aria-hidden="true" />
-            <span>Download Resume</span>
+            <span>Download resume PDF</span>
           </a>
         </div>
       </header>
 
-      {/* Open Swiss Editorial Timeline */}
+      {/* Chronological Ledger */}
       <section aria-labelledby="trajectory-heading">
-        <div className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+        <div className="mb-10 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
           <div>
             <h2
               id="trajectory-heading"
-              className="text-[clamp(1.375rem,2vw,1.75rem)] font-semibold leading-[1.2] tracking-[-0.025em] text-[var(--ink-primary)]"
+              className="type-heading text-[var(--ink-primary)]"
             >
-              Engineering, AI Training &amp; Clinical Leadership
+              Engineering, AI training, and clinical leadership
             </h2>
-            <p className="mt-2 max-w-[56ch] text-sm leading-relaxed text-[var(--ink-secondary)]">
-              Filter by engineering and AI work or licensed clinical laboratory
-              leadership across teaching hospitals and public health programs.
+            <p className="type-body mt-2 max-w-[56ch] text-[var(--ink-secondary)]">
+              Filter by software engineering and AI work or licensed clinical
+              laboratory leadership across teaching hospitals.
             </p>
           </div>
 
-          <div className="max-w-full shrink-0">
-            <ClipSegmentedTabs
-              options={EXPERIENCE_TABS}
-              value={activeTab}
-              onChange={setActiveTab}
-              ariaLabel="Filter experience by discipline"
-              variant="inverse"
-              size="md"
-              className="max-w-full"
-            />
-          </div>
+          <ClipSegmentedTabs
+            options={EXPERIENCE_TABS}
+            value={activeTab}
+            onChange={setActiveTab}
+            ariaLabel="Filter experience by discipline"
+            variant="inverse"
+            size="md"
+          />
         </div>
 
         <BlurCrossfade contentKey={activeTab}>
@@ -124,68 +106,47 @@ export function ExperienceView() {
             trigger="mount"
             staggerStep={0.035}
             maxDelay={0.14}
-            y={6}
+            y={8}
             className="divide-y divide-[var(--border-hairline)] border-y border-[var(--border-hairline)]"
           >
             {visibleItems.map((item, idx) => (
               <StaggerItem key={item.id} index={idx}>
-                <article className="grid gap-5 py-8 lg:grid-cols-12 lg:gap-10">
-                  {/* Left 3 Columns: Tabular Period, Location & Discipline Tag */}
+                <article className="grid gap-5 py-9 lg:grid-cols-12 lg:gap-10">
                   <div className="lg:col-span-3">
-                    <div className="font-mono text-sm font-semibold tabular-nums text-[var(--ink-primary)]">
+                    <p className="type-body font-semibold tabular-nums text-[var(--ink-primary)]">
                       {item.period}
-                    </div>
-                    <div className="mt-1 text-xs text-[var(--ink-muted)]">
+                    </p>
+                    <p className="type-sm mt-1 text-[var(--ink-muted)]">
                       {item.location}
-                    </div>
-                    <div className="mt-3">
-                      <span className="inline-flex items-center gap-1.5 rounded-[var(--radius-xs)] bg-[var(--bg-subtle)] px-2.5 py-1 font-mono text-[11px] text-[var(--ink-secondary)]">
-                        {item.category === "software-ai" ? (
-                          <Code
-                            size={12}
-                            weight="bold"
-                            className="text-[var(--accent)]"
-                            aria-hidden="true"
-                          />
-                        ) : (
-                          <Flask
-                            size={12}
-                            weight="bold"
-                            className="text-[var(--accent)]"
-                            aria-hidden="true"
-                          />
-                        )}
-                        <span>
-                          {item.category === "software-ai"
-                            ? "Software & AI"
-                            : "Clinical & Biomedical"}
-                        </span>
-                      </span>
-                    </div>
+                    </p>
+                    <p className="type-sm mt-2 font-medium text-[var(--accent-deep)]">
+                      {item.category === "software-ai"
+                        ? "Software and AI"
+                        : "Clinical and biomedical"}
+                    </p>
                   </div>
 
-                  {/* Right 9 Columns: Open Typographic Role, Highlights & Links */}
                   <div className="min-w-0 lg:col-span-9">
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-                      <h3 className="text-lg font-semibold leading-snug tracking-[-0.015em] text-[var(--ink-primary)] sm:text-xl">
+                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                      <h3 className="type-subhead text-[var(--ink-primary)]">
                         {item.organization}
                       </h3>
                       {item.highlightBadge && (
-                        <span className="rounded-[var(--radius-xs)] bg-[var(--accent-soft)] px-2.5 py-0.5 font-mono text-[11px] font-medium text-[var(--accent-deep)]">
-                          {item.highlightBadge}
+                        <span className="type-sm text-[var(--ink-muted)]">
+                          · {item.highlightBadge}
                         </span>
                       )}
                     </div>
 
-                    <p className="mt-1 text-[15px] font-medium text-[var(--ink-secondary)]">
+                    <p className="type-body mt-1 font-medium text-[var(--ink-secondary)]">
                       {item.role}
                     </p>
 
-                    <ul className="mt-4 space-y-2.5">
+                    <ul className="mt-4 space-y-3">
                       {item.bullets.map((bullet) => (
                         <li
                           key={bullet}
-                          className="flex max-w-[65ch] items-start gap-3 text-[15px] leading-[1.65] text-[var(--ink-secondary)]"
+                          className="type-body flex max-w-[65ch] items-start gap-3 text-[var(--ink-secondary)]"
                         >
                           <span
                             aria-hidden="true"
@@ -197,18 +158,18 @@ export function ExperienceView() {
                     </ul>
 
                     {item.links && item.links.length > 0 && (
-                      <div className="mt-4 flex flex-wrap gap-4 pt-1">
+                      <div className="mt-4 flex flex-wrap gap-5 pt-1">
                         {item.links.map((ext) => (
                           <a
                             key={ext.href}
                             href={ext.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group inline-flex items-center gap-1 font-mono text-xs font-medium text-[var(--accent-deep)] transition-colors duration-150 hover:text-[var(--accent)]"
+                            className="type-sm group inline-flex items-center gap-1 font-medium text-[var(--accent-deep)] transition-colors duration-150 hover:text-[var(--accent)]"
                           >
                             <span>{ext.label}</span>
                             <ArrowUpRight
-                              size={13}
+                              size={14}
                               weight="bold"
                               className="hover-nudge-ne shrink-0"
                               aria-hidden="true"
@@ -225,77 +186,59 @@ export function ExperienceView() {
         </BlurCrossfade>
       </section>
 
-      {/* Open Hairline-Separated Education & Languages Band */}
+      {/* Education & Languages Split */}
       <section className="grid gap-12 lg:grid-cols-12">
-        {/* Education & Clinical Research */}
         <div className="min-w-0 lg:col-span-7">
-          <div className="flex items-center gap-2.5">
-            <GraduationCap
-              size={20}
-              weight="bold"
-              className="shrink-0 text-[var(--accent)]"
-              aria-hidden="true"
-            />
-            <h2 className="text-xl font-semibold tracking-[-0.02em] text-[var(--ink-primary)]">
-              Education &amp; Clinical Research
-            </h2>
-          </div>
+          <h2 className="type-heading text-[var(--ink-primary)]">
+            Education and clinical research
+          </h2>
 
-          <h3 className="mt-5 text-lg font-semibold tracking-[-0.015em] text-[var(--ink-primary)]">
+          <h3 className="type-subhead mt-6 text-[var(--ink-primary)]">
             {EDUCATION.degree}
           </h3>
-          <p className="mt-1 text-sm text-[var(--ink-muted)]">
+          <p className="type-sm mt-1 text-[var(--ink-muted)]">
             {EDUCATION.specialization} · {EDUCATION.institution}
           </p>
 
-          <div className="mt-6 grid gap-6 sm:grid-cols-2">
+          <div className="mt-8 grid gap-8 sm:grid-cols-2">
             <div className="border-t border-[var(--border-hairline)] pt-4">
-              <div className="font-mono text-[11px] font-semibold tabular-nums text-[var(--accent-deep)]">
-                Research Thesis · {EDUCATION.thesisYear}
-              </div>
-              <p className="mt-2 text-sm font-medium leading-relaxed text-[var(--ink-primary)]">
+              <p className="type-sm font-medium tabular-nums text-[var(--accent-deep)]">
+                Research thesis · {EDUCATION.thesisYear}
+              </p>
+              <p className="type-body mt-2 text-[var(--ink-primary)]">
                 {EDUCATION.thesisTitle}
               </p>
             </div>
 
             <div className="border-t border-[var(--border-hairline)] pt-4">
-              <div className="font-mono text-[11px] font-semibold tabular-nums text-[var(--accent-deep)]">
-                Clinical Seminar · {EDUCATION.seminarYear}
-              </div>
-              <p className="mt-2 text-sm font-medium leading-relaxed text-[var(--ink-primary)]">
+              <p className="type-sm font-medium tabular-nums text-[var(--accent-deep)]">
+                Clinical seminar · {EDUCATION.seminarYear}
+              </p>
+              <p className="type-body mt-2 text-[var(--ink-primary)]">
                 {EDUCATION.seminarTitle}
               </p>
             </div>
           </div>
         </div>
 
-        {/* Languages & Communication */}
         <div className="min-w-0 lg:col-span-5 lg:border-l lg:border-[var(--border-hairline)] lg:pl-10">
-          <div className="flex items-center gap-2.5">
-            <Translate
-              size={20}
-              weight="bold"
-              className="shrink-0 text-[var(--accent)]"
-              aria-hidden="true"
-            />
-            <h2 className="text-xl font-semibold tracking-[-0.02em] text-[var(--ink-primary)]">
-              Languages &amp; Communication
-            </h2>
-          </div>
+          <h2 className="type-heading text-[var(--ink-primary)]">
+            Languages
+          </h2>
 
-          <ul className="mt-5 divide-y divide-[var(--border-hairline)] border-t border-[var(--border-hairline)]">
+          <ul className="mt-6 divide-y divide-[var(--border-hairline)] border-y border-[var(--border-hairline)]">
             {LANGUAGES.map((lang) => (
               <li key={lang.name} className="py-4">
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-[15px] font-semibold text-[var(--ink-primary)]">
+                <div className="flex items-baseline justify-between gap-3">
+                  <span className="type-subhead text-[var(--ink-primary)]">
                     {lang.name}
                   </span>
-                  <span className="rounded-[var(--radius-xs)] bg-[var(--bg-subtle)] px-2.5 py-0.5 font-mono text-[11px] text-[var(--ink-secondary)]">
+                  <span className="type-sm text-[var(--ink-muted)]">
                     {lang.proficiency}
                   </span>
                 </div>
                 {lang.notes && (
-                  <p className="mt-1.5 text-xs leading-relaxed text-[var(--ink-muted)]">
+                  <p className="type-sm mt-1 text-[var(--ink-secondary)]">
                     {lang.notes}
                   </p>
                 )}
@@ -305,39 +248,31 @@ export function ExperienceView() {
         </div>
       </section>
 
-      {/* Open Subtle Architectural Band: 2026 Hackathons & Builder Cohorts */}
+      {/* 2026 Hackathons & Builder Cohorts */}
       <section
         aria-labelledby="cohorts-heading"
-        className="rounded-[var(--radius-lg)] bg-[var(--bg-subtle)] px-6 py-8 sm:px-8 sm:py-10"
+        className="rounded-[var(--radius-md)] bg-[var(--bg-subtle)] px-6 py-10 sm:px-10 sm:py-12"
       >
-        <div className="flex items-center gap-2.5">
-          <Trophy
-            size={20}
-            weight="bold"
-            className="shrink-0 text-[var(--accent)]"
-            aria-hidden="true"
-          />
-          <h2
-            id="cohorts-heading"
-            className="text-xl font-semibold tracking-[-0.02em] text-[var(--ink-primary)]"
-          >
-            2026 Hackathons &amp; Selected Builder Cohorts
-          </h2>
-        </div>
+        <h2
+          id="cohorts-heading"
+          className="type-heading text-[var(--ink-primary)]"
+        >
+          Selected 2026 hackathons and builder cohorts
+        </h2>
 
-        <div className="mt-7 grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
           {HACKATHONS_AND_PROGRAMS.map((item) => (
             <div
               key={item.name}
               className="border-t border-[var(--border-hairline)] pt-4"
             >
-              <div className="font-mono text-[11px] font-medium tabular-nums text-[var(--accent-deep)]">
+              <p className="type-sm font-medium tabular-nums text-[var(--accent-deep)]">
                 {item.organizer} · {item.year}
-              </div>
-              <h3 className="mt-1.5 text-[15px] font-semibold text-[var(--ink-primary)]">
+              </p>
+              <h3 className="type-subhead mt-2 text-[var(--ink-primary)]">
                 {item.name}
               </h3>
-              <p className="mt-1.5 text-sm leading-[1.58] text-[var(--ink-secondary)]">
+              <p className="type-body mt-2 text-[var(--ink-secondary)]">
                 {item.focus}
               </p>
             </div>

@@ -9,6 +9,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { usePathname } from "next/navigation";
 import { MotionConfig, motion, useReducedMotion } from "framer-motion";
 import { SiteHeader } from "./SiteHeader";
 import { SiteFooter } from "./SiteFooter";
@@ -31,6 +32,8 @@ export function usePortfolioActions() {
 }
 
 function PortfolioShellInner({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const isAdminRoute = pathname === "/admin" || pathname.startsWith("/admin/");
   const prefersReduced = useReducedMotion();
   const [resumeOpen, setResumeOpen] = useState(false);
   const [assistantOpen, setAssistantOpen] = useState(false);
@@ -78,7 +81,6 @@ function PortfolioShellInner({ children }: { children: ReactNode }) {
   const closeResume = useCallback(() => setResumeOpen(false), []);
   const closeAssistant = useCallback(() => setAssistantOpen(false), []);
 
-  // Body scroll lock & focus restoration across all overlays
   useEffect(() => {
     if (anyOverlayOpen) {
       wasOverlayOpenRef.current = true;
@@ -101,7 +103,7 @@ function PortfolioShellInner({ children }: { children: ReactNode }) {
     }
   }, [anyOverlayOpen]);
 
-  const shouldPushDepth = anyOverlayOpen && !prefersReduced;
+  const shouldPushDepth = anyOverlayOpen && !prefersReduced && !isAdminRoute;
 
   return (
     <PortfolioActionsContext.Provider value={{ openResume, openAssistant }}>
@@ -110,24 +112,28 @@ function PortfolioShellInner({ children }: { children: ReactNode }) {
           inert={anyOverlayOpen}
           animate={
             shouldPushDepth
-              ? { scale: 0.988, borderRadius: 12 }
+              ? { scale: 0.99, borderRadius: 12 }
               : { scale: 1, borderRadius: 0 }
           }
           transition={SPRING_CRISP}
           style={{ transformOrigin: "50% 0%" }}
           className="flex min-h-screen flex-col overflow-x-clip bg-[var(--bg-canvas)] text-[var(--ink-primary)]"
         >
-          <SiteHeader
-            onOpenResume={openResume}
-            onOpenAssistant={openAssistant}
-            mobileOpen={mobileMenuOpen}
-            onMobileOpenChange={handleMobileMenuChange}
-          />
+          {!isAdminRoute && (
+            <SiteHeader
+              onOpenResume={openResume}
+              onOpenAssistant={openAssistant}
+              mobileOpen={mobileMenuOpen}
+              onMobileOpenChange={handleMobileMenuChange}
+            />
+          )}
           <main className="flex-1">{children}</main>
-          <SiteFooter
-            onOpenResume={openResume}
-            onOpenAssistant={openAssistant}
-          />
+          {!isAdminRoute && (
+            <SiteFooter
+              onOpenResume={openResume}
+              onOpenAssistant={openAssistant}
+            />
+          )}
         </motion.div>
       </div>
 

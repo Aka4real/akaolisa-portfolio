@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
+import { Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { PortfolioShell } from "@/components/layout/PortfolioShell";
 import { PROFILE } from "@/data/profile";
@@ -11,6 +10,20 @@ import {
   SITE_URL,
   getRootUrlWithTrailingSlash,
 } from "@/lib/site";
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-body",
+  display: "swap",
+});
 
 const defaultTitle = `${PROFILE.displayName} - Full-Stack, AI Agent & Quantitative Engineer`;
 const ogDescription =
@@ -90,7 +103,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${GeistSans.variable} ${GeistMono.variable}`}
+      className={`${spaceGrotesk.variable} ${plusJakartaSans.variable}`}
     >
       <body className="antialiased">
         <PortfolioShell>{children}</PortfolioShell>

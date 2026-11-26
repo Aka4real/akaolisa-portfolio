@@ -18,10 +18,9 @@ import {
   useMotionValue,
   usePresence,
   useReducedMotion,
-  useScroll,
   useTransform,
 } from "framer-motion";
-import { ArrowRight, FilePdf, Sparkle, X } from "@phosphor-icons/react";
+import { ArrowRight, Sparkle, X } from "@phosphor-icons/react";
 import { PROFILE } from "@/data/profile";
 import {
   SPRING_CRISP,
@@ -39,10 +38,10 @@ interface SiteHeaderProps {
 }
 
 const NAV_ITEMS = [
-  { label: "Home", href: "/" },
   { label: "Work", href: "/work" },
   { label: "Experience", href: "/experience" },
   { label: "Contact", href: "/contact" },
+  { label: "Admin", href: "/admin" },
 ] as const;
 
 interface PointerSample {
@@ -51,7 +50,6 @@ interface PointerSample {
 }
 
 interface MobileDrawerSheetProps {
-  pathname: string;
   isActive: (href: string) => boolean;
   onClose: () => void;
   onOpenResume: () => void;
@@ -91,11 +89,10 @@ function MobileDrawerSheet({
     }
   }, []);
 
-  // Enter & interruptible exit orchestration
   useEffect(() => {
     if (prefersReduced) {
       if (!isPresent) {
-        const timer = window.setTimeout(() => safeToRemove(), 160);
+        const timer = window.setTimeout(() => safeToRemove(), 140);
         return () => window.clearTimeout(timer);
       }
       x.set(0);
@@ -128,12 +125,10 @@ function MobileDrawerSheet({
     };
   }, [isPresent, prefersReduced, drawerWidth, safeToRemove, x]);
 
-  // Focus initial close button on mount for keyboard accessibility
   useEffect(() => {
     closeBtnRef.current?.focus({ preventScroll: true });
   }, []);
 
-  // Interruptible Escape key dismissal
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -156,7 +151,6 @@ function MobileDrawerSheet({
     startYRef.current = e.clientY;
     samplesRef.current = [{ x: e.clientX, t: performance.now() }];
 
-    // Mid-flight catch if drawer is currently moving
     if (x.get() > 2) {
       controlsRef.current?.stop();
       grabOffsetXRef.current = e.clientX - x.get();
@@ -182,7 +176,7 @@ function MobileDrawerSheet({
         try {
           e.currentTarget.setPointerCapture(e.pointerId);
         } catch {
-          // Ignore synthetic pointer capture rejection
+          // Ignore synthetic capture rejection
         }
       } else {
         return;
@@ -206,7 +200,10 @@ function MobileDrawerSheet({
     }
   };
 
-  const finishDrag = (e: ReactPointerEvent<HTMLElement>, cancelled: boolean) => {
+  const finishDrag = (
+    e: ReactPointerEvent<HTMLElement>,
+    cancelled: boolean
+  ) => {
     if (activePointerIdRef.current !== e.pointerId) return;
     activePointerIdRef.current = null;
 
@@ -236,7 +233,6 @@ function MobileDrawerSheet({
     const currentX = x.get();
     const projected = currentX + projectVelocity(vx, 0.998);
 
-    // Sign-first reversal: leftward flick cancels dismissal immediately
     const shouldDismiss =
       !cancelled &&
       vx >= -150 &&
@@ -261,57 +257,68 @@ function MobileDrawerSheet({
       aria-modal="true"
       aria-label="Mobile navigation"
     >
-      {/* Drag-coupled backdrop scrim */}
       <motion.div
         style={prefersReduced ? undefined : { opacity: scrimOpacity }}
         initial={prefersReduced ? { opacity: 0 } : undefined}
         animate={prefersReduced ? { opacity: isPresent ? 1 : 0 } : undefined}
-        transition={prefersReduced ? { duration: 0.16, ease: "easeOut" } : undefined}
+        transition={
+          prefersReduced ? { duration: 0.16, ease: "easeOut" } : undefined
+        }
         onClick={onClose}
         className="fixed inset-0 bg-[var(--scrim-drawer)] backdrop-blur-[var(--blur-scrim)]"
         aria-hidden="true"
       />
 
-      {/* Right-edge spring drawer */}
       <motion.aside
         ref={asideRef}
         style={prefersReduced ? undefined : { x, touchAction: "pan-y" }}
         initial={prefersReduced ? { opacity: 0 } : undefined}
         animate={prefersReduced ? { opacity: isPresent ? 1 : 0 } : undefined}
-        transition={prefersReduced ? { duration: 0.16, ease: "easeOut" } : undefined}
+        transition={
+          prefersReduced ? { duration: 0.16, ease: "easeOut" } : undefined
+        }
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={(e) => finishDrag(e, false)}
         onPointerCancel={(e) => finishDrag(e, true)}
-        className="relative z-10 flex h-full w-[min(86vw,340px)] flex-col border-l border-[var(--border-hairline)] bg-[var(--bg-canvas)] shadow-[var(--shadow-float)]"
+        className="relative z-10 flex h-full w-[min(86vw,340px)] flex-col border-l border-[var(--border-on-marine)] bg-[var(--bg-marine)] text-[var(--ink-on-marine)] shadow-[var(--shadow-float)]"
       >
-        {/* Drawer Header */}
-        <div className="chrome-surface flex h-16 items-center justify-between border-b border-[var(--border-hairline)] px-5">
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-7 w-7 items-center justify-center rounded-[8px] bg-[var(--bg-inverse)] font-mono text-[11px] font-semibold text-[var(--ink-inverse)]">
-              {PROFILE.monogram}
-            </span>
-            <span className="text-xs font-semibold tracking-[0.06em] text-[var(--ink-primary)]">
-              OXAKALABS
-            </span>
-          </div>
+        <div className="flex h-16 items-center justify-between border-b border-[var(--border-on-marine)] px-5">
+          <Link
+            href="/"
+            onClick={onClose}
+            className="type-wordmark text-[var(--ink-on-marine)]"
+          >
+            {PROFILE.displayName}
+          </Link>
           <button
             ref={closeBtnRef}
             type="button"
             onClick={onClose}
             aria-label="Close menu"
-            className="btn-press inline-flex h-9 w-9 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] text-[var(--ink-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--ink-primary)]"
+            className="btn-press inline-flex h-9 w-9 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-on-marine)] text-[var(--ink-on-marine-secondary)] hover:border-[var(--border-on-marine-strong)] hover:text-[var(--ink-on-marine)]"
           >
             <X size={16} weight="bold" aria-hidden="true" />
           </button>
         </div>
 
-        {/* Navigation Links */}
         <nav
           aria-label="Mobile navigation links"
-          className="flex-1 overflow-y-auto px-4 py-5"
+          className="flex-1 overflow-y-auto px-4 py-6"
         >
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col divide-y divide-[var(--border-on-marine)]">
+            <Link
+              href="/"
+              onClick={onClose}
+              aria-current={isActive("/") ? "page" : undefined}
+              className={`type-body py-3.5 font-medium transition-colors duration-150 ${
+                isActive("/")
+                  ? "text-[var(--accent-bright)]"
+                  : "text-[var(--ink-on-marine)] hover:text-[var(--accent-bright)]"
+              }`}
+            >
+              Overview
+            </Link>
             {NAV_ITEMS.map((item) => {
               const active = isActive(item.href);
               return (
@@ -320,50 +327,24 @@ function MobileDrawerSheet({
                   href={item.href}
                   onClick={onClose}
                   aria-current={active ? "page" : undefined}
-                  className={`btn-press flex items-center justify-between rounded-[var(--radius-sm)] px-3.5 py-3 text-sm font-medium ${
+                  className={`type-body py-3.5 font-medium transition-colors duration-150 ${
                     active
-                      ? "bg-[var(--accent-soft)] text-[var(--accent-deep)]"
-                      : "text-[var(--ink-secondary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--ink-primary)]"
+                      ? "text-[var(--accent-bright)]"
+                      : "text-[var(--ink-on-marine)] hover:text-[var(--accent-bright)]"
                   }`}
                 >
-                  <span>{item.label}</span>
-                  {active && (
-                    <span
-                      className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]"
-                      aria-hidden="true"
-                    />
-                  )}
+                  {item.label}
                 </Link>
               );
             })}
-          </div>
-        </nav>
-
-        {/* Drawer Utility Footer */}
-        <div className="space-y-2.5 border-t border-[var(--border-hairline)] bg-[var(--bg-surface)] p-4">
-          <Link
-            href="/contact"
-            onClick={onClose}
-            className="btn-press group flex w-full items-center justify-center gap-2 rounded-[var(--radius-sm)] bg-[var(--bg-inverse)] px-4 py-2.5 text-xs font-medium text-[var(--ink-inverse)] hover:bg-[var(--bg-inverse-hover)]"
-          >
-            Start a Project
-            <ArrowRight
-              size={14}
-              weight="bold"
-              className="hover-nudge-x"
-              aria-hidden="true"
-            />
-          </Link>
-          <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
               onClick={() => {
                 onClose();
                 onOpenResume();
               }}
-              className="btn-press inline-flex items-center justify-center gap-1.5 rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3 py-2 text-xs font-medium text-[var(--ink-primary)] hover:border-[var(--accent-border)]"
+              className="type-body py-3.5 text-left font-medium text-[var(--ink-on-marine-secondary)] transition-colors duration-150 hover:text-[var(--ink-on-marine)]"
             >
-              <FilePdf size={14} weight="bold" aria-hidden="true" />
               Resume PDF
             </button>
             <button
@@ -372,12 +353,28 @@ function MobileDrawerSheet({
                 onClose();
                 onOpenAssistant();
               }}
-              className="btn-press inline-flex items-center justify-center gap-1.5 rounded-[var(--radius-sm)] border border-[var(--accent-border)] bg-[var(--accent-soft)] px-3 py-2 text-xs font-medium text-[var(--accent-deep)] hover:border-[var(--accent)]"
+              className="type-body flex items-center gap-2 py-3.5 text-left font-medium text-[var(--accent-bright)] transition-colors duration-150 hover:text-[var(--ink-on-marine)]"
             >
-              <Sparkle size={14} weight="bold" aria-hidden="true" />
-              Ask AI
+              <Sparkle size={16} weight="bold" aria-hidden="true" />
+              <span>Ask AI assistant</span>
             </button>
           </div>
+        </nav>
+
+        <div className="border-t border-[var(--border-on-marine)] p-5">
+          <Link
+            href="/contact"
+            onClick={onClose}
+            className="btn-press group type-sm flex w-full items-center justify-center gap-2 rounded-[var(--radius-sm)] bg-[var(--accent)] px-4 py-3 font-medium text-[var(--ink-on-marine)] hover:bg-[var(--accent-deep)]"
+          >
+            <span>Start a project</span>
+            <ArrowRight
+              size={15}
+              weight="bold"
+              className="hover-nudge-x"
+              aria-hidden="true"
+            />
+          </Link>
         </div>
       </motion.aside>
     </div>
@@ -391,9 +388,11 @@ export function SiteHeader({
   onMobileOpenChange,
 }: SiteHeaderProps) {
   const pathname = usePathname();
+  const isHome = pathname === "/";
   const prefersReduced = useReducedMotion();
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
   const [portalMounted, setPortalMounted] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   const mobileOpen =
     controlledOpen !== undefined ? controlledOpen : uncontrolledOpen;
@@ -409,15 +408,20 @@ export function SiteHeader({
     [onMobileOpenChange]
   );
 
-  // Scroll-linked translucent chrome edge depth (zero React state on scroll)
-  const { scrollY } = useScroll();
-  const edgeProgress = useTransform(scrollY, [0, 32], [0, 1]);
-
   useEffect(() => {
     setPortalMounted(true);
   }, []);
 
-  // Auto-close mobile drawer on route navigation
+  useEffect(() => {
+    const onScroll = () => {
+      const next = window.scrollY > 44;
+      setScrolled((prev) => (prev === next ? prev : next));
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [pathname]);
+
   const prevPathnameRef = useRef(pathname);
   useEffect(() => {
     if (prevPathnameRef.current !== pathname) {
@@ -436,54 +440,37 @@ export function SiteHeader({
     [pathname]
   );
 
+  const overDarkHero = isHome && !scrolled;
+
   return (
     <>
-      <header className="chrome-glass sticky top-0 z-40">
-        {/* Scroll-linked ambient shadow layer (pure opacity, never animates box-shadow) */}
-        <motion.div
-          style={{ opacity: edgeProgress }}
-          className="pointer-events-none absolute inset-0 shadow-[0_1px_2px_rgba(15,20,30,0.04),0_6px_18px_-6px_rgba(15,20,30,0.07)]"
-          aria-hidden="true"
-        />
-
-        {/* Scroll-linked hairline separator */}
-        <motion.div
-          style={{ opacity: edgeProgress }}
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-[var(--border-hairline)]"
-          aria-hidden="true"
-        />
-
-        {/* Subtle downward edge fade skirt so content softens beneath translucent chrome */}
-        <motion.div
-          style={{ opacity: edgeProgress }}
-          className="pointer-events-none absolute inset-x-0 -bottom-3 h-3 bg-gradient-to-b from-[rgba(248,249,251,0.58)] to-transparent"
-          aria-hidden="true"
-        />
-
-        <div className="relative mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          {/* Brand Lockup (restored :focus-visible + tactile press) */}
+      <header
+        className={`${
+          isHome ? "fixed inset-x-0 top-0" : "sticky top-0"
+        } z-40 transition-[background-color,border-color,color] duration-200 ease-out ${
+          overDarkHero
+            ? "border-b border-transparent bg-transparent text-[var(--ink-on-marine)]"
+            : "chrome-light border-b border-[var(--border-hairline)] text-[var(--ink-primary)]"
+        }`}
+      >
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-5 sm:px-8 lg:px-10">
+          {/* Strong Editorial Brand Wordmark */}
           <Link
             href="/"
-            className="btn-press group flex items-center gap-3 rounded-[var(--radius-sm)] py-1 pr-1.5"
+            className={`btn-press type-wordmark shrink-0 whitespace-nowrap transition-colors duration-150 ${
+              overDarkHero
+                ? "text-[var(--ink-on-marine)] hover:text-[var(--accent-bright)]"
+                : "text-[var(--ink-primary)] hover:text-[var(--accent-deep)]"
+            }`}
           >
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-[var(--bg-inverse)] font-mono text-xs font-semibold tracking-tight text-[var(--ink-inverse)] transition-colors duration-[180ms] group-hover:bg-[var(--accent)]">
-              {PROFILE.monogram}
-            </span>
-            <div className="flex flex-col">
-              <span className="text-[13px] font-semibold leading-tight tracking-[0.05em] text-[var(--ink-primary)]">
-                AKAOLISA ENWEDO
-              </span>
-              <span className="font-mono text-[11px] leading-tight tracking-[0.04em] text-[var(--ink-muted)]">
-                OXAKALABS · B.MLS
-              </span>
-            </div>
+            {PROFILE.displayName}
           </Link>
 
-          {/* Desktop Navigation with LayoutGroup spring active indicator */}
+          {/* Compact Single-Line Desktop Navigation */}
           <LayoutGroup id="primary-nav">
             <nav
               aria-label="Primary navigation"
-              className="hidden items-center gap-1 md:flex"
+              className="hidden items-center gap-7 md:flex"
             >
               {NAV_ITEMS.map((item) => {
                 const active = isActive(item.href);
@@ -492,26 +479,26 @@ export function SiteHeader({
                     key={item.href}
                     href={item.href}
                     aria-current={active ? "page" : undefined}
-                    className={`btn-press relative rounded-[var(--radius-sm)] px-3.5 py-2 text-[13px] font-medium whitespace-nowrap ${
-                      active
-                        ? "text-[var(--ink-primary)]"
-                        : "text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]"
+                    className={`type-sm relative py-1 font-medium whitespace-nowrap transition-colors duration-150 ${
+                      overDarkHero
+                        ? active
+                          ? "text-[var(--ink-on-marine)]"
+                          : "text-[var(--ink-on-marine-secondary)] hover:text-[var(--ink-on-marine)]"
+                        : active
+                          ? "text-[var(--ink-primary)]"
+                          : "text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]"
                     }`}
                   >
+                    <span>{item.label}</span>
                     {active && (
                       <motion.span
-                        layoutId="nav-active-pill"
+                        layoutId="nav-active-underline"
                         transition={prefersReduced ? { duration: 0 } : SPRING_TAB}
-                        className="pointer-events-none absolute inset-x-0.5 inset-y-1 -z-10 rounded-[8px] bg-[rgba(15,20,30,0.048)]"
-                        aria-hidden="true"
-                      />
-                    )}
-                    <span className="relative z-10">{item.label}</span>
-                    {active && (
-                      <motion.span
-                        layoutId="nav-active-bar"
-                        transition={prefersReduced ? { duration: 0 } : SPRING_TAB}
-                        className="pointer-events-none absolute right-3.5 bottom-0 left-3.5 h-[2px] rounded-full bg-[var(--accent)]"
+                        className={`pointer-events-none absolute right-0 -bottom-0.5 left-0 h-[2px] rounded-full ${
+                          overDarkHero
+                            ? "bg-[var(--accent-bright)]"
+                            : "bg-[var(--accent)]"
+                        }`}
                         aria-hidden="true"
                       />
                     )}
@@ -521,48 +508,76 @@ export function SiteHeader({
             </nav>
           </LayoutGroup>
 
-          {/* Desktop Utility Actions */}
-          <div className="hidden items-center gap-2 md:flex">
+          {/* Restrained Desktop Utilities */}
+          <div className="hidden items-center gap-5 md:flex">
             <button
               type="button"
               onClick={onOpenResume}
-              className="btn-press inline-flex items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3 py-1.5 text-xs font-medium text-[var(--ink-primary)] hover:border-[var(--accent-border)] hover:text-[var(--accent-deep)]"
+              className={`type-sm btn-press font-medium whitespace-nowrap transition-colors duration-150 ${
+                overDarkHero
+                  ? "text-[var(--ink-on-marine-secondary)] hover:text-[var(--ink-on-marine)]"
+                  : "text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]"
+              }`}
             >
-              <FilePdf
-                size={14}
-                weight="bold"
-                className="text-[var(--ink-secondary)]"
-                aria-hidden="true"
-              />
-              Resume PDF
+              Resume
             </button>
             <button
               type="button"
               onClick={onOpenAssistant}
-              className="btn-press inline-flex items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-sm)] border border-[var(--accent-border)] bg-[var(--accent-soft)] px-3 py-1.5 text-xs font-medium text-[var(--accent-deep)] hover:border-[var(--accent)] hover:bg-[var(--accent)] hover:text-white"
+              className={`type-sm btn-press inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] border px-3.5 py-1.5 font-medium whitespace-nowrap ${
+                overDarkHero
+                  ? "border-[var(--border-on-marine-strong)] bg-[rgba(244,247,250,0.06)] text-[var(--ink-on-marine)] hover:border-[var(--accent-bright)] hover:bg-[rgba(102,163,255,0.14)]"
+                  : "border-[var(--border-strong)] bg-[var(--bg-surface)] text-[var(--ink-primary)] hover:border-[var(--accent)] hover:text-[var(--accent-deep)]"
+              }`}
             >
-              <Sparkle size={14} weight="bold" aria-hidden="true" />
-              Ask AI
+              <Sparkle
+                size={14}
+                weight="bold"
+                className={
+                  overDarkHero
+                    ? "text-[var(--accent-bright)]"
+                    : "text-[var(--accent)]"
+                }
+                aria-hidden="true"
+              />
+              <span>Ask AI</span>
             </button>
           </div>
 
-          {/* Mobile Utility & 2-Bar Morphing Menu Toggle */}
-          <div className="flex items-center gap-2 md:hidden">
+          {/* Mobile Controls */}
+          <div className="flex items-center gap-2.5 md:hidden">
             <button
               type="button"
               onClick={onOpenAssistant}
               aria-label="Ask AI about Akaolisa"
-              className="btn-press inline-flex h-9 items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-sm)] border border-[var(--accent-border)] bg-[var(--accent-soft)] px-2.5 text-xs font-medium text-[var(--accent-deep)]"
+              className={`type-sm btn-press inline-flex h-9 items-center gap-1.5 rounded-[var(--radius-sm)] border px-3 font-medium whitespace-nowrap ${
+                overDarkHero
+                  ? "border-[var(--border-on-marine-strong)] bg-[rgba(244,247,250,0.08)] text-[var(--ink-on-marine)]"
+                  : "border-[var(--border-strong)] bg-[var(--bg-surface)] text-[var(--ink-primary)]"
+              }`}
             >
-              <Sparkle size={14} weight="bold" aria-hidden="true" />
-              Ask AI
+              <Sparkle
+                size={14}
+                weight="bold"
+                className={
+                  overDarkHero
+                    ? "text-[var(--accent-bright)]"
+                    : "text-[var(--accent)]"
+                }
+                aria-hidden="true"
+              />
+              <span>Ask AI</span>
             </button>
             <button
               type="button"
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-label={mobileOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileOpen}
-              className="btn-press inline-flex h-9 w-9 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] text-[var(--ink-primary)]"
+              className={`btn-press inline-flex h-9 w-9 items-center justify-center rounded-[var(--radius-sm)] border ${
+                overDarkHero
+                  ? "border-[var(--border-on-marine-strong)] bg-[rgba(244,247,250,0.06)] text-[var(--ink-on-marine)]"
+                  : "border-[var(--border-strong)] bg-[var(--bg-surface)] text-[var(--ink-primary)]"
+              }`}
             >
               <span
                 className="relative flex h-4 w-4 items-center justify-center"
@@ -590,14 +605,12 @@ export function SiteHeader({
         </div>
       </header>
 
-      {/* Portaled Interruptible Right-Edge Spring Mobile Drawer */}
       {portalMounted &&
         createPortal(
           <AnimatePresence>
             {mobileOpen && (
               <MobileDrawerSheet
                 key="mobile-nav-drawer"
-                pathname={pathname}
                 isActive={isActive}
                 onClose={() => setMobileOpen(false)}
                 onOpenResume={onOpenResume}

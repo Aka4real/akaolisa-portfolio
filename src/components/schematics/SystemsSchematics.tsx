@@ -19,9 +19,11 @@ import {
   SPRING_TAB,
   type SegmentedTabOption,
 } from "@/components/ui/MotionPrimitives";
+import type { SchematicTheme } from "./ProjectSchematic";
 
 interface SchematicProps {
   compact?: boolean;
+  theme?: SchematicTheme;
 }
 
 function easeOutExpo(t: number): number {
@@ -53,10 +55,6 @@ function handleTabListKeyDown(
   }
 }
 
-/**
- * Fritsch-Carlson monotone cubic Bezier spline generator.
- * Guarantees smooth curvature without overshooting local financial extrema.
- */
 function buildMonotoneCubicPath(xs: number[], ys: number[]): string {
   const n = xs.length;
   if (n === 0) return "";
@@ -123,18 +121,16 @@ function buildMonotoneAreaPath(
 }
 
 /* -------------------------------------------------------------------------- */
-/* 1. KORIDOR ENGINE OS: Geospatial Freight Corridor Topology Diagram         */
+/* 1. KORIDOR ENGINE OS: Geospatial Freight Corridor Topology                 */
 /* -------------------------------------------------------------------------- */
 
 const KORIDOR_STAGES = [
   {
     id: "origin",
-    code: "N-01",
-    label: "Origin Hub",
-    shortSvg: "ORIGIN HUB",
+    label: "Origin hub",
     coord: "6.45N 3.39E",
-    tech: "GPS / WebSockets",
-    metric: "12Hz Stream",
+    tech: "GPS and WebSockets",
+    metric: "12 Hz stream",
     x: 84,
     y: 98,
     labelOffset: -22,
@@ -142,12 +138,10 @@ const KORIDOR_STAGES = [
   },
   {
     id: "port",
-    code: "N-02",
-    label: "Port Clearance",
-    shortSvg: "PORT CLEARANCE",
+    label: "Port clearance",
     coord: "6.21N 4.82E",
     tech: "Mapbox GL JS",
-    metric: "Gate Verified",
+    metric: "Gate verified",
     x: 240,
     y: 58,
     labelOffset: -20,
@@ -155,12 +149,10 @@ const KORIDOR_STAGES = [
   },
   {
     id: "transit",
-    code: "N-03",
-    label: "Transit Telemetry",
-    shortSvg: "TRANSIT TELEMETRY",
+    label: "Transit telemetry",
     coord: "5.84N 6.14E",
     tech: "Google Gemini AI",
-    metric: "Load Matched",
+    metric: "Load matched",
     x: 400,
     y: 96,
     labelOffset: 28,
@@ -168,12 +160,10 @@ const KORIDOR_STAGES = [
   },
   {
     id: "delivery",
-    code: "N-04",
-    label: "Final Delivery",
-    shortSvg: "FINAL DELIVERY",
+    label: "Final delivery",
     coord: "5.52N 7.49E",
     tech: "Supabase PostgreSQL",
-    metric: "RLS Ledger",
+    metric: "RLS ledger",
     x: 556,
     y: 56,
     labelOffset: 26,
@@ -206,7 +196,6 @@ export function KoridorSchematic({ compact = false }: SchematicProps) {
     activeStageRef.current = selected;
   }, [selected]);
 
-  // Travelling Cobalt signal pulse along the active spline (paused offscreen, disabled in reduced motion)
   useEffect(() => {
     const el = containerRef.current;
     const pulseEl = pulseRef.current;
@@ -239,7 +228,6 @@ export function KoridorSchematic({ compact = false }: SchematicProps) {
         const dist = rawT * activeLength;
         const pt = path.getPointAtLength(dist);
 
-        // Soft fade-in at origin and fade-out at terminal stage
         const edgeFade =
           rawT < 0.08
             ? rawT / 0.08
@@ -299,43 +287,32 @@ export function KoridorSchematic({ compact = false }: SchematicProps) {
   const active = KORIDOR_STAGES[selected];
   const progress = (selected + 1) / KORIDOR_STAGES.length;
 
-  const shellClass = compact
-    ? "w-full overflow-hidden rounded-[var(--radius-sm)] bg-[var(--bg-canvas)] ring-1 ring-inset ring-[var(--border-hairline)]"
-    : "w-full overflow-hidden rounded-[var(--radius-md)] bg-[var(--bg-surface)]";
-
   return (
-    <div ref={containerRef} className={shellClass}>
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)]/70 px-4 py-2.5 font-mono text-[11px]">
-        <span className="flex items-center gap-2 font-semibold text-[var(--ink-primary)]">
-          <span
-            aria-hidden="true"
-            className="h-2 w-2 rounded-full bg-[var(--accent)]"
-          />
-          KORIDOR GEOSPATIAL CORRIDOR TOPOLOGY
+    <div ref={containerRef} className="w-full overflow-hidden bg-[var(--bg-surface)]">
+      <div className="type-sm flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-hairline)] bg-[var(--bg-canvas)] px-4 py-3">
+        <span className="font-semibold text-[var(--ink-primary)]">
+          Geospatial freight corridor topology
         </span>
         <span className="text-[var(--ink-muted)]">
-          NEXT.JS · MAPBOX · GEMINI
+          Next.js · Mapbox GL · Gemini AI
         </span>
       </div>
 
-      {/* Geospatial Vector Corridor SVG */}
       <div className="bg-[var(--bg-canvas)]/55 px-3 py-3">
         <svg
-          viewBox="0 0 640 170"
+          viewBox="0 0 640 174"
           className="block h-auto w-full"
           role="img"
-          aria-label="Geospatial freight corridor topology from Origin Hub through Port Clearance and Transit Telemetry to Final Delivery"
+          aria-label="Geospatial freight corridor topology from Origin hub through Port clearance and Transit telemetry to Final delivery"
         >
-          {/* Quiet Topographic Coordinate Ticks & Contours */}
           {[84, 240, 400, 556].map((x, idx) => (
             <g key={x}>
               <line
                 x1={x}
                 y1={14}
                 x2={x}
-                y2={136}
-                stroke="rgba(15, 20, 30, 0.05)"
+                y2={138}
+                stroke="rgba(9, 19, 29, 0.05)"
                 strokeWidth="1"
               />
               <line
@@ -343,61 +320,45 @@ export function KoridorSchematic({ compact = false }: SchematicProps) {
                 y1={10}
                 x2={x}
                 y2={16}
-                stroke="rgba(15, 20, 30, 0.18)"
+                stroke="rgba(9, 19, 29, 0.18)"
                 strokeWidth="1"
               />
               <text
                 x={x}
-                y={163}
-                textAnchor={
-                  idx === 0 ? "start" : idx === 3 ? "end" : "middle"
-                }
-                fill="#5B6475"
-                fontSize="8.5"
-                fontFamily="var(--font-geist-mono), ui-monospace, monospace"
+                y={165}
+                textAnchor={idx === 0 ? "start" : idx === 3 ? "end" : "middle"}
+                fill="#506376"
+                fontSize="9.5"
+                fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
               >
                 {KORIDOR_STAGES[idx].coord}
               </text>
             </g>
           ))}
 
-          {/* Subtle Cartographic Elevation Contours */}
           <path
             d="M 24 128 Q 160 88, 310 112 T 618 76"
             fill="none"
-            stroke="rgba(15, 20, 30, 0.05)"
+            stroke="rgba(9, 19, 29, 0.05)"
             strokeWidth="1"
           />
           <path
             d="M 24 44 Q 190 22, 354 52 T 618 32"
             fill="none"
-            stroke="rgba(15, 20, 30, 0.045)"
+            stroke="rgba(9, 19, 29, 0.045)"
             strokeWidth="1"
           />
 
-          {/* Reference Latitude Scale Marker */}
-          <text
-            x="16"
-            y="22"
-            fill="#5B6475"
-            fontSize="8.5"
-            fontFamily="var(--font-geist-mono), ui-monospace, monospace"
-          >
-            CORRIDOR SECTOR A4
-          </text>
-
-          {/* Base Dashed Freight Spline */}
           <path
             ref={fullSplineRef}
             d={KORIDOR_FULL_SPLINE}
             fill="none"
-            stroke="rgba(15, 20, 30, 0.16)"
+            stroke="rgba(9, 19, 29, 0.16)"
             strokeWidth="2"
             strokeDasharray="4 4"
             strokeLinecap="round"
           />
 
-          {/* Active Routed Spline Segments */}
           {KORIDOR_SEGMENTS.map((segD, segIdx) => {
             const isActiveLeg = segIdx < selected;
             return (
@@ -405,7 +366,7 @@ export function KoridorSchematic({ compact = false }: SchematicProps) {
                 key={segIdx}
                 d={segD}
                 fill="none"
-                stroke="#1D4ED8"
+                stroke="#1456D1"
                 strokeWidth="2.4"
                 strokeLinecap="round"
                 style={{
@@ -418,25 +379,16 @@ export function KoridorSchematic({ compact = false }: SchematicProps) {
             );
           })}
 
-          {/* Travelling Cobalt Telemetry Signal Pulse (RAF + IntersectionObserver gated) */}
-          <g
-            ref={pulseRef}
-            style={{
-              opacity: 0,
-              pointerEvents: "none",
-            }}
-          >
-            <circle cx={0} cy={0} r="8" fill="rgba(29, 78, 216, 0.18)" />
-            <circle cx={0} cy={0} r="3.4" fill="#1D4ED8" />
+          <g ref={pulseRef} style={{ opacity: 0, pointerEvents: "none" }}>
+            <circle cx={0} cy={0} r="8" fill="rgba(20, 86, 209, 0.18)" />
+            <circle cx={0} cy={0} r="3.4" fill="#1456D1" />
           </g>
 
-          {/* 4 Precision Geospatial Vector Waypoint Nodes */}
           {KORIDOR_STAGES.map((stage, idx) => {
             const isReached = idx <= selected;
             const isCurrent = idx === selected;
             const labelY = stage.y + stage.labelOffset;
-            const codeY =
-              stage.labelOffset < 0 ? labelY - 11 : labelY + 11;
+            const codeY = stage.labelOffset < 0 ? labelY - 12 : labelY + 12;
 
             return (
               <g
@@ -444,84 +396,79 @@ export function KoridorSchematic({ compact = false }: SchematicProps) {
                 onClick={compact ? undefined : () => setSelected(idx)}
                 className={compact ? undefined : "cursor-pointer"}
               >
-                {/* Hit area for effortless click inspection */}
                 {!compact && (
                   <circle cx={stage.x} cy={stage.y} r="18" fill="transparent" />
                 )}
 
-                {/* Precision Outer Reticle on Active Stage */}
                 {isCurrent && (
                   <circle
                     cx={stage.x}
                     cy={stage.y}
                     r="11.5"
-                    fill="rgba(29, 78, 216, 0.1)"
-                    stroke="#1D4ED8"
+                    fill="rgba(20, 86, 209, 0.1)"
+                    stroke="#1456D1"
                     strokeOpacity="0.45"
                     strokeWidth="1"
                     strokeDasharray="2 2"
                   />
                 )}
 
-                {/* Primary Waypoint Node */}
                 <circle
                   cx={stage.x}
                   cy={stage.y}
                   r={isCurrent ? "6.2" : "5"}
-                  fill={isReached ? "#1D4ED8" : "#FFFFFF"}
-                  stroke={isReached ? "#153AA2" : "#5B6475"}
+                  fill={isReached ? "#1456D1" : "#FFFFFF"}
+                  stroke={isReached ? "#0E41A6" : "#506376"}
                   strokeWidth="1.75"
                 />
                 {isReached && (
                   <circle cx={stage.x} cy={stage.y} r="2" fill="#FFFFFF" />
                 )}
 
-                {/* Node Title & Code */}
                 <text
                   x={stage.x}
                   y={labelY}
                   textAnchor="middle"
-                  fill={isCurrent ? "#0F141E" : "#434C5E"}
-                  fontSize="9.5"
+                  fill={isCurrent ? "#09131D" : "#344658"}
+                  fontSize="10.5"
                   fontWeight={isCurrent ? "700" : "600"}
-                  fontFamily="var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif"
+                  fontFamily="var(--font-display), ui-sans-serif, system-ui, sans-serif"
                 >
-                  {stage.shortSvg}
+                  {stage.label}
                 </text>
                 <text
                   x={stage.x}
                   y={codeY}
                   textAnchor="middle"
-                  fill={isCurrent ? "#153AA2" : "#5B6475"}
-                  fontSize="8.5"
-                  fontWeight="600"
-                  fontFamily="var(--font-geist-mono), ui-monospace, monospace"
+                  fill={isCurrent ? "#0E41A6" : "#506376"}
+                  fontSize="9"
+                  fontWeight="500"
+                  fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
                 >
-                  {stage.code} · {stage.metric}
+                  {stage.metric}
                 </text>
               </g>
             );
           })}
 
-          {/* Corridor Progression Rail (GPU CSS transform: scaleX) */}
           <rect
             x="84"
-            y="145"
+            y="147"
             width="472"
             height="3"
             rx="1.5"
-            fill="rgba(15, 20, 30, 0.08)"
+            fill="rgba(9, 19, 29, 0.08)"
           />
           <rect
             x="84"
-            y="145"
+            y="147"
             width="472"
             height="3"
             rx="1.5"
-            fill="#1D4ED8"
+            fill="#1456D1"
             style={{
               transform: `scaleX(${progress.toFixed(4)})`,
-              transformOrigin: "84px 146.5px",
+              transformOrigin: "84px 148.5px",
               transition: prefersReduced
                 ? "none"
                 : "transform 280ms var(--ease-out-expo)",
@@ -530,7 +477,6 @@ export function KoridorSchematic({ compact = false }: SchematicProps) {
         </svg>
       </div>
 
-      {/* Interactive Borderless 4-Stage Selector & Telemetry Readout (!compact) */}
       {!compact ? (
         <>
           <LayoutGroup id={`koridor-${uid}`}>
@@ -561,7 +507,7 @@ export function KoridorSchematic({ compact = false }: SchematicProps) {
                         tabRefs
                       )
                     }
-                    className={`btn-press relative px-3.5 py-2.5 text-left ${
+                    className={`btn-press relative px-4 py-3 text-left ${
                       isSelected
                         ? "bg-[var(--accent-soft)] text-[var(--ink-primary)]"
                         : "bg-[var(--bg-surface)] text-[var(--ink-secondary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--ink-primary)]"
@@ -575,29 +521,10 @@ export function KoridorSchematic({ compact = false }: SchematicProps) {
                         className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-[var(--accent)]"
                       />
                     )}
-                    <div className="flex items-center justify-between font-mono text-[11px] tabular-nums">
-                      <span
-                        className={
-                          isSelected
-                            ? "font-semibold text-[var(--accent-deep)]"
-                            : "text-[var(--ink-muted)]"
-                        }
-                      >
-                        {stage.code}
-                      </span>
-                      <span
-                        aria-hidden="true"
-                        className={`h-1.5 w-1.5 rounded-full ${
-                          idx <= selected
-                            ? "bg-[var(--status-positive)]"
-                            : "bg-[var(--border-strong)]"
-                        }`}
-                      />
-                    </div>
-                    <div className="mt-0.5 text-xs font-semibold text-[var(--ink-primary)]">
+                    <div className="type-sm font-semibold text-[var(--ink-primary)]">
                       {stage.label}
                     </div>
-                    <div className="mt-0.5 font-mono text-[11px] text-[var(--ink-muted)]">
+                    <div className="type-sm mt-0.5 text-[var(--ink-muted)]">
                       {stage.tech}
                     </div>
                   </button>
@@ -606,32 +533,27 @@ export function KoridorSchematic({ compact = false }: SchematicProps) {
             </div>
           </LayoutGroup>
 
-          <div className="border-t border-[var(--border-hairline)] bg-[var(--bg-subtle)]/55 px-4 py-3">
+          <div className="border-t border-[var(--border-hairline)] bg-[var(--bg-canvas)] px-4 py-3.5">
             <BlurCrossfade contentKey={active.id}>
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <div className="flex items-center gap-2 font-mono text-[11px] font-semibold text-[var(--accent-deep)] tabular-nums">
-                  <span>
-                    {active.code} · {active.label.toUpperCase()}
-                  </span>
-                  <span className="text-[var(--ink-muted)]">
-                    ({active.coord})
-                  </span>
-                </div>
-                <span className="font-mono text-[11px] font-medium text-[var(--status-positive)]">
+              <div className="type-sm flex flex-wrap items-baseline justify-between gap-2 tabular-nums">
+                <span className="font-semibold text-[var(--ink-primary)]">
+                  {active.label} ({active.coord})
+                </span>
+                <span className="font-medium text-[var(--status-positive)]">
                   {active.metric}
                 </span>
               </div>
-              <p className="mt-1.5 text-xs leading-relaxed text-[var(--ink-secondary)]">
+              <p className="type-sm mt-1.5 text-[var(--ink-secondary)]">
                 {active.spec}
               </p>
             </BlurCrossfade>
           </div>
         </>
       ) : (
-        <div className="flex items-center justify-between border-t border-[var(--border-hairline)] bg-[var(--bg-subtle)]/55 px-4 py-2 font-mono text-[11px] tabular-nums text-[var(--ink-muted)]">
-          <span>4-STAGE HAULAGE ROUTE · LIVE TELEMETRY</span>
+        <div className="type-sm flex items-center justify-between border-t border-[var(--border-hairline)] bg-[var(--bg-canvas)] px-4 py-2.5 tabular-nums text-[var(--ink-muted)]">
+          <span>Four-stage haulage corridor</span>
           <span className="font-medium text-[var(--status-positive)]">
-            RLS ISOLATED
+            RLS isolated
           </span>
         </div>
       )}
@@ -646,127 +568,134 @@ export function KoridorSchematic({ compact = false }: SchematicProps) {
 const FORTRESS_GATES = [
   {
     id: "router",
-    code: "01",
-    label: "Gemini / Gemma Router",
+    label: "Model router",
     svgTitle: "Gemini / Gemma",
-    svgSub: "ROUTER",
-    status: "VERIFIED",
+    svgSub: "Router",
+    status: "Verified",
     x: 164,
     detail:
       "Routes complex planning to Gemini while offloading fast policy classification and schema verification to Gemma 2.",
   },
   {
     id: "memory",
-    code: "02",
-    label: "pgvector Memory",
+    label: "Vector memory",
     svgTitle: "pgvector",
-    svgSub: "MEMORY",
-    status: "INDEXED",
+    svgSub: "Memory",
+    status: "Indexed",
     x: 300,
     detail:
       "Retrieves historical institutional directives and prior audit logs via Supabase PostgreSQL pgvector cosine similarity.",
   },
   {
     id: "guardrail",
-    code: "03",
-    label: "Tool Guardrail",
-    svgTitle: "Tool Guardrail",
-    svgSub: "POLICY GATE",
-    status: "ENFORCED",
+    label: "Tool guardrail",
+    svgTitle: "Tool guardrail",
+    svgSub: "Policy gate",
+    status: "Enforced",
     x: 436,
     detail:
       "Intercepts outbound agent tool calls, validates schema and scope boundaries, and blocks unauthorized external mutations.",
   },
   {
     id: "cloudrun",
-    code: "04",
-    label: "Cloud Run Sandbox",
+    label: "Cloud Run",
     svgTitle: "Cloud Run",
-    svgSub: "SANDBOX",
-    status: "ISOLATED",
+    svgSub: "Sandbox",
+    status: "Isolated",
     x: 572,
     detail:
       "Stateless containerized execution boundary providing reproducible governance logs and elastic burst capacity.",
   },
 ] as const;
 
-export function FortressSchematic({ compact = false }: SchematicProps) {
+export function FortressSchematic({
+  compact = false,
+  theme = "light",
+}: SchematicProps) {
   const prefersReduced = useReducedMotion();
   const uid = useId().replace(/:/g, "");
   const [activeGate, setActiveGate] = useState(2);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const isMarine = theme === "marine";
 
   const current = FORTRESS_GATES[activeGate];
 
-  const shellClass = compact
-    ? "w-full overflow-hidden rounded-[var(--radius-sm)] bg-[var(--bg-canvas)] ring-1 ring-inset ring-[var(--border-hairline)]"
-    : "w-full overflow-hidden rounded-[var(--radius-md)] bg-[var(--bg-surface)]";
+  const accentStroke = isMarine ? "#66A3FF" : "#1456D1";
+  const positiveFill = isMarine ? "#34D399" : "#0C6B4B";
+  const mutedStroke = isMarine
+    ? "rgba(244, 247, 250, 0.2)"
+    : "rgba(9, 19, 29, 0.18)";
+  const mutedText = isMarine ? "#92A6BC" : "#506376";
+  const primaryText = isMarine ? "#F4F7FA" : "#09131D";
 
   return (
-    <div className={shellClass}>
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)]/70 px-4 py-2.5 font-mono text-[11px]">
-        <span className="flex items-center gap-2 font-semibold text-[var(--ink-primary)]">
-          <span
-            aria-hidden="true"
-            className="h-2 w-2 rounded-full bg-[var(--status-positive)]"
-          />
-          FORTRESS MULTI-AGENT GOVERNANCE PIPELINE
+    <div
+      className={`w-full overflow-hidden ${
+        isMarine ? "bg-[var(--bg-marine-elevated)]" : "bg-[var(--bg-surface)]"
+      }`}
+    >
+      <div
+        className={`type-sm flex flex-wrap items-center justify-between gap-2 border-b px-4 py-3 ${
+          isMarine
+            ? "border-[var(--border-on-marine)] bg-[var(--bg-marine)] text-[var(--ink-on-marine)]"
+            : "border-[var(--border-hairline)] bg-[var(--bg-canvas)] text-[var(--ink-primary)]"
+        }`}
+      >
+        <span className="font-semibold">
+          Multi-agent governance pipeline
         </span>
-        <span className="text-[var(--ink-muted)]">CLOUD RUN · PGVECTOR</span>
+        <span
+          className={
+            isMarine
+              ? "text-[var(--ink-on-marine-muted)]"
+              : "text-[var(--ink-muted)]"
+          }
+        >
+          Cloud Run · Supabase pgvector
+        </span>
       </div>
 
-      {/* Directional SVG Governance Pipeline */}
-      <div className="bg-[var(--bg-canvas)]/55 px-3 py-3">
+      <div
+        className={`px-3 py-4 ${
+          isMarine ? "bg-[var(--bg-marine-elevated)]" : "bg-[var(--bg-canvas)]/55"
+        }`}
+      >
         <svg
           viewBox="0 0 640 162"
           className="block h-auto w-full"
           role="img"
           aria-label="Multi-agent governance pipeline from Prompt through Gemini and Gemma Router, pgvector Memory, Tool Guardrail, and Cloud Run Sandbox"
         >
-          {/* Origin Prompt Terminal */}
           <g>
             <rect
               x="14"
               y="52"
-              width="66"
+              width="68"
               height="38"
               rx="8"
-              fill="#0F141E"
+              fill={isMarine ? "#1456D1" : "#07111A"}
             />
             <text
-              x="47"
-              y="69"
+              x="48"
+              y="74"
               textAnchor="middle"
-              fill="#F8F9FB"
-              fontSize="9"
+              fill="#F4F7FA"
+              fontSize="10"
               fontWeight="600"
-              fontFamily="var(--font-geist-mono), ui-monospace, monospace"
+              fontFamily="var(--font-display), ui-sans-serif, system-ui, sans-serif"
             >
-              PROMPT
-            </text>
-            <text
-              x="47"
-              y="81"
-              textAnchor="middle"
-              fill="rgba(248, 249, 251, 0.72)"
-              fontSize="8"
-              fontFamily="var(--font-geist-mono), ui-monospace, monospace"
-            >
-              INGRESS
+              Prompt
             </text>
           </g>
 
-          {/* Connector: Prompt -> Gate 01 */}
           <path
-            d="M 80 71 L 112 71"
+            d="M 82 71 L 112 71"
             fill="none"
-            stroke="#1D4ED8"
+            stroke={accentStroke}
             strokeWidth="2"
           />
-          <polygon points="110,67.5 117,71 110,74.5" fill="#1D4ED8" />
+          <polygon points="110,67.5 117,71 110,74.5" fill={accentStroke} />
 
-          {/* Connectors between Gates 01 -> 02 -> 03 -> 04 */}
           {[0, 1, 2].map((segIdx) => {
             const x1 = FORTRESS_GATES[segIdx].x + 48;
             const x2 = FORTRESS_GATES[segIdx + 1].x - 52;
@@ -778,7 +707,7 @@ export function FortressSchematic({ compact = false }: SchematicProps) {
                   y1={71}
                   x2={x2}
                   y2={71}
-                  stroke={verified ? "#1D4ED8" : "rgba(15, 20, 30, 0.18)"}
+                  stroke={verified ? accentStroke : mutedStroke}
                   strokeWidth={verified ? "2" : "1.5"}
                   strokeDasharray={verified ? undefined : "3 3"}
                   style={{
@@ -789,17 +718,16 @@ export function FortressSchematic({ compact = false }: SchematicProps) {
                 />
                 <polygon
                   points={`${x2 - 2},67.5 ${x2 + 5},71 ${x2 - 2},74.5`}
-                  fill={verified ? "#1D4ED8" : "rgba(15, 20, 30, 0.28)"}
+                  fill={verified ? accentStroke : mutedStroke}
                 />
               </g>
             );
           })}
 
-          {/* Orthogonal Audit Return Bus below Gates */}
           <path
             d="M 164 102 L 164 134 L 572 134 L 572 102"
             fill="none"
-            stroke="rgba(15, 20, 30, 0.1)"
+            stroke={mutedStroke}
             strokeWidth="1.2"
             strokeDasharray="3 3"
           />
@@ -810,34 +738,23 @@ export function FortressSchematic({ compact = false }: SchematicProps) {
               y1={102}
               x2={tx}
               y2={134}
-              stroke="rgba(15, 20, 30, 0.1)"
+              stroke={mutedStroke}
               strokeWidth="1.2"
               strokeDasharray="3 3"
             />
           ))}
-          <rect
-            x="256"
-            y="125"
-            width="224"
-            height="18"
-            rx="4"
-            fill="#F8F9FB"
-            stroke="rgba(15, 20, 30, 0.08)"
-            strokeWidth="1"
-          />
           <text
             x="368"
-            y="137"
+            y="151"
             textAnchor="middle"
-            fill="#5B6475"
-            fontSize="8.5"
+            fill={mutedText}
+            fontSize="9.5"
             fontWeight="500"
-            fontFamily="var(--font-geist-mono), ui-monospace, monospace"
+            fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
           >
-            IMMUTABLE AUDIT LOG · ZERO UNVERIFIED TOOLS
+            Immutable audit log · Zero unverified tool mutations
           </text>
 
-          {/* 4 Governance Checkpoint Nodes */}
           {FORTRESS_GATES.map((gate, i) => {
             const isVerified = i <= activeGate;
             const isSelected = i === activeGate;
@@ -849,7 +766,6 @@ export function FortressSchematic({ compact = false }: SchematicProps) {
                 onClick={compact ? undefined : () => setActiveGate(i)}
                 className={compact ? undefined : "cursor-pointer"}
               >
-                {/* Outer Active Focus Halo */}
                 {isSelected && (
                   <rect
                     x={rectX - 4}
@@ -857,71 +773,71 @@ export function FortressSchematic({ compact = false }: SchematicProps) {
                     width="104"
                     height="70"
                     rx="12"
-                    fill="rgba(29, 78, 216, 0.07)"
-                    stroke="#1D4ED8"
-                    strokeOpacity="0.55"
+                    fill={
+                      isMarine
+                        ? "rgba(102, 163, 255, 0.12)"
+                        : "rgba(20, 86, 209, 0.08)"
+                    }
+                    stroke={accentStroke}
+                    strokeOpacity="0.6"
                     strokeWidth="1.25"
                   />
                 )}
 
-                {/* Gate Node Plate */}
                 <rect
                   x={rectX}
                   y={40}
                   width="96"
                   height="62"
                   rx="9"
-                  fill={isSelected ? "#EEF3FF" : "#FFFFFF"}
+                  fill={
+                    isMarine
+                      ? isSelected
+                        ? "#13273B"
+                        : "#07111A"
+                      : isSelected
+                        ? "#EBF2FF"
+                        : "#FFFFFF"
+                  }
                   stroke={
                     isSelected
-                      ? "#1D4ED8"
+                      ? accentStroke
                       : isVerified
-                        ? "rgba(29, 78, 216, 0.35)"
-                        : "rgba(15, 20, 30, 0.14)"
+                        ? isMarine
+                          ? "rgba(102, 163, 255, 0.42)"
+                          : "rgba(20, 86, 209, 0.35)"
+                        : mutedStroke
                   }
                   strokeWidth={isSelected ? "1.6" : "1.1"}
                 />
 
-                {/* Top Gate Number & Verification Dot */}
-                <text
-                  x={rectX + 10}
-                  y={54}
-                  fill={isVerified ? "#153AA2" : "#5B6475"}
-                  fontSize="8.5"
-                  fontWeight="600"
-                  fontFamily="var(--font-geist-mono), ui-monospace, monospace"
-                >
-                  G-{gate.code}
-                </text>
                 <circle
                   cx={rectX + 84}
-                  cy={51}
+                  cy={52}
                   r="3.2"
-                  fill={isVerified ? "#136F3A" : "rgba(15, 20, 30, 0.16)"}
+                  fill={isVerified ? positiveFill : mutedStroke}
                 />
 
-                {/* Node Title */}
                 <text
                   x={gate.x}
-                  y={74}
+                  y={72}
                   textAnchor="middle"
-                  fill="#0F141E"
-                  fontSize="10"
+                  fill={primaryText}
+                  fontSize="10.5"
                   fontWeight="600"
-                  fontFamily="var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif"
+                  fontFamily="var(--font-display), ui-sans-serif, system-ui, sans-serif"
                 >
                   {gate.svgTitle}
                 </text>
 
-                {/* Status Chip */}
                 <text
                   x={gate.x}
-                  y={90}
+                  y={89}
                   textAnchor="middle"
-                  fill={isVerified ? "#136F3A" : "#5B6475"}
-                  fontSize="8.2"
-                  fontWeight="600"
-                  fontFamily="var(--font-geist-mono), ui-monospace, monospace"
+                  fill={isVerified ? positiveFill : mutedText}
+                  fontSize="9"
+                  fontWeight="500"
+                  fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
                 >
                   {isVerified ? gate.status : gate.svgSub}
                 </text>
@@ -931,18 +847,20 @@ export function FortressSchematic({ compact = false }: SchematicProps) {
         </svg>
       </div>
 
-      {/* Interactive Checkpoint Selector with Shared layoutId Ring (!compact) */}
       {!compact ? (
         <>
           <LayoutGroup id={`fortress-${uid}`}>
             <div
               role="tablist"
               aria-label="Inspect Fortress governance checkpoint gates"
-              className="grid grid-cols-2 gap-2 border-t border-[var(--border-hairline)] bg-[var(--bg-surface)] px-4 py-3 sm:grid-cols-4"
+              className={`grid grid-cols-2 gap-px border-t sm:grid-cols-4 ${
+                isMarine
+                  ? "border-[var(--border-on-marine)] bg-[var(--border-on-marine)]"
+                  : "border-[var(--border-hairline)] bg-[var(--border-hairline)]"
+              }`}
             >
               {FORTRESS_GATES.map((gate, i) => {
                 const isSelected = i === activeGate;
-                const isVerified = i <= activeGate;
                 return (
                   <button
                     key={gate.id}
@@ -963,40 +881,35 @@ export function FortressSchematic({ compact = false }: SchematicProps) {
                         tabRefs
                       )
                     }
-                    className={`btn-press relative rounded-[var(--radius-sm)] px-3 py-2 text-left ${
-                      isSelected
-                        ? "bg-[var(--accent-soft)]/70 text-[var(--ink-primary)]"
-                        : "bg-[var(--bg-subtle)]/65 text-[var(--ink-secondary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--ink-primary)]"
+                    className={`btn-press relative px-4 py-3 text-left ${
+                      isMarine
+                        ? isSelected
+                          ? "bg-[var(--bg-marine-subtle)] text-[var(--ink-on-marine)]"
+                          : "bg-[var(--bg-marine)] text-[var(--ink-on-marine-secondary)] hover:bg-[var(--bg-marine-elevated)] hover:text-[var(--ink-on-marine)]"
+                        : isSelected
+                          ? "bg-[var(--accent-soft)] text-[var(--ink-primary)]"
+                          : "bg-[var(--bg-surface)] text-[var(--ink-secondary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--ink-primary)]"
                     }`}
                   >
                     {isSelected && (
                       <motion.span
-                        layoutId="fortress-active-ring"
+                        layoutId="fortress-active-bar"
                         transition={SPRING_TAB}
                         aria-hidden="true"
-                        className="pointer-events-none absolute inset-0 rounded-[var(--radius-sm)] ring-[1.5px] ring-inset ring-[var(--accent)]"
-                      />
-                    )}
-                    <div className="flex items-center justify-between font-mono text-[11px] tabular-nums">
-                      <span
-                        className={
-                          isSelected
-                            ? "font-semibold text-[var(--accent-deep)]"
-                            : "text-[var(--ink-muted)]"
-                        }
-                      >
-                        GATE {gate.code}
-                      </span>
-                      <span
-                        className={`h-2 w-2 rounded-full ${
-                          isVerified
-                            ? "bg-[var(--status-positive)]"
-                            : "bg-[var(--border-strong)]"
+                        className={`pointer-events-none absolute inset-x-0 top-0 h-[2px] ${
+                          isMarine ? "bg-[var(--accent-bright)]" : "bg-[var(--accent)]"
                         }`}
                       />
-                    </div>
-                    <div className="mt-0.5 truncate text-xs font-semibold text-[var(--ink-primary)]">
-                      {gate.label}
+                    )}
+                    <div className="type-sm font-semibold">{gate.label}</div>
+                    <div
+                      className={`type-sm mt-0.5 ${
+                        isMarine
+                          ? "text-[var(--ink-on-marine-muted)]"
+                          : "text-[var(--ink-muted)]"
+                      }`}
+                    >
+                      {gate.status}
                     </div>
                   </button>
                 );
@@ -1004,27 +917,63 @@ export function FortressSchematic({ compact = false }: SchematicProps) {
             </div>
           </LayoutGroup>
 
-          <div className="border-t border-[var(--border-hairline)] bg-[var(--bg-subtle)]/55 px-4 py-3">
+          <div
+            className={`border-t px-4 py-3.5 ${
+              isMarine
+                ? "border-[var(--border-on-marine)] bg-[var(--bg-marine)]"
+                : "border-[var(--border-hairline)] bg-[var(--bg-canvas)]"
+            }`}
+          >
             <BlurCrossfade contentKey={current.id}>
-              <div className="flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] tabular-nums">
-                <span className="font-semibold text-[var(--accent-deep)]">
-                  CHECKPOINT AUDIT · GATE {current.code} ({current.label})
+              <div className="type-sm flex flex-wrap items-center justify-between gap-2">
+                <span
+                  className={`font-semibold ${
+                    isMarine
+                      ? "text-[var(--ink-on-marine)]"
+                      : "text-[var(--ink-primary)]"
+                  }`}
+                >
+                  {current.label} checkpoint
                 </span>
-                <span className="inline-flex items-center gap-1.5 rounded-[var(--radius-xs)] border border-[var(--status-positive-border)] bg-[var(--status-positive-bg)] px-2 py-0.5 text-[11px] font-medium text-[var(--status-positive)]">
-                  {current.status} · POLICY PASS
+                <span
+                  className={`font-medium ${
+                    isMarine
+                      ? "text-[var(--status-positive-bright)]"
+                      : "text-[var(--status-positive)]"
+                  }`}
+                >
+                  {current.status} · Policy pass
                 </span>
               </div>
-              <p className="mt-1.5 text-xs leading-relaxed text-[var(--ink-secondary)]">
+              <p
+                className={`type-sm mt-1.5 ${
+                  isMarine
+                    ? "text-[var(--ink-on-marine-secondary)]"
+                    : "text-[var(--ink-secondary)]"
+                }`}
+              >
                 {current.detail}
               </p>
             </BlurCrossfade>
           </div>
         </>
       ) : (
-        <div className="flex items-center justify-between border-t border-[var(--border-hairline)] bg-[var(--bg-subtle)]/55 px-4 py-2 font-mono text-[11px] tabular-nums text-[var(--ink-muted)]">
-          <span>4 CHECKPOINTS · PROMPT TO CLOUD RUN</span>
-          <span className="font-medium text-[var(--status-positive)]">
-            POLICY ENFORCED
+        <div
+          className={`type-sm flex items-center justify-between border-t px-4 py-2.5 ${
+            isMarine
+              ? "border-[var(--border-on-marine)] bg-[var(--bg-marine)] text-[var(--ink-on-marine-muted)]"
+              : "border-[var(--border-hairline)] bg-[var(--bg-canvas)] text-[var(--ink-muted)]"
+          }`}
+        >
+          <span>Four verification checkpoints</span>
+          <span
+            className={`font-medium ${
+              isMarine
+                ? "text-[var(--status-positive-bright)]"
+                : "text-[var(--status-positive)]"
+            }`}
+          >
+            Policy enforced
           </span>
         </div>
       )}
@@ -1039,9 +988,9 @@ export function FortressSchematic({ compact = false }: SchematicProps) {
 type CryptoPeriod = "24H" | "7D" | "30D";
 
 const CRYPTO_PERIOD_OPTIONS: ReadonlyArray<SegmentedTabOption<CryptoPeriod>> = [
-  { value: "24H", label: "24H" },
-  { value: "7D", label: "7D" },
-  { value: "30D", label: "30D" },
+  { value: "24H", label: "24h" },
+  { value: "7D", label: "7d" },
+  { value: "30D", label: "30d" },
 ];
 
 const CRYPTO_SERIES: Record<
@@ -1069,24 +1018,24 @@ const CRYPTO_SERIES: Record<
     ],
     delta: "+2.71%",
     apy: "6.40% APR",
-    feedLatency: "38ms WS",
+    feedLatency: "38 ms WS",
   },
   "7D": {
     points: [96.2, 97.5, 97.1, 98.9, 100.4, 99.8, 102.3, 103.6, 104.8],
     timestamps: [
-      "D-08",
-      "D-07",
-      "D-06",
-      "D-05",
-      "D-04",
-      "D-03",
-      "D-02",
-      "D-01",
-      "NOW",
+      "Day 1",
+      "Day 2",
+      "Day 3",
+      "Day 4",
+      "Day 5",
+      "Day 6",
+      "Day 7",
+      "Day 8",
+      "Now",
     ],
     delta: "+8.94%",
     apy: "6.42% APR",
-    feedLatency: "41ms WS",
+    feedLatency: "41 ms WS",
   },
   "30D": {
     points: [91.0, 93.4, 92.8, 96.5, 98.1, 101.2, 103.9, 106.4, 109.2],
@@ -1099,16 +1048,16 @@ const CRYPTO_SERIES: Record<
       "D-10",
       "D-06",
       "D-03",
-      "NOW",
+      "Now",
     ],
     delta: "+20.00%",
     apy: "6.45% APR",
-    feedLatency: "39ms WS",
+    feedLatency: "39 ms WS",
   },
 };
 
 const CRYPTO_SVG_W = 600;
-const CRYPTO_PAD_L = 44;
+const CRYPTO_PAD_L = 46;
 const CRYPTO_PAD_R = 18;
 const CRYPTO_PAD_T = 18;
 const CRYPTO_PAD_B = 24;
@@ -1123,7 +1072,7 @@ export function CryptoWealthSchematic({ compact = false }: SchematicProps) {
   const [period, setPeriod] = useState<CryptoPeriod>("7D");
   const current = CRYPTO_SERIES[period];
 
-  const svgH = compact ? 142 : 196;
+  const svgH = compact ? 148 : 196;
   const plotH = svgH - CRYPTO_PAD_T - CRYPTO_PAD_B;
   const plotBottom = CRYPTO_PAD_T + plotH;
 
@@ -1159,7 +1108,6 @@ export function CryptoWealthSchematic({ compact = false }: SchematicProps) {
     return { ys, ticks };
   }, [current, plotH]);
 
-  // Freeze initial geometry for SSR/hydration; subsequent switches morph via DOM refs
   const [initialYs] = useState<number[]>(() => computed.ys);
 
   const svgRef = useRef<SVGSVGElement | null>(null);
@@ -1306,7 +1254,7 @@ export function CryptoWealthSchematic({ compact = false }: SchematicProps) {
       tooltipRef.current.textContent = `${series.timestamps[idx]} · NAV ${val.toFixed(2)} · ${sign}${navDeltaPct.toFixed(2)}%`;
 
       const wrapRect = wrap.getBoundingClientRect();
-      const tipW = tooltipRef.current.offsetWidth || 196;
+      const tipW = tooltipRef.current.offsetWidth || 210;
       const anchorCssX =
         svgRect.left - wrapRect.left + (x / CRYPTO_SVG_W) * svgRect.width;
       const clampedTipX = Math.max(
@@ -1330,20 +1278,11 @@ export function CryptoWealthSchematic({ compact = false }: SchematicProps) {
     [compact, flushScrubber]
   );
 
-  const shellClass = compact
-    ? "w-full overflow-hidden rounded-[var(--radius-sm)] bg-[var(--bg-canvas)] ring-1 ring-inset ring-[var(--border-hairline)]"
-    : "w-full overflow-hidden rounded-[var(--radius-md)] bg-[var(--bg-surface)]";
-
   return (
-    <div className={shellClass}>
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)]/70 px-4 py-2.5 font-mono text-[11px]">
-        <span className="flex items-center gap-2 font-semibold text-[var(--ink-primary)]">
-          <span
-            aria-hidden="true"
-            className="h-2 w-2 rounded-full bg-[var(--accent)]"
-          />
-          WEBSOCKET TICKER &amp; PG YIELD ENGINE
+    <div className="w-full overflow-hidden bg-[var(--bg-surface)]">
+      <div className="type-sm flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-hairline)] bg-[var(--bg-canvas)] px-4 py-3">
+        <span className="font-semibold text-[var(--ink-primary)]">
+          WebSocket ticker and yield ledger
         </span>
 
         {!compact ? (
@@ -1361,7 +1300,6 @@ export function CryptoWealthSchematic({ compact = false }: SchematicProps) {
         )}
       </div>
 
-      {/* Monotone Cubic SVG Equity Chart */}
       <div
         ref={wrapRef}
         onPointerMove={handlePointerMove}
@@ -1380,7 +1318,7 @@ export function CryptoWealthSchematic({ compact = false }: SchematicProps) {
               transform: "translate3d(8px, 8px, 0px)",
               transition: "opacity 140ms ease-out",
             }}
-            className="pointer-events-none absolute top-0 left-0 z-10 rounded-[var(--radius-xs)] border border-[var(--border-strong)] bg-[var(--bg-surface)]/95 px-2.5 py-1 font-mono text-[11px] font-medium whitespace-nowrap tabular-nums text-[var(--ink-primary)] shadow-[var(--shadow-surface)]"
+            className="type-sm pointer-events-none absolute top-0 left-0 z-10 rounded-[var(--radius-xs)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3 py-1 font-medium whitespace-nowrap tabular-nums text-[var(--ink-primary)] shadow-[var(--shadow-surface)]"
           />
         )}
 
@@ -1389,17 +1327,16 @@ export function CryptoWealthSchematic({ compact = false }: SchematicProps) {
           viewBox={`0 0 ${CRYPTO_SVG_W} ${svgH}`}
           className="block h-auto w-full"
           role="img"
-          aria-label="Smooth monotone SVG portfolio NAV chart with Cobalt area gradient"
+          aria-label="Smooth monotone SVG portfolio NAV chart with cerulean area gradient"
         >
           <defs>
             <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#1D4ED8" stopOpacity="0.18" />
-              <stop offset="75%" stopColor="#1D4ED8" stopOpacity="0.04" />
-              <stop offset="100%" stopColor="#1D4ED8" stopOpacity="0" />
+              <stop offset="0%" stopColor="#1456D1" stopOpacity="0.18" />
+              <stop offset="75%" stopColor="#1456D1" stopOpacity="0.04" />
+              <stop offset="100%" stopColor="#1456D1" stopOpacity="0" />
             </linearGradient>
           </defs>
 
-          {/* Horizontal Y-Axis Tick Hairlines */}
           {computed.ticks.map((tick, idx) => (
             <g key={idx}>
               <line
@@ -1407,23 +1344,22 @@ export function CryptoWealthSchematic({ compact = false }: SchematicProps) {
                 y1={tick.y}
                 x2={CRYPTO_SVG_W - CRYPTO_PAD_R}
                 y2={tick.y}
-                stroke="rgba(15, 20, 30, 0.075)"
+                stroke="rgba(9, 19, 29, 0.075)"
                 strokeWidth="1"
               />
               <text
                 x={CRYPTO_PAD_L - 8}
                 y={tick.y + 3.5}
                 textAnchor="end"
-                fill="#5B6475"
-                fontSize="9.5"
-                fontFamily="var(--font-geist-mono), ui-monospace, monospace"
+                fill="#506376"
+                fontSize="10"
+                fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
               >
                 {tick.val.toFixed(1)}
               </text>
             </g>
           ))}
 
-          {/* X-Axis Timestamps */}
           {[0, 2, 4, 6, 8].map((stepIdx) => (
             <text
               key={stepIdx}
@@ -1432,32 +1368,29 @@ export function CryptoWealthSchematic({ compact = false }: SchematicProps) {
               textAnchor={
                 stepIdx === 0 ? "start" : stepIdx === 8 ? "end" : "middle"
               }
-              fill="#5B6475"
-              fontSize="9"
-              fontFamily="var(--font-geist-mono), ui-monospace, monospace"
+              fill="#506376"
+              fontSize="9.5"
+              fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
             >
               {current.timestamps[stepIdx]}
             </text>
           ))}
 
-          {/* Cobalt Gradient Area Fill */}
           <path
             ref={areaPathRef}
             d={buildMonotoneAreaPath(xs, initialYs, plotBottom)}
             fill={`url(#${gradId})`}
           />
 
-          {/* Monotone Cubic Bezier Curve */}
           <path
             ref={linePathRef}
             d={buildMonotoneCubicPath(xs, initialYs)}
             fill="none"
-            stroke="#1D4ED8"
-            strokeWidth="2.25"
+            stroke="#1456D1"
+            strokeWidth="2.35"
             strokeLinecap="round"
           />
 
-          {/* Anchor Points */}
           {initialYs.map((y, idx) => {
             const isTerminal = idx === initialYs.length - 1;
             return (
@@ -1469,14 +1402,13 @@ export function CryptoWealthSchematic({ compact = false }: SchematicProps) {
                 cx={xs[idx]}
                 cy={y}
                 r={isTerminal ? 3.8 : 2.1}
-                fill={isTerminal ? "#1D4ED8" : "#FFFFFF"}
-                stroke="#1D4ED8"
+                fill={isTerminal ? "#1456D1" : "#FFFFFF"}
+                stroke="#1456D1"
                 strokeWidth={isTerminal ? "1.6" : "1.25"}
               />
             );
           })}
 
-          {/* Pointer Crosshair Scrubber (!compact, zero useState) */}
           {!compact && (
             <>
               <g
@@ -1492,7 +1424,7 @@ export function CryptoWealthSchematic({ compact = false }: SchematicProps) {
                   y1={CRYPTO_PAD_T}
                   x2={0}
                   y2={plotBottom}
-                  stroke="#1D4ED8"
+                  stroke="#1456D1"
                   strokeOpacity="0.45"
                   strokeDasharray="2 2"
                   strokeWidth="1"
@@ -1506,12 +1438,12 @@ export function CryptoWealthSchematic({ compact = false }: SchematicProps) {
                   pointerEvents: "none",
                 }}
               >
-                <circle cx={0} cy={0} r="7" fill="rgba(29, 78, 216, 0.16)" />
+                <circle cx={0} cy={0} r="7" fill="rgba(20, 86, 209, 0.16)" />
                 <circle
                   cx={0}
                   cy={0}
                   r="3.6"
-                  fill="#1D4ED8"
+                  fill="#1456D1"
                   stroke="#FFFFFF"
                   strokeWidth="1.6"
                 />
@@ -1521,29 +1453,26 @@ export function CryptoWealthSchematic({ compact = false }: SchematicProps) {
         </svg>
       </div>
 
-      {/* Telemetry Footer */}
-      <div className="grid grid-cols-3 divide-x divide-[var(--border-hairline)] border-t border-[var(--border-hairline)] bg-[var(--bg-subtle)]/55 font-mono text-[11px]">
+      <div className="type-sm grid grid-cols-3 divide-x divide-[var(--border-hairline)] border-t border-[var(--border-hairline)] bg-[var(--bg-surface)] tabular-nums">
         <div className="px-3.5 py-2.5">
-          <div className="text-[11px] text-[var(--ink-muted)]">INDEX DELTA</div>
-          <div className="mt-0.5 font-semibold tabular-nums text-[var(--status-positive)]">
+          <div className="text-[var(--ink-muted)]">Index delta</div>
+          <div className="mt-0.5 font-semibold text-[var(--status-positive)]">
             <BlurCrossfade inline contentKey={`${period}-delta`}>
               {current.delta}
             </BlurCrossfade>
           </div>
         </div>
         <div className="px-3.5 py-2.5">
-          <div className="text-[11px] text-[var(--ink-muted)]">
-            PG YIELD CRON
-          </div>
-          <div className="mt-0.5 font-semibold tabular-nums text-[var(--ink-primary)]">
+          <div className="text-[var(--ink-muted)]">Yield accrual</div>
+          <div className="mt-0.5 font-semibold text-[var(--ink-primary)]">
             <BlurCrossfade inline contentKey={`${period}-apy`}>
               {current.apy}
             </BlurCrossfade>
           </div>
         </div>
         <div className="px-3.5 py-2.5">
-          <div className="text-[11px] text-[var(--ink-muted)]">TICKER FEED</div>
-          <div className="mt-0.5 font-semibold tabular-nums text-[var(--accent-deep)]">
+          <div className="text-[var(--ink-muted)]">Ticker latency</div>
+          <div className="mt-0.5 font-semibold text-[var(--accent-deep)]">
             <BlurCrossfade inline contentKey={`${period}-feed`}>
               {current.feedLatency}
             </BlurCrossfade>
@@ -1555,44 +1484,38 @@ export function CryptoWealthSchematic({ compact = false }: SchematicProps) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* 4. STITCH RETAIL OPERATIONS OS: Hub-and-Spoke Sync Ledger Diagram          */
+/* 4. STITCH RETAIL OPERATIONS OS: Hub-and-Spoke Sync Ledger                  */
 /* -------------------------------------------------------------------------- */
 
 const STITCH_BRANCHES = [
   {
     id: "central",
-    code: "BR-01",
-    name: "Branch 01 · Central",
-    svgLabel: "Branch 01 · Central",
-    skus: "1,420 Active SKUs",
+    name: "Central branch",
+    skus: "1,420 active SKUs",
     shortCount: "1,420 SKUs",
     posSync: "Reconciled",
     variance: "0.00%",
-    restock: "4 Supplier POs Queued",
+    restock: "4 supplier POs queued",
     y: 34,
   },
   {
     id: "express",
-    code: "BR-02",
-    name: "Branch 02 · Express",
-    svgLabel: "Branch 02 · Express",
-    skus: "890 Active SKUs",
+    name: "Express branch",
+    skus: "890 active SKUs",
     shortCount: "890 SKUs",
     posSync: "Reconciled",
     variance: "0.00%",
-    restock: "2 Transfers Pending",
+    restock: "2 transfers pending",
     y: 84,
   },
   {
     id: "supplier",
-    code: "SUP-03",
-    name: "Supplier Hub",
-    svgLabel: "Supplier Hub",
-    skus: "18 Active Vendors",
-    shortCount: "18 Vendors",
-    posSync: "Invoice Matched",
+    name: "Supplier hub",
+    skus: "18 active vendors",
+    shortCount: "18 vendors",
+    posSync: "Invoice matched",
     variance: "Verified",
-    restock: "Auto-Ledger Synced",
+    restock: "Auto-ledger synced",
     y: 134,
   },
 ] as const;
@@ -1604,35 +1527,24 @@ export function StitchRetailSchematic({ compact = false }: SchematicProps) {
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const current = STITCH_BRANCHES[branchIdx];
 
-  const shellClass = compact
-    ? "w-full overflow-hidden rounded-[var(--radius-sm)] bg-[var(--bg-canvas)] ring-1 ring-inset ring-[var(--border-hairline)]"
-    : "w-full overflow-hidden rounded-[var(--radius-md)] bg-[var(--bg-surface)]";
-
   return (
-    <div className={shellClass}>
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)]/70 px-4 py-2.5 font-mono text-[11px]">
-        <span className="flex items-center gap-2 font-semibold text-[var(--ink-primary)]">
-          <span
-            aria-hidden="true"
-            className="h-2 w-2 rounded-full bg-[var(--accent)]"
-          />
-          STITCH MULTI-BRANCH LEDGER &amp; POS SYNC
+    <div className="w-full overflow-hidden bg-[var(--bg-surface)]">
+      <div className="type-sm flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-hairline)] bg-[var(--bg-canvas)] px-4 py-3">
+        <span className="font-semibold text-[var(--ink-primary)]">
+          Multi-branch inventory and POS sync
         </span>
         <span className="font-medium text-[var(--accent-deep)]">
-          GOOGLE STITCH LOOP
+          Google Stitch Loop
         </span>
       </div>
 
-      {/* Hub-and-Spoke Vector Ledger Diagram */}
       <div className="bg-[var(--bg-canvas)]/55 px-3 py-3">
         <svg
           viewBox="0 0 640 168"
           className="block h-auto w-full"
           role="img"
-          aria-label="Multi-branch hub-and-spoke synchronization diagram connecting Central Branch, Express Branch, and Supplier Hub into a Central PostgreSQL Reconciliation Core"
+          aria-label="Multi-branch hub-and-spoke synchronization diagram connecting Central branch, Express branch, and Supplier hub into a Central PostgreSQL Reconciliation Core"
         >
-          {/* Spoke-to-Core Orthogonal Sync Connectors */}
           {STITCH_BRANCHES.map((branch, idx) => {
             const isActive = idx === branchIdx;
             const pathD = `M 228 ${branch.y} L 298 ${branch.y} L 298 84 L 366 84`;
@@ -1641,7 +1553,7 @@ export function StitchRetailSchematic({ compact = false }: SchematicProps) {
                 <path
                   d={pathD}
                   fill="none"
-                  stroke={isActive ? "#1D4ED8" : "rgba(15, 20, 30, 0.16)"}
+                  stroke={isActive ? "#1456D1" : "rgba(9, 19, 29, 0.16)"}
                   strokeWidth={isActive ? "2.2" : "1.35"}
                   strokeDasharray={isActive ? undefined : "3 3"}
                   strokeLinejoin="round"
@@ -1651,42 +1563,28 @@ export function StitchRetailSchematic({ compact = false }: SchematicProps) {
                       : "stroke 200ms ease, stroke-width 200ms ease",
                   }}
                 />
-                {/* Junction Port Marker */}
                 <circle
                   cx="228"
                   cy={branch.y}
                   r={isActive ? "3.5" : "2.6"}
-                  fill={isActive ? "#1D4ED8" : "#FFFFFF"}
-                  stroke={isActive ? "#153AA2" : "rgba(15, 20, 30, 0.28)"}
+                  fill={isActive ? "#1456D1" : "#FFFFFF"}
+                  stroke={isActive ? "#0E41A6" : "rgba(9, 19, 29, 0.28)"}
                   strokeWidth="1.4"
                 />
               </g>
             );
           })}
 
-          {/* Bus Sync Arrowhead into PostgreSQL Core */}
-          <polygon points="362,80 370,84 362,88" fill="#1D4ED8" />
+          <polygon points="362,80 370,84 362,88" fill="#1456D1" />
           <circle
             cx="298"
             cy="84"
             r="4"
-            fill="#1D4ED8"
+            fill="#1456D1"
             stroke="#FFFFFF"
             strokeWidth="1.5"
           />
-          <text
-            x="332"
-            y="74"
-            textAnchor="middle"
-            fill="#153AA2"
-            fontSize="8.5"
-            fontWeight="600"
-            fontFamily="var(--font-geist-mono), ui-monospace, monospace"
-          >
-            SYNC
-          </text>
 
-          {/* 3 Left-Side Branch Spoke Nodes */}
           {STITCH_BRANCHES.map((branch, idx) => {
             const isActive = idx === branchIdx;
             const topY = branch.y - 19;
@@ -1702,34 +1600,27 @@ export function StitchRetailSchematic({ compact = false }: SchematicProps) {
                   width="210"
                   height="38"
                   rx="8"
-                  fill={isActive ? "#EEF3FF" : "#FFFFFF"}
-                  stroke={
-                    isActive ? "#1D4ED8" : "rgba(15, 20, 30, 0.12)"
-                  }
+                  fill={isActive ? "#EBF2FF" : "#FFFFFF"}
+                  stroke={isActive ? "#1456D1" : "rgba(9, 19, 29, 0.12)"}
                   strokeWidth={isActive ? "1.5" : "1"}
                 />
-                <circle
-                  cx="32"
-                  cy={branch.y}
-                  r="3.2"
-                  fill="#136F3A"
-                />
+                <circle cx="32" cy={branch.y} r="3.2" fill="#0C6B4B" />
                 <text
                   x="44"
-                  y={branch.y - 3}
-                  fill="#0F141E"
-                  fontSize="10"
+                  y={branch.y - 2.5}
+                  fill="#09131D"
+                  fontSize="10.5"
                   fontWeight="600"
-                  fontFamily="var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif"
+                  fontFamily="var(--font-display), ui-sans-serif, system-ui, sans-serif"
                 >
-                  {branch.svgLabel}
+                  {branch.name}
                 </text>
                 <text
                   x="44"
-                  y={branch.y + 10}
-                  fill={isActive ? "#153AA2" : "#5B6475"}
-                  fontSize="8.5"
-                  fontFamily="var(--font-geist-mono), ui-monospace, monospace"
+                  y={branch.y + 10.5}
+                  fill={isActive ? "#0E41A6" : "#506376"}
+                  fontSize="9"
+                  fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
                 >
                   {branch.shortCount} · {branch.posSync}
                 </text>
@@ -1737,7 +1628,6 @@ export function StitchRetailSchematic({ compact = false }: SchematicProps) {
             );
           })}
 
-          {/* Central PostgreSQL Reconciliation Core (Right Hub) */}
           <g>
             <rect
               x="372"
@@ -1746,141 +1636,122 @@ export function StitchRetailSchematic({ compact = false }: SchematicProps) {
               height="120"
               rx="12"
               fill="#FFFFFF"
-              stroke="rgba(29, 78, 216, 0.28)"
+              stroke="rgba(20, 86, 209, 0.28)"
               strokeWidth="1.25"
             />
             <rect
               x="372"
               y="24"
               width="248"
-              height="28"
+              height="30"
               rx="12"
-              fill="#F1F3F7"
+              fill="#EFF4F9"
             />
-            <rect x="372" y="40" width="248" height="12" fill="#F1F3F7" />
+            <rect x="372" y="42" width="248" height="12" fill="#EFF4F9" />
             <line
               x1="372"
-              y1="52"
+              y1="54"
               x2="620"
-              y2="52"
-              stroke="rgba(15, 20, 30, 0.08)"
+              y2="54"
+              stroke="rgba(9, 19, 29, 0.08)"
               strokeWidth="1"
             />
 
-            {/* Vector Database Cylinder Icon */}
-            <ellipse
-              cx="392"
-              cy="35"
-              rx="7"
-              ry="3"
-              fill="#EEF3FF"
-              stroke="#1D4ED8"
-              strokeWidth="1.2"
-            />
-            <path
-              d="M 385 35 L 385 43 C 385 44.8, 399 44.8, 399 43 L 399 35"
-              fill="none"
-              stroke="#1D4ED8"
-              strokeWidth="1.2"
-            />
-
-            <text
-              x="408"
-              y="41.5"
-              fill="#0F141E"
-              fontSize="9"
-              fontWeight="700"
-              fontFamily="var(--font-geist-mono), ui-monospace, monospace"
-            >
-              POSTGRESQL LEDGER CORE
-            </text>
-
-            {/* Core Live Metrics */}
             <text
               x="388"
-              y="74"
-              fill="#5B6475"
-              fontSize="8.5"
-              fontFamily="var(--font-geist-mono), ui-monospace, monospace"
+              y="43"
+              fill="#09131D"
+              fontSize="10.5"
+              fontWeight="600"
+              fontFamily="var(--font-display), ui-sans-serif, system-ui, sans-serif"
             >
-              ACTIVE SPOKE
+              PostgreSQL ledger core
+            </text>
+
+            <text
+              x="388"
+              y="76"
+              fill="#506376"
+              fontSize="9.5"
+              fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
+            >
+              Active spoke
             </text>
             <text
               x="604"
-              y="74"
+              y="76"
               textAnchor="end"
-              fill="#153AA2"
-              fontSize="9"
+              fill="#0E41A6"
+              fontSize="9.5"
               fontWeight="600"
-              fontFamily="var(--font-geist-mono), ui-monospace, monospace"
+              fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
             >
-              {current.code} · {current.shortCount}
+              {current.shortCount}
             </text>
 
             <line
               x1="388"
-              y1="85"
+              y1="88"
               x2="604"
-              y2="85"
-              stroke="rgba(15, 20, 30, 0.07)"
+              y2="88"
+              stroke="rgba(9, 19, 29, 0.07)"
               strokeWidth="1"
             />
 
             <text
               x="388"
-              y="104"
-              fill="#5B6475"
-              fontSize="8.5"
-              fontFamily="var(--font-geist-mono), ui-monospace, monospace"
+              y="106"
+              fill="#506376"
+              fontSize="9.5"
+              fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
             >
-              POS VARIANCE
+              POS variance
             </text>
             <text
               x="604"
-              y="104"
+              y="106"
               textAnchor="end"
-              fill="#136F3A"
-              fontSize="9.5"
+              fill="#0C6B4B"
+              fontSize="10"
               fontWeight="700"
-              fontFamily="var(--font-geist-mono), ui-monospace, monospace"
+              fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
             >
               {current.variance}
             </text>
 
             <line
               x1="388"
-              y1="115"
+              y1="118"
               x2="604"
-              y2="115"
-              stroke="rgba(15, 20, 30, 0.07)"
+              y2="118"
+              stroke="rgba(9, 19, 29, 0.07)"
               strokeWidth="1"
             />
 
             <text
               x="388"
-              y="132"
-              fill="#5B6475"
-              fontSize="8.5"
-              fontFamily="var(--font-geist-mono), ui-monospace, monospace"
+              y="134"
+              fill="#506376"
+              fontSize="9.5"
+              fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
             >
-              STATUS
+              Integrity
             </text>
             <text
               x="604"
-              y="132"
+              y="134"
               textAnchor="end"
-              fill="#0F141E"
-              fontSize="8.8"
+              fill="#09131D"
+              fontSize="9.5"
               fontWeight="600"
-              fontFamily="var(--font-geist-mono), ui-monospace, monospace"
+              fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
             >
-              ACID RECONCILED
+              ACID reconciled
             </text>
           </g>
         </svg>
       </div>
 
-      {/* Active Branch Selector & Audit Strip (!compact) */}
       {!compact ? (
         <>
           <LayoutGroup id={`stitch-${uid}`}>
@@ -1911,9 +1782,9 @@ export function StitchRetailSchematic({ compact = false }: SchematicProps) {
                         tabRefs
                       )
                     }
-                    className={`btn-press relative px-3.5 py-2.5 text-left ${
+                    className={`btn-press relative px-4 py-3 text-left ${
                       active
-                        ? "bg-[var(--accent-soft)]/55 text-[var(--ink-primary)]"
+                        ? "bg-[var(--accent-soft)]/70 text-[var(--ink-primary)]"
                         : "bg-transparent text-[var(--ink-secondary)] hover:bg-[var(--bg-subtle)]/60 hover:text-[var(--ink-primary)]"
                     }`}
                   >
@@ -1925,10 +1796,10 @@ export function StitchRetailSchematic({ compact = false }: SchematicProps) {
                         className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-[var(--accent)]"
                       />
                     )}
-                    <div className="truncate text-xs font-semibold text-[var(--ink-primary)]">
+                    <div className="type-sm truncate font-semibold text-[var(--ink-primary)]">
                       {branch.name}
                     </div>
-                    <div className="mt-0.5 font-mono text-[11px] tabular-nums text-[var(--ink-muted)]">
+                    <div className="type-sm mt-0.5 tabular-nums text-[var(--ink-muted)]">
                       {branch.skus}
                     </div>
                   </button>
@@ -1937,31 +1808,25 @@ export function StitchRetailSchematic({ compact = false }: SchematicProps) {
             </div>
           </LayoutGroup>
 
-          <div className="border-t border-[var(--border-hairline)] bg-[var(--bg-subtle)]/55">
+          <div className="border-t border-[var(--border-hairline)] bg-[var(--bg-canvas)]">
             <BlurCrossfade contentKey={current.id}>
-              <div className="grid grid-cols-3 divide-x divide-[var(--border-hairline)] font-mono text-[11px]">
-                <div className="px-3.5 py-2.5">
-                  <div className="text-[11px] text-[var(--ink-muted)]">
-                    POS VARIANCE
-                  </div>
-                  <div className="mt-0.5 font-semibold tabular-nums text-[var(--status-positive)]">
+              <div className="type-sm grid grid-cols-3 divide-x divide-[var(--border-hairline)] tabular-nums">
+                <div className="px-4 py-3">
+                  <div className="text-[var(--ink-muted)]">POS variance</div>
+                  <div className="mt-0.5 font-semibold text-[var(--status-positive)]">
                     {current.variance}
                   </div>
                 </div>
-                <div className="px-3.5 py-2.5">
-                  <div className="text-[11px] text-[var(--ink-muted)]">
-                    WORKFLOW STATE
-                  </div>
-                  <div className="mt-0.5 font-semibold tabular-nums text-[var(--ink-primary)]">
+                <div className="px-4 py-3">
+                  <div className="text-[var(--ink-muted)]">Workflow</div>
+                  <div className="mt-0.5 font-semibold text-[var(--ink-primary)]">
                     {current.restock}
                   </div>
                 </div>
-                <div className="px-3.5 py-2.5">
-                  <div className="text-[11px] text-[var(--ink-muted)]">
-                    AUDIT TRAIL
-                  </div>
+                <div className="px-4 py-3">
+                  <div className="text-[var(--ink-muted)]">Audit trail</div>
                   <div className="mt-0.5 font-semibold text-[var(--accent-deep)]">
-                    POSTGRES LEDGER
+                    PostgreSQL ledger
                   </div>
                 </div>
               </div>
@@ -1969,21 +1834,21 @@ export function StitchRetailSchematic({ compact = false }: SchematicProps) {
           </div>
         </>
       ) : (
-        <div className="grid grid-cols-3 divide-x divide-[var(--border-hairline)] border-t border-[var(--border-hairline)] bg-[var(--bg-subtle)]/55 font-mono text-[11px] tabular-nums">
-          <div className="px-3.5 py-2">
-            <span className="text-[var(--ink-muted)]">SKUS </span>
+        <div className="type-sm grid grid-cols-3 divide-x divide-[var(--border-hairline)] border-t border-[var(--border-hairline)] bg-[var(--bg-canvas)] tabular-nums">
+          <div className="px-3.5 py-2.5">
+            <span className="text-[var(--ink-muted)]">SKUs </span>
             <span className="font-semibold text-[var(--ink-primary)]">
               2,310
             </span>
           </div>
-          <div className="px-3.5 py-2">
-            <span className="text-[var(--ink-muted)]">VAR </span>
+          <div className="px-3.5 py-2.5">
+            <span className="text-[var(--ink-muted)]">Variance </span>
             <span className="font-semibold text-[var(--status-positive)]">
               0.00%
             </span>
           </div>
-          <div className="px-3.5 py-2 text-right font-medium text-[var(--accent-deep)]">
-            PG LEDGER
+          <div className="px-3.5 py-2.5 text-right font-medium text-[var(--accent-deep)]">
+            Reconciled
           </div>
         </div>
       )}
@@ -1992,37 +1857,34 @@ export function StitchRetailSchematic({ compact = false }: SchematicProps) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* 5. PRODUCTION E-COMMERCE BUILDS: Horizontal SVG Commerce Pipeline          */
+/* 5. PRODUCTION E-COMMERCE BUILDS: Horizontal Commerce Pipeline              */
 /* -------------------------------------------------------------------------- */
 
 const COMMERCE_STAGES = [
   {
-    step: "01",
-    title: "Catalog Edge",
-    svgTitle: "Catalog Edge",
-    meta: "Cloudflare DNS & TLS",
+    id: "edge",
+    title: "Catalog edge",
+    meta: "Cloudflare DNS and TLS",
     protocol: "TLS 1.3",
-    metric: "14ms TTFB",
+    metric: "14 ms TTFB",
     x: 84,
     detail:
       "Custom domain routing, hardened SSL termination, and global static catalog caching through Cloudflare DNS.",
   },
   {
-    step: "02",
-    title: "Cart State",
-    svgTitle: "Cart State",
+    id: "cart",
+    title: "Cart state",
     meta: "Next.js App Router",
     protocol: "RSC",
-    metric: "0ms Optimistic",
+    metric: "Optimistic",
     x: 242,
     detail:
       "Mobile-first storefront architecture with deterministic cart state, variant pricing, and zero layout shift.",
   },
   {
-    step: "03",
-    title: "Paystack / Stripe",
-    svgTitle: "Checkout",
-    meta: "Automated Checkout",
+    id: "checkout",
+    title: "Checkout",
+    meta: "Paystack and Stripe",
     protocol: "HMAC",
     metric: "Idempotent",
     x: 400,
@@ -2030,12 +1892,11 @@ const COMMERCE_STAGES = [
       "Paystack and Stripe checkout pipelines enforcing idempotency keys, server-side totals, and instant confirmation.",
   },
   {
-    step: "04",
-    title: "Order Webhook",
-    svgTitle: "Order Webhook",
-    meta: "Cloud DB & Dispatch",
+    id: "webhook",
+    title: "Order webhook",
+    meta: "Cloud DB and dispatch",
     protocol: "ACID",
-    metric: "99.98% Ack",
+    metric: "99.98% ack",
     x: 556,
     detail:
       "Signed webhook handlers committing verified payments to cloud inventory tables and triggering dispatch alerts.",
@@ -2062,35 +1923,24 @@ export function EcommerceSchematic({ compact = false }: SchematicProps) {
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const active = COMMERCE_STAGES[activeStage];
 
-  const shellClass = compact
-    ? "w-full overflow-hidden rounded-[var(--radius-sm)] bg-[var(--bg-canvas)] ring-1 ring-inset ring-[var(--border-hairline)]"
-    : "w-full overflow-hidden rounded-[var(--radius-md)] bg-[var(--bg-surface)]";
-
   return (
-    <div className={shellClass}>
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)]/70 px-4 py-2.5 font-mono text-[11px]">
-        <span className="flex items-center gap-2 font-semibold text-[var(--ink-primary)]">
-          <span
-            aria-hidden="true"
-            className="h-2 w-2 rounded-full bg-[var(--accent)]"
-          />
-          EDGE COMMERCE DEPLOYMENT PIPELINE
+    <div className="w-full overflow-hidden bg-[var(--bg-surface)]">
+      <div className="type-sm flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-hairline)] bg-[var(--bg-canvas)] px-4 py-3">
+        <span className="font-semibold text-[var(--ink-primary)]">
+          Edge commerce deployment pipeline
         </span>
         <span className="font-medium tabular-nums text-[var(--status-positive)]">
-          2 LIVE STOREFRONTS
+          2 live storefronts
         </span>
       </div>
 
-      {/* Horizontal SVG Commerce Pipeline Diagram */}
       <div className="bg-[var(--bg-canvas)]/55 px-3 py-3">
         <svg
           viewBox="0 0 640 144"
           className="block h-auto w-full"
           role="img"
-          aria-label="Horizontal commerce pipeline from Catalog Edge through Cart State and Paystack or Stripe Checkout to Order Webhook"
+          aria-label="Horizontal commerce pipeline from Catalog edge through Cart state and Checkout to Order webhook"
         >
-          {/* Pipeline Track Connectors */}
           {[0, 1, 2].map((segIdx) => {
             const x1 = COMMERCE_STAGES[segIdx].x + 56;
             const x2 = COMMERCE_STAGES[segIdx + 1].x - 60;
@@ -2104,7 +1954,7 @@ export function EcommerceSchematic({ compact = false }: SchematicProps) {
                   y1={68}
                   x2={x2}
                   y2={68}
-                  stroke={isActiveSeg ? "#1D4ED8" : "rgba(15, 20, 30, 0.16)"}
+                  stroke={isActiveSeg ? "#1456D1" : "rgba(9, 19, 29, 0.16)"}
                   strokeWidth={isActiveSeg ? "2.2" : "1.5"}
                   strokeDasharray={isActiveSeg ? undefined : "3 3"}
                   style={{
@@ -2115,16 +1965,16 @@ export function EcommerceSchematic({ compact = false }: SchematicProps) {
                 />
                 <polygon
                   points={`${x2 - 2},64.5 ${x2 + 5},68 ${x2 - 2},71.5`}
-                  fill={isActiveSeg ? "#1D4ED8" : "rgba(15, 20, 30, 0.28)"}
+                  fill={isActiveSeg ? "#1456D1" : "rgba(9, 19, 29, 0.28)"}
                 />
                 <text
                   x={midX}
                   y={58}
                   textAnchor="middle"
-                  fill={isActiveSeg ? "#153AA2" : "#5B6475"}
-                  fontSize="8"
+                  fill={isActiveSeg ? "#0E41A6" : "#506376"}
+                  fontSize="8.5"
                   fontWeight="600"
-                  fontFamily="var(--font-geist-mono), ui-monospace, monospace"
+                  fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
                 >
                   {COMMERCE_STAGES[segIdx].protocol}
                 </text>
@@ -2132,7 +1982,6 @@ export function EcommerceSchematic({ compact = false }: SchematicProps) {
             );
           })}
 
-          {/* 4 Interactive Pipeline Stage Nodes */}
           {COMMERCE_STAGES.map((stage, idx) => {
             const isReached = idx <= activeStage;
             const isSelected = idx === activeStage;
@@ -2140,7 +1989,7 @@ export function EcommerceSchematic({ compact = false }: SchematicProps) {
 
             return (
               <g
-                key={stage.step}
+                key={stage.id}
                 onClick={compact ? undefined : () => setActiveStage(idx)}
                 className={compact ? undefined : "cursor-pointer"}
               >
@@ -2151,8 +2000,8 @@ export function EcommerceSchematic({ compact = false }: SchematicProps) {
                     width="120"
                     height="76"
                     rx="12"
-                    fill="rgba(29, 78, 216, 0.07)"
-                    stroke="#1D4ED8"
+                    fill="rgba(20, 86, 209, 0.08)"
+                    stroke="#1456D1"
                     strokeOpacity="0.55"
                     strokeWidth="1.25"
                   />
@@ -2163,54 +2012,44 @@ export function EcommerceSchematic({ compact = false }: SchematicProps) {
                   width="112"
                   height="68"
                   rx="9"
-                  fill={isSelected ? "#EEF3FF" : "#FFFFFF"}
+                  fill={isSelected ? "#EBF2FF" : "#FFFFFF"}
                   stroke={
                     isSelected
-                      ? "#1D4ED8"
+                      ? "#1456D1"
                       : isReached
-                        ? "rgba(29, 78, 216, 0.32)"
-                        : "rgba(15, 20, 30, 0.12)"
+                        ? "rgba(20, 86, 209, 0.32)"
+                        : "rgba(9, 19, 29, 0.12)"
                   }
                   strokeWidth={isSelected ? "1.6" : "1"}
                 />
 
-                <text
-                  x={rectX + 10}
-                  y={49}
-                  fill={isReached ? "#153AA2" : "#5B6475"}
-                  fontSize="8.5"
-                  fontWeight="600"
-                  fontFamily="var(--font-geist-mono), ui-monospace, monospace"
-                >
-                  STAGE {stage.step}
-                </text>
                 <circle
-                  cx={rectX + 100}
-                  cy={46}
+                  cx={rectX + 98}
+                  cy={47}
                   r="3"
-                  fill={isReached ? "#136F3A" : "rgba(15, 20, 30, 0.16)"}
+                  fill={isReached ? "#0C6B4B" : "rgba(9, 19, 29, 0.16)"}
                 />
 
                 <text
                   x={stage.x}
-                  y={70}
+                  y={68}
                   textAnchor="middle"
-                  fill="#0F141E"
-                  fontSize="10.2"
+                  fill="#09131D"
+                  fontSize="10.8"
                   fontWeight="600"
-                  fontFamily="var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif"
+                  fontFamily="var(--font-display), ui-sans-serif, system-ui, sans-serif"
                 >
-                  {stage.svgTitle}
+                  {stage.title}
                 </text>
 
                 <text
                   x={stage.x}
-                  y={88}
+                  y={87}
                   textAnchor="middle"
-                  fill={isSelected ? "#153AA2" : "#5B6475"}
-                  fontSize="8.3"
+                  fill={isSelected ? "#0E41A6" : "#506376"}
+                  fontSize="9"
                   fontWeight="500"
-                  fontFamily="var(--font-geist-mono), ui-monospace, monospace"
+                  fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
                 >
                   {stage.metric}
                 </text>
@@ -2218,31 +2057,29 @@ export function EcommerceSchematic({ compact = false }: SchematicProps) {
             );
           })}
 
-          {/* Bottom Edge Verification Footnote */}
           <text
             x="28"
             y="130"
-            fill="#5B6475"
-            fontSize="8.5"
-            fontFamily="var(--font-geist-mono), ui-monospace, monospace"
+            fill="#506376"
+            fontSize="9"
+            fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
           >
-            REQUEST LIFECYCLE · EDGE CACHE TO FULFILLMENT DB
+            Request lifecycle from edge cache to fulfillment database
           </text>
           <text
             x="612"
             y="130"
             textAnchor="end"
-            fill="#136F3A"
-            fontSize="8.5"
+            fill="#0C6B4B"
+            fontSize="9"
             fontWeight="600"
-            fontFamily="var(--font-geist-mono), ui-monospace, monospace"
+            fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
           >
-            SSL HARDENED · WEBHOOK VERIFIED
+            SSL hardened · Webhook verified
           </text>
         </svg>
       </div>
 
-      {/* Interactive Stage Selector, Telemetry Readout & Storefront Links (!compact) */}
       {!compact ? (
         <>
           <LayoutGroup id={`ecommerce-${uid}`}>
@@ -2255,7 +2092,7 @@ export function EcommerceSchematic({ compact = false }: SchematicProps) {
                 const isSelected = idx === activeStage;
                 return (
                   <button
-                    key={stage.step}
+                    key={stage.id}
                     ref={(el) => {
                       tabRefs.current[idx] = el;
                     }}
@@ -2273,7 +2110,7 @@ export function EcommerceSchematic({ compact = false }: SchematicProps) {
                         tabRefs
                       )
                     }
-                    className={`btn-press relative px-3.5 py-2.5 text-left ${
+                    className={`btn-press relative px-4 py-3 text-left ${
                       isSelected
                         ? "bg-[var(--accent-soft)] text-[var(--ink-primary)]"
                         : "bg-[var(--bg-surface)] text-[var(--ink-secondary)] hover:bg-[var(--bg-subtle)] hover:text-[var(--ink-primary)]"
@@ -2287,21 +2124,10 @@ export function EcommerceSchematic({ compact = false }: SchematicProps) {
                         className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-[var(--accent)]"
                       />
                     )}
-                    <div className="font-mono text-[11px] tabular-nums text-[var(--ink-muted)]">
-                      <span
-                        className={
-                          isSelected
-                            ? "font-semibold text-[var(--accent-deep)]"
-                            : ""
-                        }
-                      >
-                        STAGE {stage.step}
-                      </span>
-                    </div>
-                    <div className="mt-0.5 text-xs font-semibold text-[var(--ink-primary)]">
+                    <div className="type-sm font-semibold text-[var(--ink-primary)]">
                       {stage.title}
                     </div>
-                    <div className="mt-0.5 font-mono text-[11px] text-[var(--ink-muted)]">
+                    <div className="type-sm mt-0.5 text-[var(--ink-muted)]">
                       {stage.meta}
                     </div>
                   </button>
@@ -2310,17 +2136,17 @@ export function EcommerceSchematic({ compact = false }: SchematicProps) {
             </div>
           </LayoutGroup>
 
-          <div className="border-t border-[var(--border-hairline)] bg-[var(--bg-subtle)]/55 px-4 py-3">
-            <BlurCrossfade contentKey={active.step}>
-              <div className="flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] tabular-nums">
-                <span className="font-semibold text-[var(--accent-deep)]">
-                  STAGE {active.step} · {active.title.toUpperCase()} ({active.meta})
+          <div className="border-t border-[var(--border-hairline)] bg-[var(--bg-canvas)] px-4 py-3.5">
+            <BlurCrossfade contentKey={active.id}>
+              <div className="type-sm flex flex-wrap items-center justify-between gap-2 tabular-nums">
+                <span className="font-semibold text-[var(--ink-primary)]">
+                  {active.title} ({active.meta})
                 </span>
-                <span className="text-[var(--status-positive)]">
+                <span className="font-medium text-[var(--status-positive)]">
                   {active.protocol} · {active.metric}
                 </span>
               </div>
-              <p className="mt-1.5 text-xs leading-relaxed text-[var(--ink-secondary)]">
+              <p className="type-sm mt-1.5 text-[var(--ink-secondary)]">
                 {active.detail}
               </p>
             </BlurCrossfade>
@@ -2333,33 +2159,29 @@ export function EcommerceSchematic({ compact = false }: SchematicProps) {
                 href={store.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-press group flex items-center justify-between gap-3 px-4 py-3 text-xs text-[var(--ink-primary)] hover:bg-[var(--bg-subtle)]/60 hover:text-[var(--accent-deep)]"
+                className="type-sm btn-press group flex items-center justify-between gap-3 px-4 py-3 text-[var(--ink-primary)] hover:bg-[var(--bg-subtle)]/60 hover:text-[var(--accent-deep)]"
               >
                 <div className="min-w-0">
-                  <div className="truncate font-mono font-semibold">
-                    {store.domain}
-                  </div>
-                  <div className="mt-0.5 font-mono text-[11px] tabular-nums text-[var(--ink-muted)]">
+                  <div className="truncate font-semibold">{store.domain}</div>
+                  <div className="mt-0.5 text-[var(--ink-muted)]">
                     {store.edge}
                   </div>
                 </div>
-                <span className="inline-flex shrink-0 items-center gap-1.5 font-mono text-[11px] font-medium text-[var(--status-positive)]">
-                  LIVE
-                  <ArrowUpRight
-                    size={13}
-                    weight="bold"
-                    className="hover-nudge-ne text-[var(--ink-secondary)] group-hover:text-[var(--accent-deep)]"
-                  />
-                </span>
+                <ArrowUpRight
+                  size={15}
+                  weight="bold"
+                  className="hover-nudge-ne shrink-0 text-[var(--ink-secondary)] group-hover:text-[var(--accent-deep)]"
+                  aria-hidden="true"
+                />
               </a>
             ))}
           </div>
         </>
       ) : (
-        <div className="flex items-center justify-between border-t border-[var(--border-hairline)] bg-[var(--bg-subtle)]/55 px-4 py-2 font-mono text-[11px] tabular-nums text-[var(--ink-muted)]">
-          <span>CLOUDFLARE EDGE · PAYSTACK / STRIPE</span>
+        <div className="type-sm flex items-center justify-between border-t border-[var(--border-hairline)] bg-[var(--bg-canvas)] px-4 py-2.5 tabular-nums text-[var(--ink-muted)]">
+          <span>Cloudflare edge · Paystack and Stripe</span>
           <span className="font-medium text-[var(--status-positive)]">
-            2 LIVE
+            2 storefronts live
           </span>
         </div>
       )}

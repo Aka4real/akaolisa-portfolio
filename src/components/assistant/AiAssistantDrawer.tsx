@@ -23,7 +23,6 @@ import {
   ArrowRight,
   PaperPlaneRight,
   Sparkle,
-  TerminalWindow,
   X,
 } from "@phosphor-icons/react";
 import {
@@ -70,15 +69,15 @@ const WELCOME_MESSAGE: ChatMessage = {
   id: "welcome",
   role: "assistant",
   content:
-    "Ask anything about Akaolisa Enwedo's architecture experience, OXAKALABS case studies, AI/Quant stack, B.MLS clinical background, or remote contract availability. All answers are strictly grounded in his verified dossier.",
+    "Ask about Akaolisa Enwedo's architecture experience, OXAKALABS case studies, AI and quantitative stack, B.MLS clinical background, or remote contract availability. Every answer stays grounded in his verified dossier.",
   links: [
-    { label: "View Selected Work", href: "/work" },
-    { label: "Experience & Clinical Lab", href: "/experience" },
+    { label: "View selected work", href: "/work" },
+    { label: "Experience and clinical lab", href: "/experience" },
   ],
 };
 
 const QUICK_PROMPTS = [
-  "What is Akaolisa's AI & multi-agent stack?",
+  "What is Akaolisa's AI and multi-agent stack?",
   "Walk me through Fortress Fleet AI and Koridor Engine OS",
   "How does his B.MLS clinical leadership strengthen software delivery?",
   "Is he available for remote freelance contracts?",
@@ -88,16 +87,14 @@ const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 function getInitialDrawerWidth(): number {
-  if (typeof window === "undefined") return 448;
-  return Math.min(window.innerWidth, 448);
+  if (typeof window === "undefined") return 464;
+  return Math.min(window.innerWidth, 464);
 }
 
 function computePointerVelocityX(samples: PointerSample[]): number {
   if (samples.length < 2) return 0;
   const now = performance.now();
   const last = samples[samples.length - 1];
-
-  // If the pointer rested > 80ms before lift, release velocity is zero
   if (now - last.t > 80) return 0;
 
   let first = samples[0];
@@ -165,13 +162,13 @@ function FormattedAssistantText({ content }: { content: string }) {
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2.5">
       {blocks.map((block, idx) => {
         if (block.type === "heading") {
           return (
             <p
               key={idx}
-              className="pt-1 font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--accent-deep)]"
+              className="type-sm pt-1 font-semibold text-[var(--accent-deep)]"
             >
               {block.text}
             </p>
@@ -183,7 +180,7 @@ function FormattedAssistantText({ content }: { content: string }) {
               {block.items.map((item, itemIdx) => (
                 <li
                   key={itemIdx}
-                  className="list-disc text-[13px] leading-relaxed text-[var(--ink-primary)] marker:text-[var(--accent)]"
+                  className="type-sm list-disc text-[var(--ink-primary)] marker:text-[var(--accent)]"
                 >
                   {renderInlineEmphasis(item)}
                 </li>
@@ -192,10 +189,7 @@ function FormattedAssistantText({ content }: { content: string }) {
           );
         }
         return (
-          <p
-            key={idx}
-            className="text-[13px] leading-relaxed text-[var(--ink-primary)]"
-          >
+          <p key={idx} className="type-sm text-[var(--ink-primary)]">
             {renderInlineEmphasis(block.text)}
           </p>
         );
@@ -276,7 +270,6 @@ function AiAssistantDrawerSheet({
     };
   }, []);
 
-  // Measure actual sheet width & track resizes cleanly
   useIsomorphicLayoutEffect(() => {
     const aside = asideRef.current;
     if (!aside) return;
@@ -297,12 +290,10 @@ function AiAssistantDrawerSheet({
     return () => observer.disconnect();
   }, []);
 
-  // Focus close button on mount for accessible keyboard entry without mobile keyboard jump
   useEffect(() => {
     closeBtnRef.current?.focus({ preventScroll: true });
   }, []);
 
-  // Animate smoothly from live x.get() toward width, then notify parent onClose
   const animateToClose = useCallback(
     (explicitVelocity?: number) => {
       if (prefersReduced) {
@@ -370,14 +361,13 @@ function AiAssistantDrawerSheet({
     [getDrawerWidth, onClose, prefersReduced, x]
   );
 
-  // Orchestrate mount enter & external unmount exit (interruptible from live presentation value)
   useEffect(() => {
     if (prefersReduced) {
       x.set(0);
       if (!isPresent) {
         const timer = window.setTimeout(() => {
           safeToRemove();
-        }, 160);
+        }, 140);
         return () => window.clearTimeout(timer);
       }
       return;
@@ -401,7 +391,6 @@ function AiAssistantDrawerSheet({
       };
     }
 
-    // External close (e.g., parent switched directly to ResumeModal)
     if (hasFinishedCloseAnimRef.current) {
       safeToRemove();
       return;
@@ -421,10 +410,7 @@ function AiAssistantDrawerSheet({
 
     const controls =
       Math.abs(liveVelocity) <= 50
-        ? animate(x, width, {
-            duration: 0.24,
-            ease: EASE_DRAWER,
-          })
+        ? animate(x, width, { duration: 0.24, ease: EASE_DRAWER })
         : animate(x, width, {
             ...SPRING_CRISP,
             duration: 0.24,
@@ -448,7 +434,6 @@ function AiAssistantDrawerSheet({
     };
   }, [getDrawerWidth, isPresent, prefersReduced, safeToRemove, x]);
 
-  // Interruptible Escape key dismissal
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -460,7 +445,6 @@ function AiAssistantDrawerSheet({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [animateToClose]);
 
-  // Smooth auto-scroll respecting prefers-reduced-motion
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -497,7 +481,6 @@ function AiAssistantDrawerSheet({
     startYRef.current = e.clientY;
     samplesRef.current = [{ x: e.clientX, t: performance.now() }];
 
-    // Immediate grab on mid-flight catch or non-button header drag handle
     if (isMidFlight || isHeaderHandle) {
       ++animTokenRef.current;
       isClosingRef.current = false;
@@ -511,7 +494,7 @@ function AiAssistantDrawerSheet({
         try {
           e.currentTarget.setPointerCapture(e.pointerId);
         } catch {
-          // Ignore synthetic pointer capture rejection
+          // Ignore synthetic capture rejection
         }
       }
     }
@@ -542,13 +525,12 @@ function AiAssistantDrawerSheet({
           try {
             e.currentTarget.setPointerCapture(e.pointerId);
           } catch {
-            // Ignore synthetic pointer capture rejection
+            // Ignore synthetic capture rejection
           }
         } else {
           return;
         }
       } else {
-        // Strict 10px horizontal hysteresis in scrollable message body so vertical scroll is never blocked
         if (Math.abs(dy) > 10 && Math.abs(dy) >= Math.abs(dx)) {
           activePointerIdRef.current = null;
           return;
@@ -564,7 +546,7 @@ function AiAssistantDrawerSheet({
           try {
             e.currentTarget.setPointerCapture(e.pointerId);
           } catch {
-            // Ignore synthetic pointer capture rejection
+            // Ignore synthetic capture rejection
           }
         } else {
           return;
@@ -602,7 +584,6 @@ function AiAssistantDrawerSheet({
     setIsDragging(false);
 
     if (!wasLocked) {
-      // If user caught mid-flight without dragging far enough, settle cleanly to open
       if (x.get() > 0 && !isClosingRef.current) {
         controlsRef.current?.stop();
         controlsRef.current = animate(x, 0, SPRING_CRISP);
@@ -623,7 +604,6 @@ function AiAssistantDrawerSheet({
     const currentX = x.get();
     const projected = currentX + projectVelocity(vx, 0.998);
 
-    // Sign-first reversal: leftward flick (vx < -180) cancels dismissal immediately
     const shouldDismiss =
       !cancelled &&
       vx >= -180 &&
@@ -650,7 +630,6 @@ function AiAssistantDrawerSheet({
       aria-modal="true"
       aria-labelledby="ai-drawer-title"
     >
-      {/* Drag-coupled backdrop scrim */}
       <motion.div
         style={prefersReduced ? undefined : { opacity: scrimOpacity }}
         initial={prefersReduced ? { opacity: 0 } : undefined}
@@ -665,7 +644,6 @@ function AiAssistantDrawerSheet({
         aria-hidden="true"
       />
 
-      {/* Right-edge interruptible fluid sheet */}
       <motion.aside
         ref={asideRef}
         style={prefersReduced ? undefined : { x, touchAction: "pan-y" }}
@@ -679,53 +657,41 @@ function AiAssistantDrawerSheet({
         onPointerUp={(e) => finishDrag(e, false)}
         onPointerCancel={(e) => finishDrag(e, true)}
         onLostPointerCapture={(e) => finishDrag(e, true)}
-        className={`relative z-10 flex h-full w-full max-w-md flex-col border-l border-[var(--border-hairline)] bg-[var(--bg-canvas)] shadow-[var(--shadow-float)] ${
+        className={`relative z-10 flex h-full w-full max-w-[464px] flex-col border-l border-[var(--border-hairline)] bg-[var(--bg-canvas)] shadow-[var(--shadow-float)] ${
           isDragging ? "select-none" : ""
         }`}
       >
-        {/* Seamless right-edge backing skirt (> max theoretical rubberband 0.55 * 448px) */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-y-0 left-full w-72 bg-[var(--bg-canvas)]"
         />
 
-        {/* Subtle left-bezel tactile grab-pill affordance */}
-        {!prefersReduced && (
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute top-1/2 left-1.5 z-30 -translate-y-1/2"
-          >
-            <span className="block h-10 w-1 rounded-full bg-[var(--border-strong)] opacity-60" />
-          </div>
-        )}
-
-        {/* Translucent floating chrome header (messages pass smoothly underneath) */}
+        {/* Marine Ink Drawer Header */}
         <div
           data-drawer-drag-handle="true"
           style={{ touchAction: prefersReduced ? undefined : "none" }}
-          className={`chrome-surface absolute inset-x-0 top-0 z-20 flex items-center justify-between border-b border-[var(--border-hairline)] px-5 py-4 ${
+          className={`relative z-20 flex items-center justify-between border-b border-[var(--border-on-marine)] bg-[var(--bg-marine)] px-5 py-4 text-[var(--ink-on-marine)] ${
             prefersReduced ? "" : "cursor-grab active:cursor-grabbing"
           }`}
         >
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--accent-border)] bg-[var(--accent-soft)] text-[var(--accent)]">
-              <Sparkle size={15} weight="bold" aria-hidden="true" />
+          <div className="flex items-center gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--bg-marine-elevated)] text-[var(--accent-bright)]">
+              <Sparkle size={16} weight="bold" aria-hidden="true" />
             </span>
             <div>
               <h2
                 id="ai-drawer-title"
-                className="text-sm font-semibold tracking-[-0.015em] text-[var(--ink-primary)]"
+                className="type-subhead text-[var(--ink-on-marine)]"
               >
-                Ask About Akaolisa
+                Ask about Akaolisa
               </h2>
-              <p className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.04em] text-[var(--ink-muted)]">
-                <TerminalWindow size={12} weight="bold" aria-hidden="true" />
+              <p className="type-sm text-[var(--ink-on-marine-muted)]">
                 {statusLabel}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             {messages.length > 1 && (
               <button
                 type="button"
@@ -733,7 +699,7 @@ function AiAssistantDrawerSheet({
                 disabled={loading}
                 aria-label="Reset conversation"
                 title="Start a new thread"
-                className="btn-press inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] text-[var(--ink-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--ink-primary)] disabled:cursor-not-allowed disabled:opacity-40"
+                className="btn-press inline-flex h-9 w-9 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-on-marine)] text-[var(--ink-on-marine-secondary)] hover:border-[var(--border-on-marine-strong)] hover:text-[var(--ink-on-marine)] disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ArrowCounterClockwise
                   size={15}
@@ -748,23 +714,17 @@ function AiAssistantDrawerSheet({
               type="button"
               onClick={() => animateToClose()}
               aria-label="Close dossier assistant"
-              className="btn-press inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] text-[var(--ink-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--ink-primary)]"
+              className="btn-press inline-flex h-9 w-9 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-on-marine)] text-[var(--ink-on-marine-secondary)] hover:border-[var(--border-on-marine-strong)] hover:text-[var(--ink-on-marine)]"
             >
               <X size={16} weight="bold" aria-hidden="true" />
             </button>
           </div>
-
-          {/* Subtle scroll-edge fade beneath floating header chrome */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 -bottom-3 h-3 bg-gradient-to-b from-[rgba(248,249,251,0.65)] to-transparent"
-          />
         </div>
 
-        {/* Full-height message scroll viewport flowing behind translucent header & footer */}
+        {/* Message Thread */}
         <div
           ref={scrollRef}
-          className="h-full space-y-4 overflow-y-auto px-5 pt-[88px] pb-[132px]"
+          className="flex-1 space-y-4 overflow-y-auto px-5 py-6"
         >
           {messages.map((msg) => {
             const isWelcome = msg.id === WELCOME_MESSAGE.id;
@@ -776,29 +736,20 @@ function AiAssistantDrawerSheet({
                     ? false
                     : prefersReduced
                       ? { opacity: 0 }
-                      : {
-                          opacity: 0,
-                          transform: "translateY(8px) scale(0.98)",
-                        }
+                      : { opacity: 0, y: 8 }
                 }
                 animate={
-                  prefersReduced
-                    ? { opacity: 1 }
-                    : { opacity: 1, transform: "translateY(0px) scale(1)" }
+                  prefersReduced ? { opacity: 1 } : { opacity: 1, y: 0 }
                 }
                 transition={
                   prefersReduced
-                    ? { duration: 0.16, ease: "easeOut" }
-                    : { duration: 0.18, ease: EASE_OUT_EXPO }
+                    ? { duration: 0.14, ease: "easeOut" }
+                    : { duration: 0.2, ease: EASE_OUT_EXPO }
                 }
-                style={{
-                  transformOrigin:
-                    msg.role === "user" ? "100% 100%" : "0% 100%",
-                }}
                 className={
                   msg.role === "user"
-                    ? "ml-8 rounded-[var(--radius-md)] bg-[var(--bg-inverse)] px-3.5 py-2.5 text-[13px] leading-relaxed text-[var(--ink-inverse)] shadow-[var(--shadow-surface)]"
-                    : "surface-elevated mr-4 rounded-[var(--radius-md)] px-4 py-3 text-[13px] leading-relaxed text-[var(--ink-primary)]"
+                    ? "type-sm ml-8 rounded-[var(--radius-md)] bg-[var(--bg-marine)] px-4 py-3 text-[var(--ink-on-marine)]"
+                    : "mr-3 rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] px-4 py-3.5 text-[var(--ink-primary)]"
                 }
               >
                 {msg.role === "assistant" ? (
@@ -806,18 +757,19 @@ function AiAssistantDrawerSheet({
                 ) : (
                   <p className="whitespace-pre-wrap">{msg.content}</p>
                 )}
+
                 {msg.links && msg.links.length > 0 && (
-                  <div className="mt-3 flex flex-wrap gap-1.5 border-t border-[var(--border-hairline)] pt-2.5">
+                  <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 border-t border-[var(--border-hairline)] pt-2.5">
                     {msg.links.map((item) => (
                       <Link
                         key={item.href + item.label}
                         href={item.href}
                         onClick={() => animateToClose()}
-                        className="btn-press group inline-flex items-center gap-1 rounded-[var(--radius-xs)] border border-[var(--accent-border)] bg-[var(--accent-soft)] px-2.5 py-1 font-mono text-[11px] font-medium text-[var(--accent-deep)] hover:border-[var(--accent)] hover:bg-[var(--accent)] hover:text-white"
+                        className="type-sm group inline-flex items-center gap-1 font-medium text-[var(--accent-deep)] transition-colors duration-150 hover:text-[var(--accent)]"
                       >
-                        {item.label}
+                        <span>{item.label}</span>
                         <ArrowRight
-                          size={11}
+                          size={13}
                           weight="bold"
                           className="hover-nudge-x"
                           aria-hidden="true"
@@ -831,74 +783,29 @@ function AiAssistantDrawerSheet({
           })}
 
           {loading && (
-            <motion.div
+            <div
               role="status"
               aria-live="polite"
-              initial={
-                prefersReduced
-                  ? { opacity: 0 }
-                  : { opacity: 0, transform: "translateY(8px) scale(0.98)" }
-              }
-              animate={
-                prefersReduced
-                  ? { opacity: 1 }
-                  : { opacity: 1, transform: "translateY(0px) scale(1)" }
-              }
-              transition={
-                prefersReduced
-                  ? { duration: 0.16, ease: "easeOut" }
-                  : { duration: 0.18, ease: EASE_OUT_EXPO }
-              }
-              style={{ transformOrigin: "0% 100%" }}
-              className="surface-elevated mr-12 flex items-center gap-2.5 rounded-[var(--radius-md)] px-4 py-3 font-mono text-[11px] text-[var(--ink-muted)]"
+              className="type-sm mr-10 rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] px-4 py-3 text-[var(--ink-muted)]"
             >
-              <span
-                className="inline-flex items-center gap-1"
-                aria-hidden="true"
-              >
-                {[0, 1, 2].map((dot) =>
-                  prefersReduced ? (
-                    <span
-                      key={dot}
-                      className="h-1.5 w-1.5 rounded-full bg-[var(--accent)] opacity-70"
-                    />
-                  ) : (
-                    <motion.span
-                      key={dot}
-                      className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]"
-                      initial={{ opacity: 0.25 }}
-                      animate={{ opacity: [0.25, 1, 0.25] }}
-                      transition={{
-                        duration: 0.9,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: dot * 0.12,
-                      }}
-                    />
-                  )
-                )}
-              </span>
-              <span>
-                {geminiEnabled
-                  ? `Synthesizing with ${displayModelLabel}...`
-                  : "Querying verified dossier..."}
-              </span>
-            </motion.div>
+              {geminiEnabled
+                ? `Synthesizing with ${displayModelLabel}...`
+                : "Querying verified dossier..."}
+            </div>
           )}
 
-          {/* Quick prompts when conversation is fresh */}
           {messages.length <= 2 && !loading && (
             <div className="pt-2">
-              <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.06em] text-[var(--ink-muted)]">
-                Suggested Queries
+              <p className="type-sm mb-2.5 font-medium text-[var(--ink-muted)]">
+                Suggested questions
               </p>
-              <div className="space-y-1.5">
+              <div className="divide-y divide-[var(--border-hairline)] border-y border-[var(--border-hairline)]">
                 {QUICK_PROMPTS.map((prompt) => (
                   <button
                     key={prompt}
                     type="button"
                     onClick={() => onSubmitQuestion(prompt)}
-                    className="btn-press block w-full rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] px-3.5 py-2.5 text-left text-xs font-medium text-[var(--ink-secondary)] hover:border-[var(--accent-border)] hover:bg-[var(--accent-soft)]/50 hover:text-[var(--ink-primary)]"
+                    className="type-sm btn-press block w-full py-3 text-left font-medium text-[var(--ink-secondary)] transition-colors duration-150 hover:text-[var(--accent-deep)]"
                   >
                     {prompt}
                   </button>
@@ -908,42 +815,36 @@ function AiAssistantDrawerSheet({
           )}
         </div>
 
-        {/* Translucent floating chrome input footer */}
+        {/* Input Composer */}
         <form
           onSubmit={(e) => {
             e.preventDefault();
             onSubmitQuestion(input);
           }}
-          className="chrome-surface absolute inset-x-0 bottom-0 z-20 border-t border-[var(--border-hairline)] p-4 shadow-[var(--shadow-inset-highlight)]"
+          className="border-t border-[var(--border-hairline)] bg-[var(--bg-surface)] p-4"
         >
-          {/* Subtle upward edge fade above floating footer chrome */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 -top-3 h-3 bg-gradient-to-t from-[rgba(248,249,251,0.65)] to-transparent"
-          />
-
           <div className="flex items-center gap-2">
             <input
               type="text"
               value={input}
               maxLength={4000}
               onChange={(e) => onInputChange(e.target.value)}
-              placeholder="Ask about stack, projects, B.MLS, availability..."
-              className="flex-1 rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3 py-2 text-sm text-[var(--ink-primary)] placeholder:text-[var(--ink-muted)] transition-[border-color,box-shadow] duration-150 focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent-ring)] focus:outline-none"
+              placeholder="Ask about projects, stack, B.MLS, or availability..."
+              className="type-sm flex-1 rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-canvas)] px-3.5 py-2.5 text-[var(--ink-primary)] placeholder:text-[var(--ink-muted)] transition-[border-color,box-shadow] duration-150 focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent-ring)] focus:outline-none"
             />
             <button
               type="submit"
               disabled={loading || input.trim().length < 2}
               aria-label="Send question"
-              className="btn-press inline-flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--bg-inverse)] text-[var(--ink-inverse)] hover:bg-[var(--accent)] disabled:cursor-not-allowed disabled:opacity-40"
+              className="btn-press inline-flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--bg-marine)] text-[var(--ink-on-marine)] hover:bg-[var(--accent)] disabled:cursor-not-allowed disabled:opacity-40"
             >
               <PaperPlaneRight size={16} weight="bold" aria-hidden="true" />
             </button>
           </div>
-          <p className="mt-2 font-mono text-[11px] text-[var(--ink-muted)]">
+          <p className="type-sm mt-2 text-[var(--ink-muted)]">
             {geminiEnabled
-              ? `Grounded in verified dossier · Multi-turn ${displayModelLabel}`
-              : "Zero fabricated claims · Auto-upgrades with GEMINI_API_KEY"}
+              ? `Grounded in verified dossier via ${displayModelLabel}`
+              : "Grounded deterministic dossier index"}
           </p>
         </form>
       </motion.aside>
@@ -984,7 +885,7 @@ export function AiAssistantDrawer({ open, onClose }: AiAssistantDrawerProps) {
         }
       })
       .catch(() => {
-        // Silently keep grounded-index label if status check fails
+        // Keep grounded-index label if check fails
       });
   }, [open]);
 
@@ -1058,7 +959,7 @@ export function AiAssistantDrawer({ open, onClose }: AiAssistantDrawerProps) {
           role: "assistant",
           content:
             "Unable to query the dossier endpoint right now. You can inspect all case studies on /work or reach Akaolisa directly at akaolisaenwedo4real@gmail.com.",
-          links: [{ label: "Go to Contact", href: "/contact" }],
+          links: [{ label: "Go to contact", href: "/contact" }],
           isSystemError: true,
         },
       ]);
@@ -1073,10 +974,8 @@ export function AiAssistantDrawer({ open, onClose }: AiAssistantDrawerProps) {
 
   const statusLabel =
     activeMode === "gemini"
-      ? activeModel
-        ? `${displayModelLabel} · Live`
-        : `${displayModelLabel} · Ready`
-      : "Grounded Dossier Index";
+      ? `${displayModelLabel} grounded assistant`
+      : "Grounded dossier index";
 
   return (
     <AnimatePresence>

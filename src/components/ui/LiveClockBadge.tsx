@@ -5,11 +5,13 @@ import { PROFILE } from "@/data/profile";
 
 interface LiveClockBadgeProps {
   compact?: boolean;
+  tone?: "light" | "marine";
   className?: string;
 }
 
 export function LiveClockBadge({
   compact = false,
+  tone = "light",
   className = "",
 }: LiveClockBadgeProps) {
   const [timeStr, setTimeStr] = useState<string | null>(null);
@@ -59,42 +61,31 @@ export function LiveClockBadge({
     };
   }, []);
 
+  const primaryText =
+    tone === "marine"
+      ? "text-[var(--ink-on-marine)]"
+      : "text-[var(--ink-primary)]";
+  const secondaryText =
+    tone === "marine"
+      ? "text-[var(--ink-on-marine-muted)]"
+      : "text-[var(--ink-muted)]";
+
   return (
-    <div
-      className={`inline-flex max-w-full items-center gap-2 whitespace-nowrap rounded-[var(--radius-pill)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] px-3 py-1.5 text-xs text-[var(--ink-secondary)] ${className}`}
+    <p
+      className={`type-sm inline-flex flex-wrap items-center gap-x-2 gap-y-0.5 tabular-nums ${secondaryText} ${className}`}
       aria-label={`Availability status and local time in ${PROFILE.utcOffsetLabel}`}
     >
+      <span className={`font-medium ${primaryText}`}>
+        {compact ? "Available remotely" : "Available worldwide for contracts"}
+      </span>
+      <span aria-hidden="true">·</span>
       <span
-        className="relative flex h-2 w-2 shrink-0 items-center justify-center"
-        aria-hidden="true"
-      >
-        {!compact && (
-          <span className="live-breathe motion-reduce:animate-none absolute inline-flex h-full w-full rounded-full bg-[var(--status-positive)]" />
-        )}
-        <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--status-positive)]" />
-      </span>
-
-      <span className="font-medium text-[var(--ink-primary)]">
-        {compact ? (
-          "Available"
-        ) : (
-          <>
-            Available<span className="hidden sm:inline"> Worldwide</span>
-          </>
-        )}
-      </span>
-
-      <span className="text-[var(--border-strong)]" aria-hidden="true">
-        ·
-      </span>
-
-      <span
-        className={`font-mono text-[11px] tabular-nums text-[var(--ink-muted)] transition-opacity duration-[180ms] ease-out ${
+        className={`transition-opacity duration-[180ms] ease-out ${
           timeStr ? "opacity-100" : "opacity-0"
         }`}
       >
-        {timeStr ?? "00:00"} {PROFILE.utcOffsetLabel}
+        Local time {timeStr ?? "00:00"} {PROFILE.utcOffsetLabel}
       </span>
-    </div>
+    </p>
   );
 }

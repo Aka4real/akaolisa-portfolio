@@ -23,6 +23,9 @@ pnpm-debug.log*
 .env
 .env*.local
 
+# Local studio admin runtime state
+.studio-admin-state.json
+
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts

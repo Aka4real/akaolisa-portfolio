@@ -24,46 +24,33 @@ import {
 /* -------------------------------------------------------------------------- */
 
 export const EASE_OUT_EXPO: [number, number, number, number] = [
-  0.23, 1, 0.32, 1,
-];
-export const EASE_IN_OUT: [number, number, number, number] = [
-  0.77, 0, 0.175, 1,
+  0.22, 1, 0.36, 1,
 ];
 export const EASE_DRAWER: [number, number, number, number] = [0.32, 0.72, 0, 1];
 
-/** Apple critically damped spring (damping ratio 1.0, zero overshoot). */
 export const SPRING_CRISP = {
   type: "spring" as const,
   bounce: 0,
-  duration: 0.34,
+  duration: 0.32,
 };
 
-/** Snappy critically damped spring for shared-layout tab & nav indicators. */
 export const SPRING_TAB = {
   type: "spring" as const,
   bounce: 0,
-  duration: 0.28,
+  duration: 0.24,
 };
 
-/** Momentum-only spring for high-velocity gesture flicks. */
 export const SPRING_FLICK = {
   type: "spring" as const,
-  bounce: 0.14,
-  duration: 0.34,
+  bounce: 0.12,
+  duration: 0.32,
 };
 
-/**
- * Projects final resting displacement (px) from pointer release velocity (px/s),
- * matching UIScrollView deceleration rate (default 0.998).
- */
 export function projectVelocity(vPxPerSec: number, decel = 0.998): number {
   if (decel <= 0 || decel >= 1) return 0;
   return ((vPxPerSec / 1000) * decel) / (1 - decel);
 }
 
-/**
- * Asymptotic rubber-band resistance for overscroll / boundary overshoot.
- */
 export function rubberband(
   overshoot: number,
   dimension: number,
@@ -89,44 +76,21 @@ export function Reveal({
   children,
   delay = 0,
   className,
-  y = 12,
+  y = 14,
   immediate = false,
 }: RevealProps) {
   const prefersReduced = useReducedMotion();
 
   if (prefersReduced) {
-    if (immediate) {
-      return (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.18, delay: Math.min(delay, 0.08), ease: "easeOut" }}
-          className={className}
-        >
-          {children}
-        </motion.div>
-      );
-    }
-
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, amount: "some" }}
-        transition={{ duration: 0.18, delay: Math.min(delay, 0.08), ease: "easeOut" }}
-        className={className}
-      >
-        {children}
-      </motion.div>
-    );
+    return <div className={className}>{children}</div>;
   }
 
   if (immediate) {
     return (
       <motion.div
-        initial={{ opacity: 0, transform: `translateY(${y}px)` }}
-        animate={{ opacity: 1, transform: "translateY(0px)" }}
-        transition={{ duration: 0.28, delay, ease: EASE_OUT_EXPO }}
+        initial={{ opacity: 0, y }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.36, delay, ease: EASE_OUT_EXPO }}
         className={className}
       >
         {children}
@@ -136,14 +100,61 @@ export function Reveal({
 
   return (
     <motion.div
-      initial={{ opacity: 0, transform: `translateY(${y}px)` }}
-      whileInView={{ opacity: 1, transform: "translateY(0px)" }}
-      viewport={{ once: true, amount: "some", margin: "0px" }}
-      transition={{ duration: 0.28, delay, ease: EASE_OUT_EXPO }}
+      initial={{ opacity: 0, y }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: "some" }}
+      transition={{ duration: 0.36, delay, ease: EASE_OUT_EXPO }}
       className={className}
     >
       {children}
     </motion.div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  HeroLineReveal (Staggered headline lines, visible at rest)                */
+/* -------------------------------------------------------------------------- */
+
+export function HeroLineReveal({
+  lines,
+  className,
+}: {
+  lines: string[];
+  className?: string;
+}) {
+  const prefersReduced = useReducedMotion();
+
+  if (prefersReduced) {
+    return (
+      <h1 className={className}>
+        {lines.map((line, i) => (
+          <span key={i} className="block">
+            {line}
+          </span>
+        ))}
+      </h1>
+    );
+  }
+
+  return (
+    <h1 className={className}>
+      {lines.map((line, i) => (
+        <span key={i} className="block overflow-hidden pb-[0.06em]">
+          <motion.span
+            className="block"
+            initial={{ y: "26%", opacity: 0.01 }}
+            animate={{ y: "0%", opacity: 1 }}
+            transition={{
+              duration: 0.56,
+              delay: i * 0.07,
+              ease: EASE_OUT_EXPO,
+            }}
+          >
+            {line}
+          </motion.span>
+        </span>
+      ))}
+    </h1>
   );
 }
 
@@ -184,7 +195,7 @@ export function StaggerGroup({
 }: StaggerGroupProps) {
   const prefersReduced = useReducedMotion();
 
-  if (trigger === "instant") {
+  if (trigger === "instant" || prefersReduced) {
     return (
       <StaggerContext.Provider
         value={{ staggerStep, maxDelay, trigger: "instant", y }}
@@ -198,7 +209,7 @@ export function StaggerGroup({
     hidden: {},
     visible: {
       transition: {
-        staggerChildren: prefersReduced ? 0 : staggerStep,
+        staggerChildren: staggerStep,
       },
     },
   };
@@ -226,7 +237,7 @@ export function StaggerGroup({
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: "some", margin: "0px" }}
+        viewport={{ once: true, amount: "some" }}
         className={className}
       >
         {children}
@@ -245,66 +256,20 @@ export function StaggerItem({ children, index, className }: StaggerItemProps) {
   const prefersReduced = useReducedMotion();
   const { staggerStep, maxDelay, trigger, y } = useContext(StaggerContext);
 
-  if (trigger === "instant") {
+  if (trigger === "instant" || prefersReduced) {
     return <div className={className}>{children}</div>;
   }
 
   const computedDelay =
     index !== undefined ? Math.min(index * staggerStep, maxDelay) : undefined;
 
-  if (prefersReduced) {
-    if (computedDelay !== undefined) {
-      return (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={trigger === "mount" ? { opacity: 1 } : undefined}
-          whileInView={trigger === "inView" ? { opacity: 1 } : undefined}
-          viewport={
-            trigger === "inView" ? { once: true, amount: "some" } : undefined
-          }
-          transition={{ duration: 0.16, ease: "easeOut" }}
-          className={className}
-        >
-          {children}
-        </motion.div>
-      );
-    }
-
-    return (
-      <motion.div
-        variants={{
-          hidden: { opacity: 0 },
-          visible: {
-            opacity: 1,
-            transition: { duration: 0.16, ease: "easeOut" },
-          },
-        }}
-        className={className}
-      >
-        {children}
-      </motion.div>
-    );
-  }
-
   if (computedDelay !== undefined) {
     return (
       <motion.div
-        initial={{ opacity: 0, transform: `translateY(${y}px)` }}
-        animate={
-          trigger === "mount"
-            ? { opacity: 1, transform: "translateY(0px)" }
-            : undefined
-        }
-        whileInView={
-          trigger === "inView"
-            ? { opacity: 1, transform: "translateY(0px)" }
-            : undefined
-        }
-        viewport={
-          trigger === "inView"
-            ? { once: true, amount: "some", margin: "0px" }
-            : undefined
-        }
+        initial={{ opacity: 0, y }}
+        animate={trigger === "mount" ? { opacity: 1, y: 0 } : undefined}
+        whileInView={trigger === "inView" ? { opacity: 1, y: 0 } : undefined}
+        viewport={trigger === "inView" ? { once: true, amount: "some" } : undefined}
         transition={{
           duration: 0.24,
           delay: computedDelay,
@@ -320,10 +285,10 @@ export function StaggerItem({ children, index, className }: StaggerItemProps) {
   return (
     <motion.div
       variants={{
-        hidden: { opacity: 0, transform: `translateY(${y}px)` },
+        hidden: { opacity: 0, y },
         visible: {
           opacity: 1,
-          transform: "translateY(0px)",
+          y: 0,
           transition: { duration: 0.24, ease: EASE_OUT_EXPO },
         },
       }}
@@ -383,52 +348,42 @@ export function BlurCrossfade({
   children,
   className,
   inline = false,
-  y = 3,
+  y = 4,
 }: BlurCrossfadeProps) {
   const prefersReduced = useReducedMotion();
 
   const initialState = prefersReduced
     ? { opacity: 0 }
     : inline
-      ? { opacity: 0, filter: "blur(2px)", transform: "scale(0.92)" }
-      : { opacity: 0, filter: "blur(2px)", transform: `translateY(${y}px)` };
+      ? { opacity: 0, scale: 0.96 }
+      : { opacity: 0, y };
 
   const animateState = prefersReduced
-    ? {
-        opacity: 1,
-        transition: { duration: 0.14, ease: "easeOut" as const },
-      }
+    ? { opacity: 1, transition: { duration: 0.14, ease: "easeOut" as const } }
     : inline
       ? {
           opacity: 1,
-          filter: "blur(0px)",
-          transform: "scale(1)",
+          scale: 1,
           transition: { duration: 0.16, ease: EASE_OUT_EXPO },
         }
       : {
           opacity: 1,
-          filter: "blur(0px)",
-          transform: "translateY(0px)",
+          y: 0,
           transition: { duration: 0.18, ease: EASE_OUT_EXPO },
         };
 
   const exitState = prefersReduced
-    ? {
-        opacity: 0,
-        transition: { duration: 0.12, ease: "easeOut" as const },
-      }
+    ? { opacity: 0, transition: { duration: 0.12, ease: "easeOut" as const } }
     : inline
       ? {
           opacity: 0,
-          filter: "blur(2px)",
-          transform: "scale(0.92)",
+          scale: 0.96,
           transition: { duration: 0.14, ease: EASE_OUT_EXPO },
         }
       : {
           opacity: 0,
-          filter: "blur(2px)",
-          transform: "translateY(-2px)",
-          transition: { duration: 0.16, ease: EASE_OUT_EXPO },
+          y: -2,
+          transition: { duration: 0.14, ease: EASE_OUT_EXPO },
         };
 
   if (inline) {
@@ -463,7 +418,7 @@ export function BlurCrossfade({
 }
 
 /* -------------------------------------------------------------------------- */
-/*  ClipSegmentedTabs (GPU clip-path: inset() dual-layer segmented control)   */
+/*  ClipSegmentedTabs (Connected Segmented Selection Control)                 */
 /* -------------------------------------------------------------------------- */
 
 export interface SegmentedTabOption<T extends string> {
@@ -478,7 +433,7 @@ export interface ClipSegmentedTabsProps<T extends string> {
   onChange: (value: T) => void;
   ariaLabel: string;
   size?: "sm" | "md";
-  variant?: "inverse" | "surface";
+  variant?: "inverse" | "surface" | "marine";
   fullWidth?: boolean;
   className?: string;
 }
@@ -565,23 +520,35 @@ export function ClipSegmentedTabs<T extends string>({
 
   const sizeClass =
     size === "sm"
-      ? "px-2.5 py-1.5 text-[11px] font-medium"
-      : "px-3.5 py-2 text-xs font-medium";
+      ? "type-sm px-3 py-1.5 font-medium"
+      : "type-sm px-4 py-2 font-medium";
+
+  const trackBg =
+    variant === "marine"
+      ? "bg-[var(--bg-marine-elevated)] ring-1 ring-inset ring-[var(--border-on-marine)]"
+      : "bg-[var(--bg-subtle)]";
+
+  const inactiveText =
+    variant === "marine"
+      ? "text-[var(--ink-on-marine-muted)] hover:text-[var(--ink-on-marine)]"
+      : "text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]";
 
   const activeSurfaceClass =
     variant === "surface"
-      ? "bg-[var(--bg-surface)] text-[var(--ink-primary)] ring-1 ring-inset ring-[rgba(15,20,30,0.08)]"
-      : "bg-[var(--bg-inverse)] text-[var(--ink-inverse)]";
+      ? "bg-[var(--bg-surface)] text-[var(--ink-primary)] ring-1 ring-inset ring-[var(--border-hairline)]"
+      : variant === "marine"
+        ? "bg-[var(--accent)] text-[var(--ink-on-marine)]"
+        : "bg-[var(--bg-marine)] text-[var(--ink-on-marine)]";
 
   const activeBadgeClass =
     variant === "surface"
-      ? "text-[var(--ink-muted)]"
-      : "text-[rgba(248,249,251,0.74)]";
+      ? "text-[var(--accent-deep)]"
+      : "text-[var(--ink-on-marine-secondary)]";
 
   return (
     <div
-      className={`rounded-[var(--radius-sm)] bg-[var(--bg-subtle)] p-1 ${
-        fullWidth ? "flex w-full" : "inline-flex"
+      className={`no-scrollbar shrink-0 rounded-[var(--radius-sm)] p-1 ${trackBg} ${
+        fullWidth ? "flex w-full" : "inline-flex max-w-full overflow-x-auto"
       } ${className}`}
     >
       <div
@@ -590,7 +557,6 @@ export function ClipSegmentedTabs<T extends string>({
         aria-label={ariaLabel}
         className={`relative flex items-center ${fullWidth ? "w-full" : ""}`}
       >
-        {/* Interactive base layer */}
         {options.map((opt, idx) => {
           const isActive = opt.value === value;
           return (
@@ -608,18 +574,18 @@ export function ClipSegmentedTabs<T extends string>({
               className={`btn-press relative z-10 inline-flex items-center justify-center gap-1.5 rounded-[7px] whitespace-nowrap select-none ${
                 fullWidth ? "flex-1" : ""
               } ${sizeClass} ${
-                isActive && !clipInset
-                  ? activeSurfaceClass
-                  : "text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]"
+                isActive && !clipInset ? activeSurfaceClass : inactiveText
               }`}
             >
               <span>{opt.label}</span>
               {opt.badge !== undefined && (
                 <span
-                  className={`font-mono text-[11px] tabular-nums ${
+                  className={`tabular-nums ${
                     isActive && !clipInset
                       ? activeBadgeClass
-                      : "text-[var(--ink-muted)]"
+                      : variant === "marine"
+                        ? "text-[var(--ink-on-marine-muted)]"
+                        : "text-[var(--ink-muted)]"
                   }`}
                 >
                   {opt.badge}
@@ -629,7 +595,6 @@ export function ClipSegmentedTabs<T extends string>({
           );
         })}
 
-        {/* GPU clip-path active overlay layer */}
         {clipInset && (
           <div
             aria-hidden="true"
@@ -637,7 +602,7 @@ export function ClipSegmentedTabs<T extends string>({
               clipPath: clipInset,
               transition: prefersReduced
                 ? "none"
-                : "clip-path 240ms var(--ease-out-expo)",
+                : "clip-path 220ms var(--ease-out-expo)",
             }}
             className={`pointer-events-none absolute inset-0 z-20 flex items-center rounded-[7px] ${activeSurfaceClass}`}
           >
@@ -650,9 +615,7 @@ export function ClipSegmentedTabs<T extends string>({
               >
                 <span>{opt.label}</span>
                 {opt.badge !== undefined && (
-                  <span
-                    className={`font-mono text-[11px] tabular-nums ${activeBadgeClass}`}
-                  >
+                  <span className={`tabular-nums ${activeBadgeClass}`}>
                     {opt.badge}
                   </span>
                 )}

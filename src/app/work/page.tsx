@@ -11,12 +11,12 @@ export const metadata: Metadata = buildPageMetadata({
 
 export default function WorkPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
-      <header className="mb-10 border-b border-[var(--border-hairline)] pb-8">
-        <h1 className="text-[clamp(2rem,3.2vw,2.75rem)] font-semibold leading-[1.1] tracking-[-0.03em] text-[var(--ink-primary)]">
-          Selected Systems &amp; Technical Dossiers
+    <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-20 lg:px-10">
+      <header className="mb-12 border-b border-[var(--border-hairline)] pb-10">
+        <h1 className="type-page-title text-[var(--ink-primary)]">
+          Selected systems and technical dossiers
         </h1>
-        <p className="mt-4 max-w-[60ch] text-[17px] leading-[1.6] text-[var(--ink-secondary)]">
+        <p className="type-body mt-4 max-w-[62ch] text-[var(--ink-secondary)]">
           Production SaaS platforms, multi-agent governance tooling, FinTech
           ledgers, and algorithmic trading engines. Open any dossier to inspect
           its interactive architecture schematic and operational outcomes.

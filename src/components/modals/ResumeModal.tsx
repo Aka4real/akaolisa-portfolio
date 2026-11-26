@@ -54,8 +54,6 @@ function computePointerVelocityY(samples: PointerSampleY[]): number {
   if (samples.length < 2) return 0;
   const now = performance.now();
   const last = samples[samples.length - 1];
-
-  // If the pointer rested > 80ms before release, release velocity is zero
   if (now - last.t > 80) return 0;
 
   let first = samples[0];
@@ -88,7 +86,6 @@ function ResumeModalSheet({ onClose }: { onClose: () => void }) {
   const modalRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
 
-  // Drag vertical translation + drag-coupled scrim opacity
   const y = useMotionValue(0);
   const scrimBaseOpacity = useMotionValue(0);
   const dragScrimFactor = useTransform(
@@ -130,7 +127,6 @@ function ResumeModalSheet({ onClose }: { onClose: () => void }) {
     };
   }, []);
 
-  // Measure modal height for accurate rubber-band and velocity projection thresholds
   useIsomorphicLayoutEffect(() => {
     const el = modalRef.current;
     if (!el) return;
@@ -151,12 +147,10 @@ function ResumeModalSheet({ onClose }: { onClose: () => void }) {
     return () => observer.disconnect();
   }, []);
 
-  // Focus close button on mount for accessible keyboard navigation
   useEffect(() => {
     closeBtnRef.current?.focus({ preventScroll: true });
   }, []);
 
-  // Safety fallback so PDF viewer extensions that suppress iframe onLoad never trap the placeholder
   useEffect(() => {
     if (pdfLoaded) return;
     const fallback = window.setTimeout(() => {
@@ -165,7 +159,6 @@ function ResumeModalSheet({ onClose }: { onClose: () => void }) {
     return () => window.clearTimeout(fallback);
   }, [pdfLoaded]);
 
-  // Scrim enter and presence-coordinated exit
   useEffect(() => {
     if (isPresent) {
       dismissedByDragRef.current = false;
@@ -182,13 +175,11 @@ function ResumeModalSheet({ onClose }: { onClose: () => void }) {
       return;
     }
 
-    // Already smoothly dismissed via downward drag spring
     if (dismissedByDragRef.current) {
       safeToRemove();
       return;
     }
 
-    // Fast asymmetric exit on Esc, scrim click, or Close button
     yControlsRef.current?.stop();
     scrimControlsRef.current?.stop();
     setIsClosingVisual(true);
@@ -211,7 +202,6 @@ function ResumeModalSheet({ onClose }: { onClose: () => void }) {
     };
   }, [isPresent, prefersReduced, safeToRemove, scrimBaseOpacity]);
 
-  // Escape key dismissal
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -237,7 +227,6 @@ function ResumeModalSheet({ onClose }: { onClose: () => void }) {
     setIsClosingVisual(false);
     yControlsRef.current?.stop();
 
-    // Critical iframe guard: disable PDF iframe pointer events immediately on grab
     setIsDragging(true);
     grabOffsetYRef.current = e.clientY - y.get();
     samplesRef.current = [{ y: e.clientY, t: performance.now() }];
@@ -245,7 +234,7 @@ function ResumeModalSheet({ onClose }: { onClose: () => void }) {
     try {
       e.currentTarget.setPointerCapture(e.pointerId);
     } catch {
-      // Ignore synthetic pointer capture rejection
+      // Ignore synthetic capture rejection
     }
   };
 
@@ -291,7 +280,6 @@ function ResumeModalSheet({ onClose }: { onClose: () => void }) {
     const currentY = y.get();
     const projectedY = currentY + projectVelocity(vy, 0.998);
 
-    // Sign-first reversal: upward flick (vy < -180) cancels dismissal immediately
     const shouldDismiss =
       !cancelled &&
       vy >= -180 &&
@@ -352,32 +340,20 @@ function ResumeModalSheet({ onClose }: { onClose: () => void }) {
 
   const cardInitial = prefersReduced
     ? { opacity: 0 }
-    : {
-        opacity: 0,
-        transform: "scale(0.96) translateY(8px)",
-        filter: "blur(4px)",
-      };
+    : { opacity: 0, scale: 0.97, y: 10 };
 
   const cardAnimate = isPresent
     ? prefersReduced
       ? { opacity: 1 }
-      : {
-          opacity: 1,
-          transform: "scale(1) translateY(0px)",
-          filter: "blur(0px)",
-        }
+      : { opacity: 1, scale: 1, y: 0 }
     : prefersReduced
       ? { opacity: 0 }
-      : {
-          opacity: 0,
-          transform: "scale(0.97) translateY(4px)",
-          filter: "blur(2px)",
-        };
+      : { opacity: 0, scale: 0.98, y: 6 };
 
   const cardTransition = isPresent
     ? prefersReduced
       ? { duration: 0.16, ease: "easeOut" as const }
-      : { ...SPRING_CRISP, duration: 0.32 }
+      : { ...SPRING_CRISP, duration: 0.3 }
     : prefersReduced
       ? { duration: 0.14, ease: "easeOut" as const }
       : { duration: 0.18, ease: EASE_OUT_EXPO };
@@ -390,7 +366,6 @@ function ResumeModalSheet({ onClose }: { onClose: () => void }) {
       aria-labelledby="resume-modal-title"
       data-dragging={isDragging ? "true" : "false"}
     >
-      {/* Drag-coupled backdrop scrim */}
       <motion.div
         style={{ opacity: scrimOpacity }}
         onClick={onClose}
@@ -400,13 +375,11 @@ function ResumeModalSheet({ onClose }: { onClose: () => void }) {
         aria-hidden="true"
       />
 
-      {/* Outer vertical drag-translation layer (decoupled from inner scale/blur transform) */}
       <motion.div
         ref={modalRef}
         style={prefersReduced ? undefined : { y }}
         className="relative z-10 flex h-[92dvh] w-full max-w-4xl flex-col sm:h-[86vh]"
       >
-        {/* Inner materializing modal card (origin-center on desktop) */}
         <motion.div
           initial={cardInitial}
           animate={cardAnimate}
@@ -415,7 +388,6 @@ function ResumeModalSheet({ onClose }: { onClose: () => void }) {
             isDragging ? "select-none" : ""
           }`}
         >
-          {/* Translucent frosted header bar + mobile grab indicator pill */}
           <div
             onPointerDown={handleHeaderPointerDown}
             onPointerMove={handleHeaderPointerMove}
@@ -423,71 +395,61 @@ function ResumeModalSheet({ onClose }: { onClose: () => void }) {
             onPointerCancel={(e) => finishHeaderDrag(e, true)}
             onLostPointerCapture={(e) => finishHeaderDrag(e, true)}
             style={{ touchAction: prefersReduced ? undefined : "none" }}
-            className={`chrome-surface relative z-20 border-b border-[var(--border-hairline)] px-4 pt-2.5 pb-3.5 sm:px-5 sm:py-3.5 ${
+            className={`chrome-surface relative z-20 border-b border-[var(--border-hairline)] px-5 py-3.5 ${
               prefersReduced ? "" : "cursor-grab active:cursor-grabbing"
             }`}
           >
-            {/* Mobile drag-handle pill affordance */}
             {!prefersReduced && (
               <div
                 aria-hidden="true"
-                className="mb-2.5 flex justify-center sm:hidden"
+                className="mb-2 flex justify-center sm:hidden"
               >
                 <span className="h-1 w-9 rounded-full bg-[var(--border-strong)]" />
               </div>
             )}
 
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2.5">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--accent-border)] bg-[var(--accent-soft)] text-[var(--accent)]">
-                  <FilePdf size={17} weight="bold" aria-hidden="true" />
-                </span>
-                <div>
-                  <h2
-                    id="resume-modal-title"
-                    className="text-sm font-semibold tracking-[-0.015em] text-[var(--ink-primary)]"
-                  >
-                    {PROFILE.legalName} · Curriculum Vitae
-                  </h2>
-                  <p className="font-mono text-[11px] tabular-nums text-[var(--ink-muted)]">
-                    {PROFILE.resumeFileName} · 3 Pages · PDF
-                  </p>
-                </div>
+              <div>
+                <h2
+                  id="resume-modal-title"
+                  className="type-subhead text-[var(--ink-primary)]"
+                >
+                  {PROFILE.legalName} · Curriculum vitae
+                </h2>
+                <p className="type-sm tabular-nums text-[var(--ink-muted)]">
+                  {PROFILE.resumeFileName} · 3 pages
+                </p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <a
                   href={PROFILE.resumePdfPath}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-press group inline-flex items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3 py-1.5 text-xs font-medium text-[var(--ink-primary)] hover:border-[var(--accent-border)] hover:text-[var(--accent-deep)]"
+                  className="type-sm group inline-flex items-center gap-1 font-medium text-[var(--ink-secondary)] transition-colors duration-150 hover:text-[var(--accent-deep)]"
                 >
+                  <span>Open in tab</span>
                   <ArrowSquareOut
                     size={14}
                     weight="bold"
                     className="hover-nudge-ne"
                     aria-hidden="true"
                   />
-                  Open in New Tab
                 </a>
                 <a
                   href={PROFILE.resumePdfPath}
                   download={PROFILE.resumeFileName}
-                  className="btn-press inline-flex items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-sm)] bg-[var(--bg-inverse)] px-3 py-1.5 text-xs font-medium text-[var(--ink-inverse)] hover:bg-[var(--accent)]"
+                  className="type-sm btn-press inline-flex items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-sm)] bg-[var(--bg-marine)] px-3.5 py-2 font-medium text-[var(--ink-on-marine)] hover:bg-[var(--accent)]"
                 >
-                  <DownloadSimple
-                    size={14}
-                    weight="bold"
-                    aria-hidden="true"
-                  />
-                  Download PDF
+                  <DownloadSimple size={15} weight="bold" aria-hidden="true" />
+                  <span>Download PDF</span>
                 </a>
                 <button
                   ref={closeBtnRef}
                   type="button"
                   onClick={onClose}
                   aria-label="Close resume viewer"
-                  className="btn-press ml-0.5 inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] text-[var(--ink-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--ink-primary)]"
+                  className="btn-press inline-flex h-9 w-9 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] text-[var(--ink-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--ink-primary)]"
                 >
                   <X size={16} weight="bold" aria-hidden="true" />
                 </button>
@@ -495,7 +457,6 @@ function ResumeModalSheet({ onClose }: { onClose: () => void }) {
             </div>
           </div>
 
-          {/* PDF Viewport with Cool Alabaster load crossfade + drag iframe guard */}
           <div className="relative flex-1 bg-[var(--bg-subtle)]">
             <iframe
               src={`${PROFILE.resumePdfPath}#view=FitH`}
@@ -506,21 +467,20 @@ function ResumeModalSheet({ onClose }: { onClose: () => void }) {
               } ${isDragging || isClosingVisual ? "pointer-events-none" : ""}`}
             />
 
-            {/* Cool Alabaster loading placeholder that smoothly fades out on load */}
             <div
               aria-hidden={pdfLoaded}
               className={`pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[var(--bg-subtle)] transition-opacity duration-200 ease-out ${
                 pdfLoaded ? "opacity-0" : "opacity-100"
               }`}
             >
-              <span className="flex h-11 w-11 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] text-[var(--accent)] shadow-[var(--shadow-surface)]">
+              <span className="flex h-11 w-11 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--bg-surface)] text-[var(--accent)] shadow-[var(--shadow-surface)]">
                 <FilePdf size={20} weight="bold" aria-hidden="true" />
               </span>
               <div className="text-center">
-                <p className="text-xs font-medium text-[var(--ink-primary)]">
+                <p className="type-sm font-medium text-[var(--ink-primary)]">
                   Loading curriculum vitae
                 </p>
-                <p className="mt-0.5 font-mono text-[11px] text-[var(--ink-muted)]">
+                <p className="type-sm mt-0.5 text-[var(--ink-muted)]">
                   {PROFILE.resumeFileName}
                 </p>
               </div>
@@ -528,7 +488,6 @@ function ResumeModalSheet({ onClose }: { onClose: () => void }) {
           </div>
         </motion.div>
 
-        {/* Mobile bottom-sheet backing skirt (> max upward rubberband) */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 top-full h-[55vh] bg-[var(--bg-subtle)] sm:hidden"

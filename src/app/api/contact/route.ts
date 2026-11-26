@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { PROFILE } from "@/data/profile";
+import { addStudioInquiry } from "@/lib/admin-store";
 
 interface ContactRequestBody {
   name?: string;
@@ -7,7 +8,7 @@ interface ContactRequestBody {
   track?: string;
   scope?: string;
   message?: string;
-  companyWebsite?: string; // honeypot
+  companyWebsite?: string;
 }
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -16,7 +17,6 @@ export async function POST(request: Request) {
   try {
     const body = (await request.json()) as ContactRequestBody;
 
-    // Silent drop for honeypot spam
     if (body.companyWebsite && body.companyWebsite.trim().length > 0) {
       return NextResponse.json({ status: "sent", mode: "verified" });
     }
@@ -41,7 +41,10 @@ export async function POST(request: Request) {
     }
     if (message.length < 15) {
       return NextResponse.json(
-        { error: "Please share a brief project outline (at least 15 characters)." },
+        {
+          error:
+            "Please share a brief project outline (at least 15 characters).",
+        },
         { status: 400 }
       );
     }
@@ -84,30 +87,56 @@ export async function POST(request: Request) {
       });
 
       if (resendResponse.ok) {
+        addStudioInquiry({
+          name,
+          email,
+          track,
+          scope,
+          message,
+          deliveryMode: "resend",
+        });
+
         return NextResponse.json({
           status: "sent",
           mode: "resend",
           message:
-            "Your inquiry was delivered directly via Resend. Expect a response from UTC+1 within 24 hours.",
+            "Your inquiry was delivered directly via Resend and logged to the Studio Console. Expect a response from UTC+1 within 24 hours.",
         });
       }
 
-      // If Resend rejects (e.g. unverified domain), gracefully fall back without losing the user's message.
+      addStudioInquiry({
+        name,
+        email,
+        track,
+        scope,
+        message,
+        deliveryMode: "fallback",
+      });
+
       return NextResponse.json({
         status: "fallback",
         mode: "fallback",
         message:
-          "Your brief is validated and ready. Launch your email client below or copy the formatted brief to send directly.",
+          "Your brief is validated and logged. Launch your email client below or copy the formatted brief to send directly.",
         mailtoUrl,
         plainBrief,
       });
     }
 
+    addStudioInquiry({
+      name,
+      email,
+      track,
+      scope,
+      message,
+      deliveryMode: "fallback",
+    });
+
     return NextResponse.json({
       status: "fallback",
       mode: "fallback",
       message:
-        "Brief validated and formatted. Direct SMTP relay (RESEND_API_KEY) is not active in this environment. Open your email client below or copy the formatted brief.",
+        "Brief validated and logged to the Studio Console. Direct SMTP relay (RESEND_API_KEY) is not active in this environment. Open your email client below or copy the formatted brief.",
       mailtoUrl,
       plainBrief,
     });

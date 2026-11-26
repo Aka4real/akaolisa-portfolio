@@ -2,14 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Check,
-  Copy,
-  FilePdf,
-  Sparkle,
-} from "@phosphor-icons/react";
+import { ArrowUpRight, Check, Copy } from "@phosphor-icons/react";
 import { PROFILE } from "@/data/profile";
 import { LiveClockBadge } from "@/components/ui/LiveClockBadge";
 import { BlurCrossfade } from "@/components/ui/MotionPrimitives";
@@ -51,74 +44,79 @@ export function SiteFooter({
   }
 
   return (
-    <footer className="border-t border-[var(--border-hairline)] bg-[var(--bg-subtle)]">
-      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="grid gap-10 md:grid-cols-12">
-          {/* Identity */}
+    <footer className="border-t border-[var(--border-on-marine)] bg-[var(--bg-marine)] text-[var(--ink-on-marine)]">
+      <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10">
+        <div className="grid gap-12 md:grid-cols-12">
+          {/* Brand Statement */}
           <div className="md:col-span-5">
-            <div className="flex items-center gap-2.5">
-              <span className="flex h-7 w-7 items-center justify-center rounded-[8px] bg-[var(--bg-inverse)] font-mono text-[11px] font-semibold text-[var(--ink-inverse)]">
-                {PROFILE.monogram}
-              </span>
-              <span className="text-sm font-semibold tracking-[0.05em] text-[var(--ink-primary)]">
-                {PROFILE.displayName.toUpperCase()}
-              </span>
-            </div>
-            <p className="mt-3.5 max-w-sm text-sm leading-relaxed text-[var(--ink-secondary)]">
-              Principal Full-Stack, AI Agent &amp; Quantitative Systems Engineer
-              at{" "}
+            <Link
+              href="/"
+              className="type-wordmark inline-block text-[var(--ink-on-marine)] transition-colors duration-150 hover:text-[var(--accent-bright)]"
+            >
+              {PROFILE.displayName}
+            </Link>
+            <p className="type-sm mt-4 max-w-[44ch] text-[var(--ink-on-marine-secondary)]">
+              Founder at{" "}
               <a
                 href={PROFILE.studio.primaryUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-[var(--ink-primary)] underline decoration-[var(--border-strong)] transition-colors duration-150 hover:text-[var(--accent-deep)] hover:decoration-[var(--accent)]"
+                className="font-medium text-[var(--ink-on-marine)] underline decoration-[var(--border-on-marine-strong)] transition-colors duration-150 hover:text-[var(--accent-bright)] hover:decoration-[var(--accent-bright)]"
               >
                 {PROFILE.studio.name}
-              </a>
-              . Licensed Biomedical Scientist (B.MLS) applying empirical rigor
-              to production software.
+              </a>{" "}
+              and licensed Biomedical Scientist (B.MLS). Shipping Next.js SaaS,
+              multi-agent systems, and quantitative infrastructure worldwide.
             </p>
             <div className="mt-5">
-              <LiveClockBadge compact />
+              <LiveClockBadge compact tone="marine" />
             </div>
           </div>
 
-          {/* Directory */}
+          {/* Navigation */}
           <div className="md:col-span-2">
-            <h3 className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--ink-muted)]">
-              Directory
+            <h3 className="type-sm font-semibold text-[var(--ink-on-marine)]">
+              Navigation
             </h3>
-            <ul className="mt-3.5 space-y-2.5 text-sm">
+            <ul className="type-sm mt-4 space-y-2.5 text-[var(--ink-on-marine-secondary)]">
               <li>
                 <Link
                   href="/"
-                  className="text-[var(--ink-secondary)] transition-colors duration-150 hover:text-[var(--ink-primary)]"
+                  className="transition-colors duration-150 hover:text-[var(--ink-on-marine)]"
                 >
-                  Home
+                  Overview
                 </Link>
               </li>
               <li>
                 <Link
                   href="/work"
-                  className="text-[var(--ink-secondary)] transition-colors duration-150 hover:text-[var(--ink-primary)]"
+                  className="transition-colors duration-150 hover:text-[var(--ink-on-marine)]"
                 >
-                  Selected Work
+                  Selected work
                 </Link>
               </li>
               <li>
                 <Link
                   href="/experience"
-                  className="text-[var(--ink-secondary)] transition-colors duration-150 hover:text-[var(--ink-primary)]"
+                  className="transition-colors duration-150 hover:text-[var(--ink-on-marine)]"
                 >
-                  Experience &amp; Lab
+                  Experience and lab
                 </Link>
               </li>
               <li>
                 <Link
                   href="/contact"
-                  className="text-[var(--ink-secondary)] transition-colors duration-150 hover:text-[var(--ink-primary)]"
+                  className="transition-colors duration-150 hover:text-[var(--ink-on-marine)]"
                 >
                   Contact
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/admin"
+                  className="transition-colors duration-150 hover:text-[var(--ink-on-marine)]"
+                >
+                  Studio console
                 </Link>
               </li>
             </ul>
@@ -126,20 +124,20 @@ export function SiteFooter({
 
           {/* Ecosystem */}
           <div className="md:col-span-2">
-            <h3 className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--ink-muted)]">
+            <h3 className="type-sm font-semibold text-[var(--ink-on-marine)]">
               Ecosystem
             </h3>
-            <ul className="mt-3.5 space-y-2.5 text-sm">
+            <ul className="type-sm mt-4 space-y-2.5 text-[var(--ink-on-marine-secondary)]">
               <li>
                 <a
                   href={PROFILE.studio.primaryUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-1 text-[var(--ink-secondary)] transition-colors duration-150 hover:text-[var(--accent-deep)]"
+                  className="group inline-flex items-center gap-1 transition-colors duration-150 hover:text-[var(--ink-on-marine)]"
                 >
-                  oxakalabs.xyz
+                  <span>oxakalabs.xyz</span>
                   <ArrowUpRight
-                    size={13}
+                    size={14}
                     weight="bold"
                     className="hover-nudge-ne shrink-0"
                     aria-hidden="true"
@@ -151,11 +149,11 @@ export function SiteFooter({
                   href={PROFILE.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-1 text-[var(--ink-secondary)] transition-colors duration-150 hover:text-[var(--accent-deep)]"
+                  className="group inline-flex items-center gap-1 transition-colors duration-150 hover:text-[var(--ink-on-marine)]"
                 >
-                  GitHub
+                  <span>GitHub</span>
                   <ArrowUpRight
-                    size={13}
+                    size={14}
                     weight="bold"
                     className="hover-nudge-ne shrink-0"
                     aria-hidden="true"
@@ -167,11 +165,11 @@ export function SiteFooter({
                   href="https://blaireaesthetics.shop"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-1 text-[var(--ink-secondary)] transition-colors duration-150 hover:text-[var(--accent-deep)]"
+                  className="group inline-flex items-center gap-1 transition-colors duration-150 hover:text-[var(--ink-on-marine)]"
                 >
-                  blaireaesthetics
+                  <span>blaireaesthetics</span>
                   <ArrowUpRight
-                    size={13}
+                    size={14}
                     weight="bold"
                     className="hover-nudge-ne shrink-0"
                     aria-hidden="true"
@@ -183,11 +181,11 @@ export function SiteFooter({
                   href="https://aifycycle.vercel.app"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-1 text-[var(--ink-secondary)] transition-colors duration-150 hover:text-[var(--accent-deep)]"
+                  className="group inline-flex items-center gap-1 transition-colors duration-150 hover:text-[var(--ink-on-marine)]"
                 >
-                  aifycycle
+                  <span>aifycycle</span>
                   <ArrowUpRight
-                    size={13}
+                    size={14}
                     weight="bold"
                     className="hover-nudge-ne shrink-0"
                     aria-hidden="true"
@@ -197,35 +195,22 @@ export function SiteFooter({
             </ul>
           </div>
 
-          {/* Direct Access */}
+          {/* Direct Channels */}
           <div className="md:col-span-3">
-            <h3 className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--ink-muted)]">
-              Direct Access
+            <h3 className="type-sm font-semibold text-[var(--ink-on-marine)]">
+              Direct contact
             </h3>
-            <div className="mt-3.5 space-y-2">
-              <Link
-                href="/contact"
-                className="btn-press group flex w-full items-center justify-center gap-2 rounded-[var(--radius-sm)] bg-[var(--bg-inverse)] px-3.5 py-2.5 text-xs font-medium text-[var(--ink-inverse)] hover:bg-[var(--bg-inverse-hover)]"
-              >
-                Start a Project
-                <ArrowRight
-                  size={13}
-                  weight="bold"
-                  className="hover-nudge-x shrink-0"
-                  aria-hidden="true"
-                />
-              </Link>
-
+            <div className="mt-4 space-y-3">
               <button
                 type="button"
                 onClick={copyEmail}
                 aria-label={copied ? "Email copied" : `Copy ${PROFILE.email}`}
-                className="btn-press flex w-full items-center justify-between gap-2 rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] px-3 py-2 text-left text-[11px] text-[var(--ink-primary)] hover:border-[var(--border-strong)]"
+                className="btn-press type-sm flex w-full items-center justify-between gap-2 rounded-[var(--radius-sm)] border border-[var(--border-on-marine)] bg-[var(--bg-marine-elevated)] px-3.5 py-2.5 text-left text-[var(--ink-on-marine)] hover:border-[var(--border-on-marine-strong)]"
               >
-                <span className="min-w-0 truncate font-mono text-[11px] text-[var(--ink-secondary)]">
+                <span className="min-w-0 truncate text-[var(--ink-on-marine-secondary)]">
                   {PROFILE.email}
                 </span>
-                <span className="inline-flex min-w-[60px] shrink-0 items-center justify-end font-mono text-[11px] font-medium">
+                <span className="inline-flex shrink-0 items-center justify-end font-medium">
                   <BlurCrossfade
                     contentKey={copied ? "copied" : "copy"}
                     inline
@@ -234,24 +219,26 @@ export function SiteFooter({
                     {copied ? (
                       <>
                         <Check
-                          size={13}
+                          size={14}
                           weight="bold"
-                          className="text-[var(--status-positive)]"
+                          className="text-[var(--status-positive-bright)]"
                           aria-hidden="true"
                         />
-                        <span className="text-[var(--status-positive)]">
+                        <span className="text-[var(--status-positive-bright)]">
                           Copied
                         </span>
                       </>
                     ) : (
                       <>
                         <Copy
-                          size={13}
+                          size={14}
                           weight="bold"
-                          className="text-[var(--ink-muted)]"
+                          className="text-[var(--ink-on-marine-muted)]"
                           aria-hidden="true"
                         />
-                        <span className="text-[var(--ink-muted)]">Copy</span>
+                        <span className="text-[var(--ink-on-marine-muted)]">
+                          Copy
+                        </span>
                       </>
                     )}
                   </BlurCrossfade>
@@ -261,26 +248,19 @@ export function SiteFooter({
                 {copied ? "Email address copied to clipboard." : ""}
               </span>
 
-              <div className="grid grid-cols-2 gap-2">
+              <div className="type-sm flex items-center gap-5 pt-1 text-[var(--ink-on-marine-secondary)]">
                 <button
                   type="button"
                   onClick={onOpenResume}
-                  className="btn-press inline-flex items-center justify-center gap-1.5 rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] px-2.5 py-2 text-xs font-medium text-[var(--ink-primary)] hover:border-[var(--border-strong)]"
+                  className="font-medium underline decoration-[var(--border-on-marine-strong)] transition-colors duration-150 hover:text-[var(--ink-on-marine)] hover:decoration-[var(--ink-on-marine)]"
                 >
-                  <FilePdf
-                    size={14}
-                    weight="bold"
-                    className="text-[var(--ink-secondary)]"
-                    aria-hidden="true"
-                  />
-                  Resume PDF
+                  Preview resume PDF
                 </button>
                 <button
                   type="button"
                   onClick={onOpenAssistant}
-                  className="btn-press inline-flex items-center justify-center gap-1.5 rounded-[var(--radius-sm)] border border-[var(--accent-border)] bg-[var(--accent-soft)] px-2.5 py-2 text-xs font-medium text-[var(--accent-deep)] hover:border-[var(--accent)] hover:bg-[var(--accent)] hover:text-white"
+                  className="font-medium text-[var(--accent-bright)] transition-colors duration-150 hover:text-[var(--ink-on-marine)]"
                 >
-                  <Sparkle size={14} weight="bold" aria-hidden="true" />
                   Ask AI
                 </button>
               </div>
@@ -288,12 +268,12 @@ export function SiteFooter({
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-start justify-between gap-2 border-t border-[var(--border-hairline)] pt-6 text-xs text-[var(--ink-muted)] sm:flex-row sm:items-center">
+        <div className="type-sm mt-12 flex flex-col items-start justify-between gap-2 border-t border-[var(--border-on-marine)] pt-6 text-[var(--ink-on-marine-muted)] sm:flex-row sm:items-center">
           <p>
             &copy; {new Date().getFullYear()} {PROFILE.legalName} ·{" "}
             {PROFILE.studio.name}
           </p>
-          <p className="font-mono text-[11px] tabular-nums text-[var(--ink-muted)]">
+          <p className="tabular-nums">
             {PROFILE.locationLabel} ({PROFILE.utcOffsetLabel})
           </p>
         </div>

@@ -42,7 +42,7 @@ const REWARD_TO_RISK = 1.8;
 const MORPH_DURATION_MS = 280;
 
 const SVG_WIDTH = 600;
-const PAD_LEFT = 46;
+const PAD_LEFT = 48;
 const PAD_RIGHT = 18;
 const PAD_TOP = 20;
 const PAD_BOTTOM = 24;
@@ -57,7 +57,6 @@ interface VisualFrame {
   ddFloorY: number;
 }
 
-/** Deterministic PRNG (Mulberry32) so server/client hydration stays 100% deterministic. */
 function mulberry32(seed: number) {
   let a = seed >>> 0;
   return () => {
@@ -152,7 +151,7 @@ export function QuantMonteCarloSchematic({
   const riskPct = Number(riskKey);
   const winRate = Number(winRateKey);
 
-  const svgHeight = compact ? 168 : 244;
+  const svgHeight = compact ? 172 : 244;
   const plotH = svgHeight - PAD_TOP - PAD_BOTTOM;
   const plotBottom = PAD_TOP + plotH;
 
@@ -244,7 +243,6 @@ export function QuantMonteCarloSchematic({
     };
   }, [riskPct, winRate, plotH]);
 
-  // Freeze initial JSX geometry for deterministic SSR/hydration; live updates go through refs.
   const [initialFrame] = useState<VisualFrame>(() => simulation.frame);
 
   const svgRef = useRef<SVGSVGElement | null>(null);
@@ -257,7 +255,6 @@ export function QuantMonteCarloSchematic({
   const tickRefs = useRef<Array<SVGGElement | null>>([]);
   const ddFloorRef = useRef<SVGGElement | null>(null);
 
-  // Crosshair scrubber refs (zero useState on pointermove)
   const crosshairRef = useRef<SVGGElement | null>(null);
   const spreadLineRef = useRef<SVGLineElement | null>(null);
   const activeDotRef = useRef<SVGGElement | null>(null);
@@ -332,7 +329,6 @@ export function QuantMonteCarloSchematic({
     [xs, plotBottom]
   );
 
-  // Morph paths smoothly via RAF whenever parameters change (zero React re-renders per frame)
   useEffect(() => {
     const targetFrame = simulation.frame;
 
@@ -379,7 +375,6 @@ export function QuantMonteCarloSchematic({
     };
   }, [simulation.frame, prefersReduced, applyVisualFrame]);
 
-  // Ensure scrub RAF cancels cleanly on unmount
   useEffect(() => {
     return () => {
       if (scrubRafRef.current !== null) {
@@ -444,10 +439,10 @@ export function QuantMonteCarloSchematic({
       const medVal = sim.medianCurve[step];
       const p25Val = sim.p25Curve[step];
       const p75Val = sim.p75Curve[step];
-      tooltipRef.current.textContent = `T-${String(step).padStart(2, "0")} · MED ${medVal.toFixed(1)}% · P25-P75 ${p25Val.toFixed(1)}-${p75Val.toFixed(1)}%`;
+      tooltipRef.current.textContent = `Trade ${step} · Median ${medVal.toFixed(1)}% · Spread ${p25Val.toFixed(1)} to ${p75Val.toFixed(1)}%`;
 
       const wrapRect = wrap.getBoundingClientRect();
-      const tipWidth = tooltipRef.current.offsetWidth || 228;
+      const tipWidth = tooltipRef.current.offsetWidth || 260;
       const anchorCssX =
         svgRect.left - wrapRect.left + (x / SVG_WIDTH) * svgRect.width;
       const desiredX = anchorCssX - tipWidth / 2;
@@ -472,23 +467,13 @@ export function QuantMonteCarloSchematic({
     [compact, flushScrubber]
   );
 
-  const shellClass = compact
-    ? "w-full overflow-hidden rounded-[var(--radius-sm)] bg-[var(--bg-canvas)] ring-1 ring-inset ring-[var(--border-hairline)]"
-    : "w-full overflow-hidden rounded-[var(--radius-md)] bg-[var(--bg-surface)]";
-
   return (
-    <div className={shellClass}>
+    <div className="w-full overflow-hidden bg-[var(--bg-surface)]">
       {/* Instrument Header */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)]/70 px-4 py-2.5">
-        <div className="flex items-center gap-2 font-mono text-[11px] tracking-tight text-[var(--ink-secondary)]">
-          <span
-            aria-hidden="true"
-            className="h-2 w-2 rounded-full bg-[var(--accent)]"
-          />
-          <span className="font-semibold text-[var(--ink-primary)]">
-            MONTE CARLO EQUITY &amp; DRAWDOWN SIMULATOR
-          </span>
-        </div>
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-hairline)] bg-[var(--bg-canvas)] px-4 py-3">
+        <span className="type-sm font-semibold text-[var(--ink-primary)]">
+          Monte Carlo equity and drawdown simulator
+        </span>
 
         <BlurCrossfade
           inline
@@ -496,37 +481,25 @@ export function QuantMonteCarloSchematic({
           className="inline-flex items-center"
         >
           <span
-            className={`inline-flex items-center gap-1.5 rounded-[var(--radius-xs)] border px-2 py-0.5 font-mono text-[11px] font-medium tabular-nums ${
+            className={`type-sm font-medium tabular-nums ${
               simulation.breachesPropLimit
-                ? "border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] text-[var(--status-danger)]"
-                : "border-[var(--status-positive-border)] bg-[var(--status-positive-bg)] text-[var(--status-positive)]"
+                ? "text-[var(--status-danger)]"
+                : "text-[var(--status-positive)]"
             }`}
           >
-            <span
-              aria-hidden="true"
-              className={`h-1.5 w-1.5 rounded-full ${
-                simulation.breachesPropLimit
-                  ? "bg-[var(--status-danger)]"
-                  : "bg-[var(--status-positive)]"
-              }`}
-            />
             {simulation.breachesPropLimit
-              ? compact
-                ? "BREACH RISK"
-                : "BREACH RISK (>10% DD)"
-              : compact
-                ? "PASS"
-                : "PASS · PROP COMPLIANT"}
+              ? "Exceeds 10% drawdown limit"
+              : "Within 10% prop drawdown limit"}
           </span>
         </BlurCrossfade>
       </div>
 
-      {/* Interactive Parameter Controls (full view only) */}
+      {/* Interactive Parameter Controls */}
       {!compact && (
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--border-hairline)] bg-[var(--bg-surface)] px-4 py-3">
-          <div className="flex flex-wrap items-center gap-2.5">
-            <span className="font-mono text-[11px] font-medium uppercase tracking-wider text-[var(--ink-muted)]">
-              Risk / Trade
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="type-sm text-[var(--ink-muted)]">
+              Risk per trade
             </span>
             <ClipSegmentedTabs
               size="sm"
@@ -537,9 +510,9 @@ export function QuantMonteCarloSchematic({
             />
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
-            <span className="font-mono text-[11px] font-medium uppercase tracking-wider text-[var(--ink-muted)]">
-              Win Rate (1:1.8 R:R)
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="type-sm text-[var(--ink-muted)]">
+              Win rate (1:1.8 R:R)
             </span>
             <ClipSegmentedTabs
               size="sm"
@@ -552,17 +525,16 @@ export function QuantMonteCarloSchematic({
         </div>
       )}
 
-      {/* Vector Plot Surface */}
+      {/* Plot Canvas */}
       <div
         ref={plotWrapRef}
         onPointerMove={handlePointerMove}
         onPointerLeave={hideScrubber}
         onPointerCancel={hideScrubber}
-        className={`relative bg-[var(--bg-canvas)]/55 px-3 py-3 select-none ${
+        className={`relative bg-[var(--bg-canvas)]/60 px-3 py-3 select-none ${
           compact ? "" : "cursor-crosshair touch-pan-y"
         }`}
       >
-        {/* Floating Pointer Telemetry Badge (DOM-ref updated, zero useState) */}
         {!compact && (
           <div
             ref={tooltipRef}
@@ -572,7 +544,7 @@ export function QuantMonteCarloSchematic({
               transform: "translate3d(8px, 8px, 0px)",
               transition: "opacity 140ms ease-out",
             }}
-            className="pointer-events-none absolute top-0 left-0 z-10 rounded-[var(--radius-xs)] border border-[var(--border-strong)] bg-[var(--bg-surface)]/95 px-2.5 py-1 font-mono text-[11px] font-medium whitespace-nowrap tabular-nums text-[var(--ink-primary)] shadow-[var(--shadow-surface)]"
+            className="type-sm pointer-events-none absolute top-0 left-0 z-10 rounded-[var(--radius-xs)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3 py-1 font-medium whitespace-nowrap tabular-nums text-[var(--ink-primary)] shadow-[var(--shadow-surface)]"
           />
         )}
 
@@ -581,13 +553,13 @@ export function QuantMonteCarloSchematic({
           viewBox={`0 0 ${SVG_WIDTH} ${svgHeight}`}
           className="block h-auto w-full"
           role="img"
-          aria-label="Monte Carlo equity simulation with 12 paths, P25 to P75 interquartile envelope, median curve, and negative 10 percent drawdown floor"
+          aria-label="Monte Carlo equity simulation with 12 stochastic paths, P25 to P75 interquartile envelope, median curve, and negative 10 percent drawdown floor"
         >
           <defs>
             <linearGradient id={areaGradId} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#1D4ED8" stopOpacity="0.16" />
-              <stop offset="72%" stopColor="#1D4ED8" stopOpacity="0.04" />
-              <stop offset="100%" stopColor="#1D4ED8" stopOpacity="0" />
+              <stop offset="0%" stopColor="#1456D1" stopOpacity="0.18" />
+              <stop offset="75%" stopColor="#1456D1" stopOpacity="0.04" />
+              <stop offset="100%" stopColor="#1456D1" stopOpacity="0" />
             </linearGradient>
             <clipPath id={plotClipId}>
               <rect
@@ -599,7 +571,6 @@ export function QuantMonteCarloSchematic({
             </clipPath>
           </defs>
 
-          {/* Horizontal Y-Axis Reference Ticks (90%, 100%, 110%, 120%) */}
           {REFERENCE_TICKS.map((tick, i) => {
             const initialY = initialFrame.tickYs[i];
             const isBase = tick === 100;
@@ -620,8 +591,8 @@ export function QuantMonteCarloSchematic({
                     y2={0}
                     stroke={
                       isBase
-                        ? "rgba(15, 20, 30, 0.16)"
-                        : "rgba(15, 20, 30, 0.07)"
+                        ? "rgba(9, 19, 29, 0.16)"
+                        : "rgba(9, 19, 29, 0.07)"
                     }
                     strokeDasharray={isBase ? "3 3" : undefined}
                     strokeWidth="1"
@@ -635,12 +606,12 @@ export function QuantMonteCarloSchematic({
                     isFloor
                       ? "#B42318"
                       : isBase
-                        ? "#0F141E"
-                        : "#5B6475"
+                        ? "#09131D"
+                        : "#506376"
                   }
-                  fontSize="9.5"
-                  fontWeight={isBase ? "600" : "400"}
-                  fontFamily="var(--font-geist-mono), ui-monospace, monospace"
+                  fontSize="10"
+                  fontWeight={isBase ? "600" : "500"}
+                  fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
                 >
                   {tick}%
                 </text>
@@ -648,13 +619,12 @@ export function QuantMonteCarloSchematic({
             );
           })}
 
-          {/* X-Axis Baseline & Trade Step Ticks */}
           <line
             x1={PAD_LEFT}
             y1={plotBottom}
             x2={SVG_WIDTH - PAD_RIGHT}
             y2={plotBottom}
-            stroke="rgba(15, 20, 30, 0.1)"
+            stroke="rgba(9, 19, 29, 0.1)"
             strokeWidth="1"
           />
           {[0, 10, 20, 30, 40].map((step) => {
@@ -666,7 +636,7 @@ export function QuantMonteCarloSchematic({
                   y1={plotBottom}
                   x2={x}
                   y2={plotBottom + 4}
-                  stroke="rgba(15, 20, 30, 0.16)"
+                  stroke="rgba(9, 19, 29, 0.16)"
                   strokeWidth="1"
                 />
                 <text
@@ -675,9 +645,9 @@ export function QuantMonteCarloSchematic({
                   textAnchor={
                     step === 0 ? "start" : step === 40 ? "end" : "middle"
                   }
-                  fill="#5B6475"
-                  fontSize="9.5"
-                  fontFamily="var(--font-geist-mono), ui-monospace, monospace"
+                  fill="#506376"
+                  fontSize="10"
+                  fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
                 >
                   T{step}
                 </text>
@@ -685,16 +655,13 @@ export function QuantMonteCarloSchematic({
             );
           })}
 
-          {/* Clipped Curve Geometry Layer */}
           <g clipPath={`url(#${plotClipId})`}>
-            {/* Translucent Cobalt Gradient Area Under Median Path */}
             <path
               ref={areaRef}
               d={buildAreaPath(xs, initialFrame.medianY, plotBottom)}
               fill={`url(#${areaGradId})`}
             />
 
-            {/* P25-P75 Interquartile Spread Envelope */}
             <polygon
               ref={iqrRef}
               points={buildEnvelopePoints(
@@ -702,13 +669,12 @@ export function QuantMonteCarloSchematic({
                 initialFrame.p75Y,
                 initialFrame.p25Y
               )}
-              fill="rgba(29, 78, 216, 0.09)"
-              stroke="rgba(29, 78, 216, 0.18)"
+              fill="rgba(20, 86, 209, 0.09)"
+              stroke="rgba(20, 86, 209, 0.2)"
               strokeWidth="0.75"
               strokeLinejoin="round"
             />
 
-            {/* 12 Crisp Stochastic Simulation Trajectories */}
             {initialFrame.pathsY.map((curveY, idx) => (
               <path
                 key={idx}
@@ -717,26 +683,24 @@ export function QuantMonteCarloSchematic({
                 }}
                 d={buildLinePath(xs, curveY)}
                 fill="none"
-                stroke="rgba(15, 20, 30, 0.12)"
+                stroke="rgba(9, 19, 29, 0.14)"
                 strokeWidth="1.15"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
             ))}
 
-            {/* Razor-Sharp Cobalt Median Curve */}
             <path
               ref={medianRef}
               d={buildLinePath(xs, initialFrame.medianY)}
               fill="none"
-              stroke="#1D4ED8"
-              strokeWidth="2.25"
+              stroke="#1456D1"
+              strokeWidth="2.4"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
           </g>
 
-          {/* Non-Overlapping -10% Max Drawdown Floor Hairline & Tag */}
           <g
             ref={ddFloorRef}
             transform={`translate(0, ${initialFrame.ddFloorY.toFixed(2)})`}
@@ -747,45 +711,33 @@ export function QuantMonteCarloSchematic({
               x2={SVG_WIDTH - PAD_RIGHT}
               y2={0}
               stroke="#B42318"
-              strokeOpacity="0.65"
+              strokeOpacity="0.68"
               strokeDasharray="4 3"
               strokeWidth="1.1"
             />
-            <rect
-              x={SVG_WIDTH - PAD_RIGHT - 114}
-              y={-17}
-              width={114}
-              height={14}
-              rx={4}
-              fill="#FEF3F2"
-              stroke="rgba(180, 35, 24, 0.28)"
-              strokeWidth="0.75"
-            />
             <text
-              x={SVG_WIDTH - PAD_RIGHT - 57}
-              y={-7.2}
-              textAnchor="middle"
+              x={SVG_WIDTH - PAD_RIGHT}
+              y={-6}
+              textAnchor="end"
               fill="#B42318"
-              fontSize="8.5"
+              fontSize="9.5"
               fontWeight="600"
-              fontFamily="var(--font-geist-mono), ui-monospace, monospace"
+              fontFamily="var(--font-body), ui-sans-serif, system-ui, sans-serif"
             >
-              -10% MAX DD FLOOR
+              -10% max drawdown floor
             </text>
           </g>
 
-          {/* Terminal Median Anchor Dot */}
           <circle
             ref={endDotRef}
             cx={xs[TRADES]}
             cy={initialFrame.medianY[TRADES]}
-            r="3.25"
-            fill="#1D4ED8"
+            r="3.5"
+            fill="#1456D1"
             stroke="#FFFFFF"
             strokeWidth="1.5"
           />
 
-          {/* Zero-Re-Render Pointer Crosshair Scrubber (!compact) */}
           {!compact && (
             <>
               <g
@@ -801,7 +753,7 @@ export function QuantMonteCarloSchematic({
                   y1={PAD_TOP}
                   x2={0}
                   y2={plotBottom}
-                  stroke="#1D4ED8"
+                  stroke="#1456D1"
                   strokeOpacity="0.45"
                   strokeDasharray="2 2"
                   strokeWidth="1"
@@ -812,10 +764,10 @@ export function QuantMonteCarloSchematic({
                   y1={PAD_TOP}
                   x2={0}
                   y2={PAD_TOP}
-                  stroke="#1D4ED8"
-                  strokeOpacity="0.38"
-                  strokeWidth="3.5"
+                  stroke="#1456D1"
+                  strokeWidth="3"
                   strokeLinecap="round"
+                  strokeOpacity="0.45"
                 />
               </g>
               <g
@@ -826,12 +778,12 @@ export function QuantMonteCarloSchematic({
                   pointerEvents: "none",
                 }}
               >
-                <circle cx={0} cy={0} r="7" fill="rgba(29, 78, 216, 0.16)" />
+                <circle cx={0} cy={0} r="7.5" fill="rgba(20, 86, 209, 0.16)" />
                 <circle
                   cx={0}
                   cy={0}
-                  r="3.6"
-                  fill="#1D4ED8"
+                  r="3.8"
+                  fill="#1456D1"
                   stroke="#FFFFFF"
                   strokeWidth="1.6"
                 />
@@ -841,50 +793,47 @@ export function QuantMonteCarloSchematic({
         </svg>
       </div>
 
-      {/* Telemetry Footer */}
-      <div
-        className={`grid gap-px border-t border-[var(--border-hairline)] bg-[var(--border-hairline)] font-mono text-[11px] ${
-          compact ? "grid-cols-3" : "grid-cols-2 sm:grid-cols-4"
-        }`}
-      >
-        <div className="bg-[var(--bg-subtle)] px-3.5 py-2.5">
-          <div className="text-[11px] text-[var(--ink-muted)]">MEDIAN 40T</div>
-          <div className="mt-0.5 font-semibold tabular-nums text-[var(--ink-primary)]">
-            {simulation.medianEnd >= 100 ? "+" : ""}
-            {(simulation.medianEnd - 100).toFixed(1)}%
+      {/* Calibrated Telemetry Footer */}
+      <div className="type-sm grid grid-cols-2 divide-x divide-y divide-[var(--border-hairline)] border-t border-[var(--border-hairline)] bg-[var(--bg-surface)] tabular-nums sm:grid-cols-4 sm:divide-y-0">
+        <div className="px-4 py-3">
+          <div className="text-[var(--ink-muted)]">Median end</div>
+          <div className="mt-0.5 font-semibold text-[var(--ink-primary)]">
+            <BlurCrossfade inline contentKey={`${riskKey}-${winRateKey}-med`}>
+              {simulation.medianEnd.toFixed(1)}%
+            </BlurCrossfade>
           </div>
         </div>
-        <div className="bg-[var(--bg-subtle)] px-3.5 py-2.5">
-          <div className="text-[11px] text-[var(--ink-muted)]">
-            WORST PATH DD
-          </div>
+        <div className="px-4 py-3">
+          <div className="text-[var(--ink-muted)]">Worst drawdown</div>
           <div
-            className={`mt-0.5 font-semibold tabular-nums ${
+            className={`mt-0.5 font-semibold ${
               simulation.breachesPropLimit
                 ? "text-[var(--status-danger)]"
-                : "text-[var(--ink-primary)]"
+                : "text-[var(--status-positive)]"
             }`}
           >
-            -{simulation.worstDrawdown.toFixed(1)}%
+            <BlurCrossfade inline contentKey={`${riskKey}-${winRateKey}-dd`}>
+              -{simulation.worstDrawdown.toFixed(1)}%
+            </BlurCrossfade>
           </div>
         </div>
-        <div className="bg-[var(--bg-subtle)] px-3.5 py-2.5">
-          <div className="text-[11px] text-[var(--ink-muted)]">EXPECTANCY</div>
-          <div className="mt-0.5 font-semibold tabular-nums text-[var(--accent-deep)]">
-            {simulation.expectancyR >= 0 ? "+" : ""}
-            {simulation.expectancyR.toFixed(2)}R
+        <div className="px-4 py-3">
+          <div className="text-[var(--ink-muted)]">Expectancy</div>
+          <div className="mt-0.5 font-semibold text-[var(--accent-deep)]">
+            <BlurCrossfade inline contentKey={`${riskKey}-${winRateKey}-exp`}>
+              {simulation.expectancyR >= 0 ? "+" : ""}
+              {simulation.expectancyR.toFixed(2)}R
+            </BlurCrossfade>
           </div>
         </div>
-        {!compact && (
-          <div className="bg-[var(--bg-subtle)] px-3.5 py-2.5">
-            <div className="text-[11px] text-[var(--ink-muted)]">
-              P25-P75 RANGE
-            </div>
-            <div className="mt-0.5 font-semibold tabular-nums text-[var(--ink-primary)]">
-              {simulation.p25End.toFixed(1)}-{simulation.p75End.toFixed(1)}%
-            </div>
+        <div className="px-4 py-3">
+          <div className="text-[var(--ink-muted)]">P25 to P75 spread</div>
+          <div className="mt-0.5 font-semibold text-[var(--ink-primary)]">
+            <BlurCrossfade inline contentKey={`${riskKey}-${winRateKey}-iqr`}>
+              {simulation.p25End.toFixed(0)} to {simulation.p75End.toFixed(0)}%
+            </BlurCrossfade>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
