@@ -1,6 +1,7 @@
 import type { TrackId } from "./profile";
 
 export type SchematicType =
+  | "g-gravitator"
   | "koridor"
   | "fortress"
   | "crypto-wealth"
@@ -38,8 +39,60 @@ export interface ProjectDossier {
 
 export const PROJECTS: ProjectDossier[] = [
   {
-    slug: "koridor-engine-os",
+    slug: "g-gravitator",
     indexCode: "SYS-01",
+    title: "G-Gravitator",
+    subtitle:
+      "Four-Unit Software & AI Creativity Lab, Orbital Wire Radar & Product Drops Platform",
+    clientDomain: "ggravitator.xyz · OXAKALABS Lab",
+    statusBadge: "Live Platform",
+    year: "2026",
+    tracks: ["full-stack-saas", "ai-agents"],
+    primaryTrack: "full-stack-saas",
+    featured: true,
+    summary:
+      "Architected and shipped G-Gravitator (ggravitator.xyz), a flagship software and AI creativity lab uniting four interlocking engines (B2B Systems foundry, Labs commercial drops G-01 through G-04, OXAKALABS 48-hour Skunkworks with a Live Hackathon Radar, and Orbit technical cohorts) paired with The Orbital Wire real-time Gemini 2.5 Flash AI signal pipeline.",
+    challenge:
+      "Consultancies stall when client delivery starves internal products, product studios run dry waiting on a single hit, and hackathon prototypes rot after Sunday night. G-Gravitator required a unified digital headquarters and live intelligence platform connecting commercial B2B contracts, 48-hour R&D sprints, numbered product graduations, and real-time AI frontier signals into one operating flywheel.",
+    architectureDecisions: [
+      "Engineered a closed-loop four-unit platform architecture linking Systems (/systems B2B foundry with USD/NGN pricing bands), Labs (/labs commercial drops G-01..G-04), OXAKALABS Skunkworks & Live Hackathon Radar (/skunkworks, /hackathons), and Orbit (/orbit 6-week builder residency).",
+      "Built The Orbital Wire dual-track intelligence center (/journal) combining original engineering dispatches (with dark/light reader mode and rich social preview sharing) with an automated multi-provider signal extraction pipeline powered by Gemini 2.5 Flash constrained structured schema decoding (<200ms TTFT).",
+      "Designed a fault-tolerant cross-source ingestion and deduplication pipeline monitoring Devpost, DoraHacks, Lablab.ai, MLH, Luma, arXiv cs.AI, Hacker News, and X signals with impact scoring and concise builder takes.",
+      "Crafted a high-mass kinetic interface featuring instant Command-K search, critically damped Framer Motion spring physics, strict TypeScript/Zod contracts, and standalone Next.js App Router deployment.",
+    ],
+    executionHighlights: [
+      "Four-division interactive flywheel mapping B2B Systems (Gravity Audits, Velocity MVPs, Lab Retainers), Labs drops (Gravity Deck, OpsPilot, Kinetic Studio, OrbitBench), OXAKALABS Skunkworks (25-point Graduation Scorecard), and Orbit Cycle 01.",
+      "Live Hackathon Radar tracking 13+ active global AI events with countdown telemetry, bounty pools, and OXA squad status tags.",
+      "Dual-track Journal & Orbital Wire shipping 12 original architectural dispatches alongside impact-scored frontier AI signals (models, MCP agents, arXiv papers, devtools).",
+      "End-to-end interactive engagement scoping, cohort application flows, and weekly Orbital Brief digest subscription wired cleanly into the platform.",
+    ],
+    businessImpact: [
+      "Established G-Gravitator Labs Ltd as the commercial masterbrand operating OXAKALABS, converting non-dilutive B2B foundry engagements into proprietary software drops.",
+      "Graduated weekend Skunkworks builds, including DEMOPILOT (23/25 Graduation Score into G-01 Gravity Deck) and multi-agent hackathon tooling (into G-04 OrbitBench), into structured commercial roadmaps.",
+      "Created a high-authority technical publishing and live intelligence hub attracting enterprise B2B clients and Orbit Cycle 01 engineering fellows.",
+    ],
+    stack: [
+      "Next.js App Router",
+      "TypeScript",
+      "Tailwind CSS",
+      "Framer Motion",
+      "Google Gemini 2.5 Flash",
+      "@google/genai",
+      "Zod",
+      "Supabase PostgreSQL",
+      "Multi-Provider Signal Pipeline",
+      "Vercel",
+    ],
+    schematicType: "g-gravitator",
+    links: [
+      { label: "ggravitator.xyz", href: "https://ggravitator.xyz" },
+      { label: "Systems Foundry", href: "https://www.ggravitator.xyz/systems" },
+      { label: "Journal & Orbital Wire", href: "https://www.ggravitator.xyz/journal" },
+    ],
+  },
+  {
+    slug: "koridor-engine-os",
+    indexCode: "SYS-02",
     title: "Koridor Engine OS",
     subtitle: "Industrial Digital Freight Network & Haulage Operating System",
     clientDomain: "Logistics & Haulage SaaS",
@@ -86,7 +139,7 @@ export const PROJECTS: ProjectDossier[] = [
   },
   {
     slug: "fortress-fleet-ai",
-    indexCode: "SYS-02",
+    indexCode: "SYS-03",
     title: "Fortress Fleet AI",
     subtitle: "Institutional Multi-Agent Governance & Guardrail Platform",
     clientDomain: "Multi-Agent AI · Google Cloud",
@@ -133,7 +186,7 @@ export const PROJECTS: ProjectDossier[] = [
   },
   {
     slug: "institutional-crypto-wealth",
-    indexCode: "SYS-03",
+    indexCode: "SYS-04",
     title: "Institutional Crypto & Wealth Platform",
     subtitle: "Full-Stack Digital Asset Banking, Live Market Feeds & Yield Engine",
     clientDomain: "NDA FinTech Client",
@@ -179,7 +232,7 @@ export const PROJECTS: ProjectDossier[] = [
   },
   {
     slug: "stitch-retail-operations-os",
-    indexCode: "SYS-04",
+    indexCode: "SYS-05",
     title: "Stitch Retail Operations OS",
     subtitle: "Multi-Store Inventory, POS Reconciliation & Supplier Operations System",
     clientDomain: "Google Stitch Loop Cohort",
@@ -226,7 +279,7 @@ export const PROJECTS: ProjectDossier[] = [
   },
   {
     slug: "quant-forex-crypto-hft",
-    indexCode: "SYS-05",
+    indexCode: "SYS-06",
     title: "Quant Forex, Crypto & HFT Suites",
     subtitle: "Algorithmic Execution, Strategy Backtesting & Monte Carlo Risk Engines",
     clientDomain: "Trading Clients & Independent Funds",
@@ -273,7 +326,7 @@ export const PROJECTS: ProjectDossier[] = [
   },
   {
     slug: "production-ecommerce-builds",
-    indexCode: "SYS-06",
+    indexCode: "SYS-07",
     title: "Production E-Commerce Builds",
     subtitle: "Mobile-First Brand Ecosystems, Edge DNS & Automated Checkout Flows",
     clientDomain: "blaireaesthetics.shop · aifycycle.vercel.app",

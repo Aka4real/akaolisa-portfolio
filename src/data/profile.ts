@@ -115,9 +115,10 @@ export const PROFILE: ProfileConfig = {
       detail: "End-to-end SaaS, AI & Quant systems since 2022",
     },
     {
-      value: "06",
+      value: "07",
       label: "Shipped Systems",
-      detail: "Freight OS, Agentic Governance, FinTech, Retail, HFT & Commerce",
+      detail:
+        "G-Gravitator Lab, Freight OS, Agentic Governance, FinTech, Retail, HFT & Commerce",
     },
     {
       value: "250+",
@@ -164,6 +165,7 @@ export const SERVICE_PILLARS: ServicePillar[] = [
       "Resend SMTP",
     ],
     featuredSlugs: [
+      "g-gravitator",
       "koridor-engine-os",
       "stitch-retail-operations-os",
       "production-ecommerce-builds",
@@ -195,7 +197,7 @@ export const SERVICE_PILLARS: ServicePillar[] = [
       "QLoRA / Unsloth",
       "RLHF Evaluation",
     ],
-    featuredSlugs: ["fortress-fleet-ai", "koridor-engine-os"],
+    featuredSlugs: ["g-gravitator", "fortress-fleet-ai", "koridor-engine-os"],
   },
   {
     id: "quant-fintech",

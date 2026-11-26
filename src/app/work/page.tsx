@@ -5,7 +5,7 @@ import { buildPageMetadata } from "@/lib/site";
 export const metadata: Metadata = buildPageMetadata({
   title: "Selected Work & Architectural Case Studies",
   description:
-    "Six shipped engineering case studies by Akaolisa Enwedo (OXAKALABS): Koridor Engine OS, Fortress Fleet AI, Institutional Crypto & Wealth Platform, Stitch Retail Operations OS, Quant Forex/Crypto/HFT Suites, and Production E-Commerce Builds.",
+    "Seven shipped engineering case studies by Akaolisa Enwedo (OXAKALABS): G-Gravitator, Koridor Engine OS, Fortress Fleet AI, Institutional Crypto & Wealth Platform, Stitch Retail Operations OS, Quant Forex/Crypto/HFT Suites, and Production E-Commerce Builds.",
   path: "/work",
 });
 

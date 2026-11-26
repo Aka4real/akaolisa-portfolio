@@ -6,6 +6,7 @@ import {
   CryptoWealthSchematic,
   EcommerceSchematic,
   FortressSchematic,
+  GGravitatorSchematic,
   KoridorSchematic,
   StitchRetailSchematic,
 } from "./SystemsSchematics";
@@ -27,6 +28,9 @@ export type ProjectSchematicProps =
     };
 
 const SLUG_TO_SCHEMATIC: Record<string, SchematicType> = {
+  "g-gravitator": "g-gravitator",
+  ggravitator: "g-gravitator",
+  "g-gravitator-lab": "g-gravitator",
   koridor: "koridor",
   "koridor-engine-os": "koridor",
   fortress: "fortress",
@@ -67,6 +71,8 @@ export function ProjectSchematic({
   const resolved = resolveSchematicType(type, slug);
 
   switch (resolved) {
+    case "g-gravitator":
+      return <GGravitatorSchematic compact={compact} />;
     case "koridor":
       return <KoridorSchematic compact={compact} />;
     case "fortress":

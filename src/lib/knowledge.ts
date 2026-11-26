@@ -168,6 +168,16 @@ export function suggestLinksForConversation(
     }
   };
 
+  if (
+    combined.includes("gravitator") ||
+    combined.includes("orbital wire") ||
+    combined.includes("gravity deck") ||
+    combined.includes("opspilot") ||
+    combined.includes("orbitbench") ||
+    combined.includes("skunkworks")
+  ) {
+    pushLink("Inspect G-Gravitator Dossier", "/work/g-gravitator");
+  }
   if (combined.includes("fortress")) {
     pushLink("Inspect Fortress Fleet AI", "/work/fortress-fleet-ai");
   }
@@ -220,6 +230,25 @@ export function answerFromGroundedIndex(rawQuery: string): ChatResponsePayload {
   const q = rawQuery.toLowerCase().trim();
 
   // 1. Specific project lookups
+  if (
+    q.includes("gravitator") ||
+    q.includes("orbital wire") ||
+    q.includes("gravity deck") ||
+    q.includes("opspilot") ||
+    q.includes("orbitbench") ||
+    q.includes("skunkworks")
+  ) {
+    const p = PROJECTS.find((item) => item.slug === "g-gravitator")!;
+    return {
+      mode: "grounded-index",
+      answer: `${p.title} (ggravitator.xyz) is Akaolisa's flagship software and AI creativity lab operating OXAKALABS as a four-unit flywheel: Systems (B2B Gravity Audits, Velocity MVPs, and retainers), OXAKALABS Skunkworks (48-hour sprints and a Live Hackathon Radar tracking 13+ global events), Labs (commercial drops G-01 through G-04 graduated via a 25-point scorecard), and Orbit (6-week technical builders residency), paired with The Orbital Wire real-time Gemini 2.5 Flash intelligence pipeline.`,
+      links: [
+        { label: "Inspect G-Gravitator Dossier", href: `/work/${p.slug}` },
+        { label: "Browse All Work", href: "/work" },
+      ],
+    };
+  }
+
   if (q.includes("fortress") && q.includes("koridor")) {
     return {
       mode: "grounded-index",
@@ -304,8 +333,9 @@ export function answerFromGroundedIndex(rawQuery: string): ChatResponsePayload {
   if (q.includes("ai") || q.includes("llm") || q.includes("agent") || q.includes("gemini") || q.includes("mcp") || q.includes("rag") || q.includes("rlhf") || q.includes("outlier")) {
     return {
       mode: "grounded-index",
-      answer: `Akaolisa's AI stack covers multi-agent orchestration, Google Gemini API (3.8 Flash / 4 Argon), Gemma 2/4, Qwen, RAG with Supabase pgvector, Model Context Protocol (MCP), local LLM runtimes (Ollama, LM Studio), and QLoRA/Unsloth fine-tuning. Beyond shipping Fortress Fleet AI and Koridor Engine OS, he benchmarks frontier LLM code, quantitative math, and clinical reasoning for Outlier.ai and OneForma (2026-Present).`,
+      answer: `Akaolisa's AI stack covers multi-agent orchestration, Google Gemini API (3.8 Flash / 4 Argon), Gemma 2/4, Qwen, RAG with Supabase pgvector, Model Context Protocol (MCP), local LLM runtimes (Ollama, LM Studio), and QLoRA/Unsloth fine-tuning. Beyond shipping G-Gravitator, Fortress Fleet AI, and Koridor Engine OS, he benchmarks frontier LLM code, quantitative math, and clinical reasoning for Outlier.ai and OneForma (2026-Present).`,
       links: [
+        { label: "Inspect G-Gravitator", href: "/work/g-gravitator" },
         { label: "Inspect Fortress Fleet AI", href: "/work/fortress-fleet-ai" },
         { label: "Experience & RLHF Track", href: "/experience" },
       ],
@@ -340,8 +370,9 @@ export function answerFromGroundedIndex(rawQuery: string): ChatResponsePayload {
   if (q.includes("oxaka") || q.includes("studio") || q.includes("agency") || q.includes("founder")) {
     return {
       mode: "grounded-index",
-      answer: `OXAKALABS (${PROFILE.studio.primaryDisplay} · ${PROFILE.studio.mirrorDisplay}) is Akaolisa's independent product engineering studio (2022-Present). Through OXAKALABS he leads end-to-end architecture, UI/UX engineering, PostgreSQL modeling, and cloud deployment across SaaS, AI automation, FinTech, and retail clients.`,
+      answer: `OXAKALABS (${PROFILE.studio.primaryDisplay} · ${PROFILE.studio.mirrorDisplay}) is Akaolisa's independent product engineering studio (2022-Present), now also operating within the G-Gravitator software and AI creativity lab (ggravitator.xyz). He leads end-to-end architecture, UI/UX engineering, PostgreSQL modeling, and cloud deployment across SaaS, AI automation, FinTech, and retail clients.`,
       links: [
+        { label: "Inspect G-Gravitator", href: "/work/g-gravitator" },
         { label: "Browse Shipped Systems", href: "/work" },
         { label: "Start a Project", href: "/contact" },
       ],
@@ -397,7 +428,7 @@ export function answerFromGroundedIndex(rawQuery: string): ChatResponsePayload {
       mode: "grounded-index",
       answer: `Core full-stack & infrastructure tooling: Next.js (App Router), React, TypeScript, Node.js, Tailwind CSS, Framer Motion, Supabase (PostgreSQL, RLS, Auth), REST & WebSockets, Docker, Coolify, Linux VPS self-hosting, Vercel, Cloudflare DNS, and Resend SMTP. This is complemented by Gemini/Gemma/MCP AI pipelines and Python/R quantitative engines.`,
       links: [
-        { label: "Inspect All 6 Shipped Systems", href: "/work" },
+        { label: `Inspect All ${PROJECTS.length} Shipped Systems`, href: "/work" },
         { label: "Start a SaaS Build", href: "/contact?track=full-stack-saas" },
       ],
     };
@@ -406,7 +437,7 @@ export function answerFromGroundedIndex(rawQuery: string): ChatResponsePayload {
   // Default executive overview
   return {
     mode: "grounded-index",
-    answer: `${PROFILE.displayName} is the Founder & Principal Engineer at OXAKALABS (2022-Present), shipping Full-Stack Next.js SaaS systems, autonomous multi-agent AI platforms (Fortress Fleet AI, Koridor Engine OS), and Quantitative Forex/Crypto/HFT suites. He combines software execution with empirical discipline as a licensed Medical Laboratory Scientist (B.MLS) directing 250+ clinical trainees. Ask me about any specific project, his AI/Quant stack, clinical leadership, or remote availability.`,
+    answer: `${PROFILE.displayName} is the Founder & Principal Engineer at OXAKALABS and G-Gravitator (ggravitator.xyz), shipping Full-Stack Next.js SaaS systems, autonomous multi-agent AI platforms (G-Gravitator, Fortress Fleet AI, Koridor Engine OS), and Quantitative Forex/Crypto/HFT suites. He combines software execution with empirical discipline as a licensed Medical Laboratory Scientist (B.MLS) directing 250+ clinical trainees. Ask me about any specific project, his AI/Quant stack, clinical leadership, or remote availability.`,
     links: [
       { label: "Explore Selected Work", href: "/work" },
       { label: "Experience & Clinical Lab", href: "/experience" },

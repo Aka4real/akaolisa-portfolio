@@ -146,6 +146,22 @@ export function SiteFooter({
               </li>
               <li>
                 <a
+                  href="https://ggravitator.xyz"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-1 transition-colors duration-150 hover:text-[var(--ink-on-marine)]"
+                >
+                  <span>ggravitator.xyz</span>
+                  <ArrowUpRight
+                    size={14}
+                    weight="bold"
+                    className="hover-nudge-ne shrink-0"
+                    aria-hidden="true"
+                  />
+                </a>
+              </li>
+              <li>
+                <a
                   href={PROFILE.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -160,22 +176,7 @@ export function SiteFooter({
                   />
                 </a>
               </li>
-              <li>
-                <a
-                  href="https://blaireaesthetics.shop"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-1 transition-colors duration-150 hover:text-[var(--ink-on-marine)]"
-                >
-                  <span>blaireaesthetics</span>
-                  <ArrowUpRight
-                    size={14}
-                    weight="bold"
-                    className="hover-nudge-ne shrink-0"
-                    aria-hidden="true"
-                  />
-                </a>
-              </li>
+              {/* Temporarily removed per user request: blaireaesthetics.shop */}
               <li>
                 <a
                   href="https://aifycycle.vercel.app"

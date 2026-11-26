@@ -70,6 +70,7 @@ const TRACK_LABELS: Record<TrackId, string> = {
 
 const SCHEMATIC_OPTIONS: ReadonlyArray<{ value: SchematicType; label: string }> =
   [
+    { value: "g-gravitator", label: "G-Gravitator four-unit flywheel" },
     { value: "koridor", label: "Koridor geospatial topology" },
     { value: "fortress", label: "Fortress governance pipeline" },
     { value: "crypto-wealth", label: "Crypto wealth SVG ledger" },
@@ -251,7 +252,7 @@ export function AdminConsole({
   }
 
   function startNewDossier() {
-    const nextCode = `SYS-${String((state?.projects.length ?? 6) + 1).padStart(2, "0")}`;
+    const nextCode = `SYS-${String((state?.projects.length ?? 7) + 1).padStart(2, "0")}`;
     const blank: ProjectDossier = {
       slug: `new-system-${Date.now().toString(36).slice(-4)}`,
       indexCode: nextCode,

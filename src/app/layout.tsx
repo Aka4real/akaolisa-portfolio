@@ -53,6 +53,7 @@ export const metadata: Metadata = {
     "Akaolisa Enwedo",
     "Enwedo Akaolisa Gift",
     "OXAKALABS",
+    "G-Gravitator",
     "Full-Stack Next.js Engineer",
     "AI Agent Engineer",
     "Quantitative FinTech Developer",

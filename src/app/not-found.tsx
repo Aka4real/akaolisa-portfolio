@@ -10,7 +10,7 @@ export default function NotFound() {
         </h1>
         <p className="type-body mt-4 max-w-[54ch] text-[var(--ink-secondary)]">
           The page you requested may have moved or is not indexed on
-          oxakalabs.xyz. Return to the overview or browse all six shipped
+          oxakalabs.xyz. Return to the overview or browse all seven shipped
           systems.
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-6">
