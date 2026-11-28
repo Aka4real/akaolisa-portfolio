@@ -171,7 +171,7 @@ export async function POST(request: Request) {
         status: "success",
         details: nextOverride.forceGroundedIndex
           ? "Forced Grounded Dossier Index mode"
-          : `Primary=${primaryModel ?? "env"}, Thinking=${thinkingLevel ?? "env"}, MaxTokens=${maxOutputTokens ?? "env"}`,
+          : `Primary=${primaryModel ?? "env"}, Fallbacks=${fallbackModels ? (fallbackModels.length > 0 ? fallbackModels.join(",") : "none") : "env"}, Thinking=${thinkingLevel ?? "env"}, MaxTokens=${maxOutputTokens ?? "env"}`,
         userAgent: ua,
       });
 

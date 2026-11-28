@@ -50,24 +50,37 @@ function sanitizeHistory(raw: unknown): ChatHistoryTurn[] {
 }
 
 export async function GET() {
-  const override = await getAiRuntimeOverride();
+  const [override, store] = await Promise.all([
+    getAiRuntimeOverride(),
+    getTelemetryStore(),
+  ]);
   const baseConfig = getGeminiConfig();
   const effective = applyGeminiOverride(baseConfig, override);
-  const store = await getTelemetryStore();
   const latestLog = store.aiLogs[store.aiLogs.length - 1] ?? null;
 
   const geminiEnabled =
     isGeminiConfigured() && !effective.forceGroundedIndex;
+
+  const overrideUpdatedAt = override?.enabled ? override.updatedAt : 0;
+  const latestLogMatchesPolicy = Boolean(
+    latestLog &&
+      latestLog.timestamp >= overrideUpdatedAt &&
+      latestLog.configuredPrimary === effective.primaryModel
+  );
 
   return NextResponse.json(
     {
       geminiEnabled,
       primaryModel: effective.primaryModel,
       fallbackModels: effective.fallbackModels,
+      thinkingLevel: effective.thinkingLevel,
       activeRoutedModel: effective.forceGroundedIndex
         ? "grounded-index"
-        : latestLog?.resolvedModel ??
-          (geminiEnabled ? effective.primaryModel : "grounded-index"),
+        : latestLogMatchesPolicy && latestLog
+          ? latestLog.resolvedModel
+          : geminiEnabled
+            ? effective.primaryModel
+            : "grounded-index",
       maxOutputTokens: effective.maxOutputTokens,
       overrideActive: Boolean(effective.overrideActive),
     },

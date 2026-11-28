@@ -529,6 +529,8 @@ export interface AdminDashboardSnapshot {
     keyFingerprint: string;
     envPrimaryModel: string;
     envFallbackModels: string[];
+    envThinkingLevel: GeminiThinkingLevel;
+    envMaxOutputTokens: number;
     effectivePrimaryModel: string;
     effectiveFallbackModels: string[];
     effectiveThinkingLevel: GeminiThinkingLevel;

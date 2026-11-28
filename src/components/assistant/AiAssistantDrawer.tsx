@@ -944,7 +944,7 @@ function AiAssistantDrawerSheet({
           <p className="mt-2 font-mono text-[11px] text-[var(--ink-muted)]">
             {geminiEnabled
               ? `Grounded in verified dossier · Multi-turn ${displayModelLabel}`
-              : "Zero fabricated claims · Auto-upgrades with GEMINI_API_KEY"}
+              : "Zero fabricated claims · Deterministic Grounded Dossier Index"}
           </p>
         </form>
       </motion.aside>
@@ -964,29 +964,40 @@ export function AiAssistantDrawer({ open, onClose }: AiAssistantDrawerProps) {
   const [activeModel, setActiveModel] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([WELCOME_MESSAGE]);
 
-  const statusCheckedRef = useRef(false);
-
   useEffect(() => {
-    if (!open || statusCheckedRef.current) return;
-    statusCheckedRef.current = true;
+    if (!open) return;
+    let cancelled = false;
 
-    fetch("/api/chat")
+    fetch("/api/chat", { cache: "no-store" })
       .then((res) =>
         res.ok ? (res.json() as Promise<ChatStatusResponse>) : null
       )
       .then((status) => {
-        if (!status) return;
+        if (!status || cancelled) return;
         if (status.primaryModel) {
           setConfiguredModel(status.primaryModel);
         }
         if (status.geminiEnabled) {
           setGeminiEnabled(true);
           setActiveMode("gemini");
+          setActiveModel((prev) =>
+            prev && status.primaryModel && prev !== status.primaryModel
+              ? null
+              : prev
+          );
+        } else {
+          setGeminiEnabled(false);
+          setActiveMode("grounded-index");
+          setActiveModel(null);
         }
       })
       .catch(() => {
-        // Silently keep grounded-index label if status check fails
+        // Silently keep current status label if status check fails
       });
+
+    return () => {
+      cancelled = true;
+    };
   }, [open]);
 
   function resetConversation() {

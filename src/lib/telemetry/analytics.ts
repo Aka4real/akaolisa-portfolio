@@ -7,7 +7,11 @@ import {
 import { formatGeminiModelLabel } from "@/lib/knowledge";
 import { buildFastHealthSnapshot } from "./health";
 import { isSuspiciousProbePath } from "./ip";
-import { getStorageStatus, getTelemetryStore } from "./store";
+import {
+  getAiRuntimeOverride,
+  getStorageStatus,
+  getTelemetryStore,
+} from "./store";
 import type {
   AdminDashboardSnapshot,
   AiRoutingLogEntry,
@@ -287,7 +291,8 @@ function buildModelRoutingStats(
   aiLogs: AiRoutingLogEntry[],
   effectivePrimary: string,
   effectiveFallbacks: string[],
-  overrideActive: boolean
+  overrideActive: boolean,
+  overrideUpdatedAt = 0
 ): ModelRoutingStats[] {
   const modelMap = new Map<
     string,
@@ -397,11 +402,17 @@ function buildModelRoutingStats(
 
   const totalServed = aiLogs.length || 1;
   const mostRecentLog = aiLogs[aiLogs.length - 1];
-  const latestServedKey = mostRecentLog
-    ? mostRecentLog.mode === "grounded-index"
-      ? "grounded-index"
-      : mostRecentLog.resolvedModel
-    : null;
+  const mostRecentMatchesPolicy = Boolean(
+    mostRecentLog &&
+      mostRecentLog.timestamp >= overrideUpdatedAt &&
+      mostRecentLog.configuredPrimary === effectivePrimary
+  );
+  const latestServedKey =
+    mostRecentMatchesPolicy && mostRecentLog
+      ? mostRecentLog.mode === "grounded-index"
+        ? "grounded-index"
+        : mostRecentLog.resolvedModel
+      : null;
 
   return Array.from(modelMap.values()).map((entry) => {
     const avgLatencyMs =
@@ -671,7 +682,10 @@ export async function buildAdminDashboardSnapshot(params: {
   forceRemote?: boolean;
 }): Promise<AdminDashboardSnapshot> {
   const now = Date.now();
-  const store = await getTelemetryStore({ forceRemote: params.forceRemote });
+  const [store, aiOverride] = await Promise.all([
+    getTelemetryStore({ forceRemote: params.forceRemote }),
+    getAiRuntimeOverride(),
+  ]);
   const storage = await getStorageStatus();
   const windowMs = getRangeWindowMs(params.range);
   const cutoff = windowMs !== null ? now - windowMs : 0;
@@ -932,7 +946,7 @@ export async function buildAdminDashboardSnapshot(params: {
 
   // AI & Gemini Routing Analytics
   const envGemini = getGeminiConfig();
-  const effectiveGemini = applyGeminiOverride(envGemini, store.aiOverride);
+  const effectiveGemini = applyGeminiOverride(envGemini, aiOverride);
   const geminiServedLogs = filteredAiLogs.filter((l) => l.mode === "gemini");
   const aiFailoverCount = filteredAiLogs.filter((l) => l.wasFailover).length;
   const aiAvgLatencyMs =
@@ -954,10 +968,17 @@ export async function buildAdminDashboardSnapshot(params: {
         : 0;
 
   const latestAiOverall = store.aiLogs[store.aiLogs.length - 1] ?? null;
+  const overrideUpdatedAt = aiOverride?.enabled ? aiOverride.updatedAt : 0;
+  const latestLogMatchesPolicy = Boolean(
+    latestAiOverall &&
+      latestAiOverall.timestamp >= overrideUpdatedAt &&
+      latestAiOverall.configuredPrimary === effectiveGemini.primaryModel
+  );
+
   const activeRoutedMode: "gemini" | "grounded-index" =
     effectiveGemini.forceGroundedIndex
       ? "grounded-index"
-      : latestAiOverall
+      : latestLogMatchesPolicy && latestAiOverall
         ? latestAiOverall.mode
         : envGemini.apiKey
           ? "gemini"
@@ -966,14 +987,15 @@ export async function buildAdminDashboardSnapshot(params: {
   const activeRoutedModel =
     effectiveGemini.forceGroundedIndex
       ? "grounded-index"
-      : latestAiOverall
+      : latestLogMatchesPolicy && latestAiOverall
         ? latestAiOverall.resolvedModel
         : envGemini.apiKey
           ? effectiveGemini.primaryModel
           : "grounded-index";
 
   const isCurrentlyFailedOver = Boolean(
-    latestAiOverall &&
+    latestLogMatchesPolicy &&
+      latestAiOverall &&
       !effectiveGemini.forceGroundedIndex &&
       envGemini.apiKey &&
       (latestAiOverall.wasFailover ||
@@ -985,7 +1007,8 @@ export async function buildAdminDashboardSnapshot(params: {
     filteredAiLogs,
     effectiveGemini.primaryModel,
     effectiveGemini.fallbackModels,
-    Boolean(effectiveGemini.overrideActive)
+    Boolean(effectiveGemini.overrideActive),
+    overrideUpdatedAt
   );
 
   // Pages & Web Vitals Performance
@@ -1308,6 +1331,8 @@ export async function buildAdminDashboardSnapshot(params: {
       keyFingerprint: getGeminiKeyFingerprint(),
       envPrimaryModel: envGemini.primaryModel,
       envFallbackModels: envGemini.fallbackModels,
+      envThinkingLevel: envGemini.thinkingLevel,
+      envMaxOutputTokens: envGemini.maxOutputTokens,
       effectivePrimaryModel: effectiveGemini.primaryModel,
       effectiveFallbackModels: effectiveGemini.fallbackModels,
       effectiveThinkingLevel: effectiveGemini.thinkingLevel,
@@ -1320,7 +1345,7 @@ export async function buildAdminDashboardSnapshot(params: {
       activeRoutedMode,
       lastRoutedAt: latestAiOverall?.timestamp ?? null,
       isCurrentlyFailedOver,
-      override: store.aiOverride,
+      override: aiOverride,
       models: modelStats,
       recentLogs: filteredAiLogs.slice(-150).reverse(),
     },

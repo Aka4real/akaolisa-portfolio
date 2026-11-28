@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowsClockwise,
   CheckCircle,
@@ -30,11 +30,11 @@ interface AiRoutingViewProps {
 }
 
 const PRESET_MODELS = [
-  "gemini-3.8-flash",
   "gemini-3-flash-preview",
   "gemini-3.5-flash-lite",
-  "gemini-2.5-flash",
-  "gemini-2.5-pro",
+  "gemini-3.8-flash",
+  "gemini-3.1-flash-lite",
+  "gemini-3.1-pro-preview",
 ];
 
 export function AiRoutingView({
@@ -48,13 +48,16 @@ export function AiRoutingView({
   const [expandedLogId, setExpandedLogId] = useState<string | null>(null);
 
   // Runtime Override Form State
+  const resolvedFallbackList =
+    aiRouting.override?.enabled && Array.isArray(aiRouting.override.fallbackModels)
+      ? aiRouting.override.fallbackModels
+      : aiRouting.effectiveFallbackModels;
+
   const [primaryInput, setPrimaryInput] = useState(
     aiRouting.override?.primaryModel || aiRouting.effectivePrimaryModel
   );
   const [fallbacksInput, setFallbacksInput] = useState(
-    (aiRouting.override?.fallbackModels ?? aiRouting.effectiveFallbackModels).join(
-      ", "
-    )
+    resolvedFallbackList.join(", ")
   );
   const [thinkingInput, setThinkingInput] = useState<GeminiThinkingLevel>(
     aiRouting.override?.thinkingLevel || aiRouting.effectiveThinkingLevel
@@ -66,6 +69,39 @@ export function AiRoutingView({
     Boolean(aiRouting.override?.forceGroundedIndex)
   );
   const [savingOverride, setSavingOverride] = useState(false);
+
+  // Sync form inputs only when the server's saved routing policy actually changes
+  // (never clobbers unsaved edits during routine 10s telemetry polling).
+  const serverPolicySignature = JSON.stringify({
+    enabled: Boolean(aiRouting.override?.enabled),
+    updatedAt: aiRouting.override?.updatedAt ?? 0,
+    primary: aiRouting.effectivePrimaryModel,
+    fallbacks: aiRouting.effectiveFallbackModels,
+    thinking: aiRouting.effectiveThinkingLevel,
+    maxTokens: aiRouting.effectiveMaxOutputTokens,
+    forceGrounded: Boolean(aiRouting.override?.forceGroundedIndex),
+  });
+
+  useEffect(() => {
+    setPrimaryInput(
+      aiRouting.override?.primaryModel || aiRouting.effectivePrimaryModel
+    );
+    setFallbacksInput(
+      (aiRouting.override?.enabled &&
+      Array.isArray(aiRouting.override.fallbackModels)
+        ? aiRouting.override.fallbackModels
+        : aiRouting.effectiveFallbackModels
+      ).join(", ")
+    );
+    setThinkingInput(
+      aiRouting.override?.thinkingLevel || aiRouting.effectiveThinkingLevel
+    );
+    setMaxTokensInput(
+      aiRouting.override?.maxOutputTokens || aiRouting.effectiveMaxOutputTokens
+    );
+    setForceGroundedInput(Boolean(aiRouting.override?.forceGroundedIndex));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serverPolicySignature]);
 
   async function applyOverride() {
     setSavingOverride(true);
@@ -105,6 +141,8 @@ export function AiRoutingView({
       );
       setPrimaryInput(aiRouting.envPrimaryModel);
       setFallbacksInput(aiRouting.envFallbackModels.join(", "));
+      setThinkingInput(aiRouting.envThinkingLevel);
+      setMaxTokensInput(aiRouting.envMaxOutputTokens);
       setForceGroundedInput(false);
     } finally {
       setSavingOverride(false);
@@ -432,12 +470,13 @@ export function AiRoutingView({
 
             <div>
               <label className="mb-1 block font-mono text-[10.5px] uppercase text-[var(--ink-muted)]">
-                Fallback Models (comma-separated)
+                Fallback Models (comma-separated, leave blank for primary-only)
               </label>
               <input
                 type="text"
                 value={fallbacksInput}
                 onChange={(e) => setFallbacksInput(e.target.value)}
+                placeholder="e.g. gemini-3-flash-preview, gemini-3.5-flash-lite"
                 className="w-full rounded-[var(--radius-xs)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3 py-1.5 font-mono text-xs text-[var(--ink-primary)]"
               />
             </div>

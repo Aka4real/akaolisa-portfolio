@@ -24,6 +24,7 @@ import {
 
 const STORE_SCHEMA_VERSION = 1;
 const UPSTASH_STORE_KEY = "oxakalabs:portfolio:telemetry:v1";
+const UPSTASH_AI_OVERRIDE_KEY = "oxakalabs:portfolio:ai-override:v1";
 
 const MAX_EVENTS = 8000;
 const MAX_AI_LOGS = 1500;
@@ -160,14 +161,49 @@ function normalizeLoadedStore(raw: unknown): TelemetryStoreData {
   };
 }
 
-async function readFromUpstash(
+interface AiOverrideEnvelope {
+  version: number;
+  override: AiRuntimeOverride | null;
+  updatedAt: number;
+}
+
+function parseAiOverrideEnvelope(
+  raw: string | null | undefined
+): { exists: true; override: AiRuntimeOverride | null } | { exists: false } {
+  if (typeof raw !== "string" || !raw.trim()) {
+    return { exists: false };
+  }
+  try {
+    const parsed = JSON.parse(raw) as
+      | Partial<AiOverrideEnvelope>
+      | AiRuntimeOverride
+      | null;
+    if (parsed && typeof parsed === "object" && "override" in parsed) {
+      return {
+        exists: true,
+        override: (parsed.override ?? null) as AiRuntimeOverride | null,
+      };
+    }
+    if (parsed && typeof parsed === "object" && "enabled" in parsed) {
+      return { exists: true, override: parsed as AiRuntimeOverride };
+    }
+    return { exists: true, override: null };
+  } catch {
+    return { exists: false };
+  }
+}
+
+async function readAiOverrideFromUpstash(
   cfg: UpstashConfig
-): Promise<TelemetryStoreData | null> {
+): Promise<
+  | { ok: true; exists: boolean; override: AiRuntimeOverride | null }
+  | { ok: false }
+> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 3500);
+  const timeout = setTimeout(() => controller.abort(), 3000);
   try {
     const res = await fetch(
-      `${cfg.url}/get/${encodeURIComponent(UPSTASH_STORE_KEY)}`,
+      `${cfg.url}/get/${encodeURIComponent(UPSTASH_AI_OVERRIDE_KEY)}`,
       {
         method: "GET",
         headers: {
@@ -178,10 +214,97 @@ async function readFromUpstash(
       }
     );
     clearTimeout(timeout);
-    if (!res.ok) return null;
+    if (!res.ok) return { ok: false };
     const json = (await res.json()) as { result?: string | null };
-    if (!json.result) return createEmptyStore();
-    return normalizeLoadedStore(JSON.parse(json.result));
+    const parsed = parseAiOverrideEnvelope(json.result);
+    if (parsed.exists) {
+      return { ok: true, exists: true, override: parsed.override };
+    }
+    return { ok: true, exists: false, override: null };
+  } catch {
+    clearTimeout(timeout);
+    return { ok: false };
+  }
+}
+
+async function writeAiOverrideToUpstash(
+  cfg: UpstashConfig,
+  override: AiRuntimeOverride | null
+): Promise<boolean> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 3500);
+  try {
+    const envelope: AiOverrideEnvelope = {
+      version: 1,
+      override,
+      updatedAt: Date.now(),
+    };
+    const res = await fetch(`${cfg.url}/pipeline`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${cfg.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify([
+        ["SET", UPSTASH_AI_OVERRIDE_KEY, JSON.stringify(envelope)],
+      ]),
+      signal: controller.signal,
+      cache: "no-store",
+    });
+    clearTimeout(timeout);
+    return res.ok;
+  } catch {
+    clearTimeout(timeout);
+    return false;
+  }
+}
+
+async function readFromUpstash(
+  cfg: UpstashConfig
+): Promise<TelemetryStoreData | null> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 3500);
+  try {
+    const res = await fetch(`${cfg.url}/pipeline`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${cfg.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify([
+        ["GET", UPSTASH_STORE_KEY],
+        ["GET", UPSTASH_AI_OVERRIDE_KEY],
+      ]),
+      signal: controller.signal,
+      cache: "no-store",
+    });
+    clearTimeout(timeout);
+    if (!res.ok) return null;
+    const json = (await res.json()) as Array<{
+      result?: string | null;
+      error?: string;
+    }>;
+    if (
+      !Array.isArray(json) ||
+      json.length < 2 ||
+      json[0]?.error ||
+      json[1]?.error
+    ) {
+      return null;
+    }
+
+    const rawStore = json[0]?.result;
+    const store = rawStore
+      ? normalizeLoadedStore(JSON.parse(rawStore))
+      : createEmptyStore();
+
+    // Dedicated override key is always authoritative over the telemetry blob
+    const dedicatedOverride = parseAiOverrideEnvelope(json[1]?.result);
+    if (dedicatedOverride.exists) {
+      store.aiOverride = dedicatedOverride.override;
+    }
+
+    return store;
   } catch {
     clearTimeout(timeout);
     return null;
@@ -401,7 +524,7 @@ function enqueueMutation<T>(
 ): Promise<T> {
   const runtime = getSingleton();
   const next = runtime.writeChain.then(async () => {
-    const store = await hydrateStore(false);
+    const store = await hydrateStore(Boolean(getUpstashConfig()));
     const result = await mutator(store);
     await persistStore(store);
     return result;
@@ -629,6 +752,18 @@ export async function isIpBlocked(ip: string): Promise<boolean> {
 }
 
 export async function getAiRuntimeOverride(): Promise<AiRuntimeOverride | null> {
+  const upstash = getUpstashConfig();
+  if (upstash) {
+    const dedicated = await readAiOverrideFromUpstash(upstash);
+    if (dedicated.ok && dedicated.exists) {
+      const runtime = getSingleton();
+      if (runtime.data) {
+        runtime.data.aiOverride = dedicated.override;
+      }
+      return dedicated.override;
+    }
+  }
+
   const store = await hydrateStore(false);
   return store.aiOverride;
 }
@@ -636,6 +771,15 @@ export async function getAiRuntimeOverride(): Promise<AiRuntimeOverride | null> 
 export async function setAiRuntimeOverride(
   override: AiRuntimeOverride | null
 ): Promise<AiRuntimeOverride | null> {
+  const upstash = getUpstashConfig();
+  if (upstash) {
+    await writeAiOverrideToUpstash(upstash, override);
+    const runtime = getSingleton();
+    if (runtime.data) {
+      runtime.data.aiOverride = override;
+    }
+  }
+
   return enqueueMutation((store) => {
     store.aiOverride = override;
     return store.aiOverride;

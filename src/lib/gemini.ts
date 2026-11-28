@@ -188,10 +188,9 @@ export function applyGeminiOverride(
     ? normalizeModelId(override.primaryModel) || base.primaryModel
     : base.primaryModel;
 
-  const rawFallbacks =
-    Array.isArray(override.fallbackModels) && override.fallbackModels.length > 0
-      ? override.fallbackModels.map(normalizeModelId).filter(Boolean)
-      : base.fallbackModels;
+  const rawFallbacks = Array.isArray(override.fallbackModels)
+    ? override.fallbackModels.map(normalizeModelId).filter(Boolean)
+    : base.fallbackModels;
 
   const seen = new Set<string>([primaryModel]);
   const fallbackModels: string[] = [];
