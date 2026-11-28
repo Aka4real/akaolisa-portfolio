@@ -19,6 +19,7 @@ import {
   type ExperienceCategory,
 } from "@/data/experience";
 import { PROFILE } from "@/data/profile";
+import { buildTrackedResumeUrl } from "@/lib/telemetry/client";
 import { usePortfolioActions } from "@/components/layout/PortfolioShell";
 import {
   BlurCrossfade,
@@ -80,7 +81,13 @@ export function ExperienceView() {
           </button>
 
           <a
-            href={PROFILE.resumePdfPath}
+            href="/api/resume?mode=download&source=experience"
+            onClick={(e) => {
+              e.currentTarget.href = buildTrackedResumeUrl(
+                "download",
+                "experience"
+              );
+            }}
             download={PROFILE.resumeFileName}
             className="btn-press inline-flex items-center gap-2 rounded-[var(--radius-sm)] bg-[var(--bg-inverse)] px-4 py-2.5 text-xs font-medium text-[var(--ink-inverse)] hover:bg-[var(--bg-inverse-hover)]"
           >

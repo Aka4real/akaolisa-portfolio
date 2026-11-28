@@ -9,11 +9,13 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { usePathname } from "next/navigation";
 import { MotionConfig, motion, useReducedMotion } from "framer-motion";
 import { SiteHeader } from "./SiteHeader";
 import { SiteFooter } from "./SiteFooter";
 import { ResumeModal } from "@/components/modals/ResumeModal";
 import { AiAssistantDrawer } from "@/components/assistant/AiAssistantDrawer";
+import { TelemetryTracker } from "@/components/telemetry/TelemetryTracker";
 import { SPRING_CRISP } from "@/components/ui/MotionPrimitives";
 
 interface PortfolioActionsContextValue {
@@ -31,6 +33,8 @@ export function usePortfolioActions() {
 }
 
 function PortfolioShellInner({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const isAdminRoute = pathname?.startsWith("/admin") ?? false;
   const prefersReduced = useReducedMotion();
   const [resumeOpen, setResumeOpen] = useState(false);
   const [assistantOpen, setAssistantOpen] = useState(false);
@@ -103,8 +107,13 @@ function PortfolioShellInner({ children }: { children: ReactNode }) {
 
   const shouldPushDepth = anyOverlayOpen && !prefersReduced;
 
+  if (isAdminRoute) {
+    return <>{children}</>;
+  }
+
   return (
     <PortfolioActionsContext.Provider value={{ openResume, openAssistant }}>
+      <TelemetryTracker resumeOpen={resumeOpen} assistantOpen={assistantOpen} />
       <div className="min-h-screen bg-[var(--bg-recessed)]">
         <motion.div
           inert={anyOverlayOpen}

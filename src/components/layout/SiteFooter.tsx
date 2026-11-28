@@ -11,6 +11,7 @@ import {
   Sparkle,
 } from "@phosphor-icons/react";
 import { PROFILE } from "@/data/profile";
+import { trackTelemetryEvent } from "@/lib/telemetry/client";
 import { BlurCrossfade } from "@/components/ui/MotionPrimitives";
 
 interface SiteFooterProps {
@@ -37,6 +38,12 @@ export function SiteFooter({
     try {
       await navigator.clipboard.writeText(PROFILE.email);
       setCopied(true);
+      trackTelemetryEvent({
+        type: "email_copy",
+        severity: "success",
+        label: "Copied email address from footer",
+        source: "footer",
+      });
       if (copyTimeoutRef.current !== null) {
         window.clearTimeout(copyTimeoutRef.current);
       }

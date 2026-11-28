@@ -17,6 +17,11 @@ import {
 } from "@phosphor-icons/react";
 import { PROFILE, SERVICE_PILLARS } from "@/data/profile";
 import {
+  buildTrackedResumeUrl,
+  getClientTelemetryIds,
+  trackTelemetryEvent,
+} from "@/lib/telemetry/client";
+import {
   BlurCrossfade,
   EASE_OUT_EXPO,
 } from "@/components/ui/MotionPrimitives";
@@ -168,6 +173,12 @@ export function ContactForm() {
     try {
       await navigator.clipboard.writeText(PROFILE.email);
       setCopiedEmail(true);
+      trackTelemetryEvent({
+        type: "email_copy",
+        severity: "success",
+        label: "Copied email address on Contact page",
+        source: "contact",
+      });
       if (emailTimerRef.current !== null) {
         window.clearTimeout(emailTimerRef.current);
       }
@@ -184,6 +195,12 @@ export function ContactForm() {
     try {
       await navigator.clipboard.writeText(PROFILE.whatsappDisplay);
       setCopiedWhatsapp(true);
+      trackTelemetryEvent({
+        type: "whatsapp_click",
+        severity: "success",
+        label: "Copied WhatsApp number on Contact page",
+        source: "contact",
+      });
       if (whatsappTimerRef.current !== null) {
         window.clearTimeout(whatsappTimerRef.current);
       }
@@ -237,6 +254,7 @@ export function ContactForm() {
     setSubmitVisualState("submitting");
 
     try {
+      const { visitorId, sessionId } = getClientTelemetryIds();
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -247,6 +265,8 @@ export function ContactForm() {
           scope,
           message,
           companyWebsite,
+          visitorId,
+          sessionId,
         }),
       });
 
@@ -502,7 +522,13 @@ export function ContactForm() {
           </div>
 
           <a
-            href={PROFILE.resumePdfPath}
+            href="/api/resume?mode=download&source=contact"
+            onClick={(e) => {
+              e.currentTarget.href = buildTrackedResumeUrl(
+                "download",
+                "contact"
+              );
+            }}
             download={PROFILE.resumeFileName}
             className="btn-press mt-2.5 flex w-full items-center justify-center gap-2 rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-4 py-2.5 text-xs font-medium text-[var(--ink-primary)] hover:border-[var(--accent-border)] hover:text-[var(--accent-deep)]"
           >

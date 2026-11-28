@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react/dist/ssr";
+import { NotFoundTracker } from "@/components/telemetry/NotFoundTracker";
 
 export default function NotFound() {
   return (
     <section className="mx-auto flex min-h-[64vh] max-w-6xl flex-col items-start justify-center px-4 py-24 sm:px-6 lg:px-8">
+      <NotFoundTracker />
       <div className="max-w-xl">
         <span className="inline-flex items-center rounded-[var(--radius-xs)] bg-[var(--accent-soft)] px-2.5 py-1 font-mono text-xs font-medium tabular-nums text-[var(--accent-deep)]">
           404 · Route Not Found

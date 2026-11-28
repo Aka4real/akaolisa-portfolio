@@ -7,21 +7,42 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["@phosphor-icons/react", "framer-motion"],
   },
   async rewrites() {
-    return [
-      {
-        source: "/opengraph-image",
-        destination: "/og-image.png",
-      },
-      {
-        source: "/icon",
-        destination: "/favicon.png",
-      },
-    ];
+    return {
+      beforeFiles: [
+        {
+          source: "/resume/Akaolisa-Enwedo-Resume.pdf",
+          destination: "/api/resume?mode=view&source=direct",
+        },
+      ],
+      afterFiles: [
+        {
+          source: "/opengraph-image",
+          destination: "/og-image.png",
+        },
+        {
+          source: "/icon",
+          destination: "/favicon.png",
+        },
+      ],
+      fallback: [],
+    };
   },
   async headers() {
     return [
       {
-        source: "/(og-image\\.png|apple-touch-icon\\.png|favicon\\.png|favicon-32x32\\.png|favicon\\.ico)",
+        source: "/(admin|api/admin)(.*)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store, no-cache, must-revalidate, private",
+          },
+          { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" },
+          { key: "X-Frame-Options", value: "DENY" },
+        ],
+      },
+      {
+        source:
+          "/(og-image\\.png|apple-touch-icon\\.png|favicon\\.png|favicon-32x32\\.png|favicon\\.ico)",
         headers: [
           {
             key: "Cache-Control",

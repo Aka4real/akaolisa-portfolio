@@ -32,6 +32,7 @@ import {
   type ChatResponsePayload,
   type SuggestedLink,
 } from "@/lib/knowledge";
+import { getClientTelemetryIds } from "@/lib/telemetry/client";
 import {
   EASE_DRAWER,
   EASE_OUT_EXPO,
@@ -1020,10 +1021,11 @@ export function AiAssistantDrawer({ open, onClose }: AiAssistantDrawerProps) {
     setLoading(true);
 
     try {
+      const { visitorId, sessionId } = getClientTelemetryIds();
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: trimmed, history }),
+        body: JSON.stringify({ query: trimmed, history, visitorId, sessionId }),
       });
 
       if (!res.ok) {

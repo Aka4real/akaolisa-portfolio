@@ -24,6 +24,7 @@ import {
   X,
 } from "@phosphor-icons/react";
 import { PROFILE } from "@/data/profile";
+import { buildTrackedResumeUrl } from "@/lib/telemetry/client";
 import {
   EASE_OUT_EXPO,
   SPRING_CRISP,
@@ -457,7 +458,13 @@ function ResumeModalSheet({ onClose }: { onClose: () => void }) {
 
               <div className="flex items-center gap-2">
                 <a
-                  href={PROFILE.resumePdfPath}
+                  href="/api/resume?mode=newtab&source=modal"
+                  onClick={(e) => {
+                    e.currentTarget.href = buildTrackedResumeUrl(
+                      "newtab",
+                      "modal"
+                    );
+                  }}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-press group inline-flex items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3 py-1.5 text-xs font-medium text-[var(--ink-primary)] hover:border-[var(--accent-border)] hover:text-[var(--accent-deep)]"
@@ -471,7 +478,13 @@ function ResumeModalSheet({ onClose }: { onClose: () => void }) {
                   Open in New Tab
                 </a>
                 <a
-                  href={PROFILE.resumePdfPath}
+                  href="/api/resume?mode=download&source=modal"
+                  onClick={(e) => {
+                    e.currentTarget.href = buildTrackedResumeUrl(
+                      "download",
+                      "modal"
+                    );
+                  }}
                   download={PROFILE.resumeFileName}
                   className="btn-press inline-flex items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-sm)] bg-[var(--bg-inverse)] px-3 py-1.5 text-xs font-medium text-[var(--ink-inverse)] hover:bg-[var(--accent)]"
                 >
@@ -498,7 +511,7 @@ function ResumeModalSheet({ onClose }: { onClose: () => void }) {
           {/* PDF Viewport with Cool Alabaster load crossfade + drag iframe guard */}
           <div className="relative flex-1 bg-[var(--bg-subtle)]">
             <iframe
-              src={`${PROFILE.resumePdfPath}#view=FitH`}
+              src="/api/resume?mode=view&source=modal-iframe#view=FitH"
               title={`${PROFILE.displayName} Resume PDF`}
               onLoad={() => setPdfLoaded(true)}
               className={`h-full w-full border-0 transition-opacity duration-200 ease-out ${

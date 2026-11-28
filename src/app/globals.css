@@ -44,6 +44,9 @@
   --status-positive: #136F3A;
   --status-positive-bg: #EDF8F2;
   --status-positive-border: rgba(19, 111, 58, 0.22);
+  --status-warning: #B45309;
+  --status-warning-bg: #FEF7EC;
+  --status-warning-border: rgba(180, 83, 9, 0.24);
   --status-danger: #B42318;
   --status-danger-bg: #FEF3F2;
   --status-danger-border: rgba(180, 35, 24, 0.24);
@@ -113,6 +116,9 @@
   --color-positive: var(--status-positive);
   --color-positive-bg: var(--status-positive-bg);
   --color-positive-border: var(--status-positive-border);
+  --color-warning: var(--status-warning);
+  --color-warning-bg: var(--status-warning-bg);
+  --color-warning-border: var(--status-warning-border);
   --color-danger: var(--status-danger);
   --color-danger-bg: var(--status-danger-bg);
   --color-danger-border: var(--status-danger-border);

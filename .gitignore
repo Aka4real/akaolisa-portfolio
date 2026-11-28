@@ -23,6 +23,9 @@ pnpm-debug.log*
 .env
 .env*.local
 
+# Local telemetry store (VPS / dev)
+/.telemetry-data/
+
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
